@@ -1,0 +1,21 @@
+{
+  "name": "KAWAS Café de Origen",
+  "short_name": "KAWAS",
+  "description": "Catálogo online de café verde",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f9fafb",
+  "theme_color": "#14532d",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
