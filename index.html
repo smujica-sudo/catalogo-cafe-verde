@@ -70,7 +70,7 @@
                                     <p class="text-xs font-bold mb-1 ${stockClass}">${producto.Stock.toUpperCase()}</p>
                                     <p class="text-xl font-bold text-gray-900">$${producto.Precio} <span class="text-xs font-normal">+IVA / kg</span></p>
                                 </div>
-                                <a href="mailto:contacto@kawas.cl?subject=Consulta sobre ${producto.Nombre}" class="${stockAgotado ? 'bg-gray-400 cursor-not-allowed' : 'bg-green-900 hover:bg-green-800'} text-white px-4 py-2 rounded shadow transition text-sm text-center">
+                                <a href="https://wa.me/56975552708?text=Hola,%20me%20interesa%20saber%20más%20sobre%20el%20lote:%20${producto.Nombre}" target="_blank" ...>
                                     ${stockAgotado ? 'Sin stock' : 'Consultar'}
                                 </a>
                             </div>
