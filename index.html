@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KAWAS | Catálogo de Café Verde</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 text-gray-800">
+    <header class="bg-green-900 text-white p-6 shadow-md">
+        <div class="max-w-5xl mx-auto flex justify-between items-center">
+            <h1 class="text-3xl font-bold tracking-wider">KAWAS</h1>
+            <p class="text-sm font-light uppercase tracking-widest">Café de Origen</p>
+        </div>
+    </header>
+
+    <section class="max-w-5xl mx-auto py-10 px-6 text-center">
+        <h2 class="text-4xl font-extrabold mb-4">Catálogo de Café Verde</h2>
+        <p class="text-lg text-gray-600">Trato directo, calidad y transparencia desde el origen hasta tu tostaduría.</p>
+    </section>
+
+    <main class="max-w-5xl mx-auto px-6 pb-20">
+        <div id="loading" class="text-center text-gray-500 py-10 animate-pulse">Cargando catálogo desde origen...</div>
+        <div id="catalogo-grid" class="grid grid-cols-1 md:grid-cols-2 gap-8 hidden">
+            </div>
+    </main>
+
+    <script>
+        // PEGA TU URL A CONTINUACIÓN:
+        const API_URL = 'TU_URL_DE_APPS_SCRIPT_AQUI';
+
+        async function cargarCatalogo() {
+            try {
+                const respuesta = await fetch(API_URL);
+                const productos = await respuesta.json();
+                
+                const grid = document.getElementById('catalogo-grid');
+                const loading = document.getElementById('loading');
+                
+                let html = '';
+                
+                productos.forEach(producto => {
+                    const catClass = producto.Categoria === 'Microlote' 
+                        ? 'bg-yellow-100 text-yellow-800' 
+                        : 'bg-green-100 text-green-800';
+
+                    const stockAgotado = producto.Stock.toLowerCase() === 'agotado';
+                    const stockClass = stockAgotado ? 'text-red-500' : 'text-green-600';
+
+                    html += `
+                        <div class="bg-white rounded-lg shadow-lg overflow-hidden border border-gray-100 flex flex-col justify-between transition hover:shadow-xl">
+                            <div class="p-6">
+                                <span class="${catClass} text-xs font-bold px-2 py-1 rounded uppercase tracking-wide">${producto.Categoria}</span>
+                                <h3 class="text-2xl font-bold mt-3">${producto.Nombre}</h3>
+                                <p class="text-gray-500 text-sm mb-4">${producto.Origen}</p>
+                                
+                                <ul class="text-sm text-gray-700 space-y-2 mb-6">
+                                    <li><strong>Productor:</strong> ${producto.Productor}</li>
+                                    <li><strong>Altitud:</strong> ${producto.Altitud}</li>
+                                    <li><strong>Proceso:</strong> ${producto.Proceso}</li>
+                                    <li><strong>Puntaje SCA:</strong> ${producto.Puntaje}</li>
+                                    <li><strong>Empaque:</strong> ${producto.Empaque}</li>
+                                </ul>
+                            </div>
+                            <div class="p-6 border-t border-gray-100 bg-gray-50 flex justify-between items-center">
+                                <div>
+                                    <p class="text-xs font-bold mb-1 ${stockClass}">${producto.Stock.toUpperCase()}</p>
+                                    <p class="text-xl font-bold text-gray-900">$${producto.Precio} <span class="text-xs font-normal">+IVA / kg</span></p>
+                                </div>
+                                <a href="mailto:contacto@kawas.cl?subject=Consulta sobre ${producto.Nombre}" class="${stockAgotado ? 'bg-gray-400 cursor-not-allowed' : 'bg-green-900 hover:bg-green-800'} text-white px-4 py-2 rounded shadow transition text-sm text-center">
+                                    ${stockAgotado ? 'Sin stock' : 'Consultar'}
+                                </a>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                grid.innerHTML = html;
+                loading.classList.add('hidden');
+                grid.classList.remove('hidden');
+
+            } catch (error) {
+                document.getElementById('loading').innerText = 'Hubo un error al cargar los datos. Verifica la conexión.';
+            }
+        }
+
+        cargarCatalogo();
+    </script>
+</body>
+</html>
