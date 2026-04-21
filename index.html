@@ -17,193 +17,164 @@
         .text-shadow-lg { text-shadow: 0 2px 4px rgba(0,0,0,0.8); }
         .img-protegida { pointer-events: none; user-select: none; -webkit-user-drag: none; }
         
-        /* Marca de agua */
         .watermark-overlay::after {
-            content: "SUPER TASTERS EXCLUSIVE";
+            content: "SUPER TASTERS";
             position: absolute;
             top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-30deg);
             font-size: 2rem; font-weight: 900; color: rgba(255,255,255,0.15);
             white-space: nowrap; pointer-events: none; z-index: 10;
-        }
-        .lightbox-watermark::after {
-            font-size: 4rem; color: rgba(255,255,255,0.1);
         }
 
         .cart-open { transform: translateX(0%); }
         .cart-closed { transform: translateX(100%); }
         input[type=number]::-webkit-inner-spin-button, 
         input[type=number]::-webkit-outer-spin-button { opacity: 1; }
+        
+        /* Estilo para elementos flotantes sin contenedor */
+        .section-float { @apply mb-12; }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-800">
 
     <div id="lightbox" class="fixed inset-0 bg-black bg-opacity-95 z-[100] hidden flex items-center justify-center p-4" onclick="closeLightbox()">
-        <button class="absolute top-6 right-6 text-white hover:text-gray-300 transition z-50">
-            <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-        </button>
-        <div class="relative max-w-5xl w-full h-full flex items-center justify-center watermark-overlay lightbox-watermark" oncontextmenu="return false;">
+        <div class="relative max-w-5xl w-full h-full flex items-center justify-center watermark-overlay" oncontextmenu="return false;">
             <img id="lightbox-img" src="" class="max-h-full max-w-full object-contain rounded img-protegida shadow-2xl">
         </div>
     </div>
 
-    <nav class="bg-white shadow-sm sticky top-0 z-50">
+    <nav class="bg-white/80 backdrop-blur-md sticky top-0 z-50 border-b border-gray-100">
         <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
             <div class="cursor-pointer" onclick="volverCatalogo()">
                 <h1 class="text-3xl font-extrabold tracking-tighter text-green-900">Super Tasters</h1>
-                <p class="text-[10px] font-bold uppercase tracking-[0.3em] text-gray-500">Café de Origen</p>
             </div>
-            <div class="flex items-center gap-6">
-                <button onclick="toggleCarrito()" class="relative text-green-900 hover:text-green-700 transition">
-                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
-                    <span id="cart-badge" class="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full shadow-md hidden">0</span>
-                </button>
-            </div>
+            <button onclick="toggleCarrito()" class="relative text-green-900">
+                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                <span id="cart-badge" class="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full hidden">0</span>
+            </button>
         </div>
     </nav>
 
-    <div id="cart-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-[60] hidden transition-opacity" onclick="toggleCarrito()"></div>
-    <div id="cart-panel" class="fixed inset-y-0 right-0 z-[70] w-full max-w-md bg-white shadow-2xl cart-closed transition-transform duration-300 ease-in-out flex flex-col">
-        <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
-            <h2 class="text-lg font-extrabold text-gray-900 flex items-center gap-2">🛒 Tu Pedido</h2>
-            <button onclick="toggleCarrito()" class="text-gray-400 hover:text-gray-800 transition">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-            </button>
+    <div id="cart-overlay" class="fixed inset-0 bg-black/50 z-[60] hidden" onclick="toggleCarrito()"></div>
+    <div id="cart-panel" class="fixed inset-y-0 right-0 z-[70] w-full max-w-md bg-white cart-closed transition-transform duration-300 flex flex-col shadow-2xl">
+        <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center">
+            <h2 class="text-lg font-bold">🛒 Tu Pedido</h2>
+            <button onclick="toggleCarrito()"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
         </div>
         <div id="cart-items" class="flex-grow overflow-y-auto p-6 space-y-4"></div>
-        <div class="border-t border-gray-100 p-6 bg-gray-50">
-            <div class="flex justify-between items-end mb-4">
-                <span class="font-bold text-gray-600 text-sm">Subtotal Pedido</span>
-                <span class="text-2xl font-black text-gray-900">$<span id="cart-subtotal">0</span></span>
-            </div>
-            <div class="grid grid-cols-2 gap-3">
-                <button onclick="enviarPedido('Fintoc')" class="w-full bg-gray-900 text-white py-3 rounded-lg font-bold text-xs hover:bg-black transition flex flex-col items-center">Transferencia/Fintoc</button>
-                <button onclick="enviarPedido('MercadoPago')" class="w-full bg-[#009EE3] text-white py-3 rounded-lg font-bold text-xs hover:bg-[#0089C7] transition flex flex-col items-center">Mercado Pago</button>
+        <div class="p-6 bg-gray-50 border-t">
+            <div class="flex justify-between mb-4"><span class="font-bold">Total Pedido</span><span class="text-xl font-black">$<span id="cart-subtotal">0</span></span></div>
+            <div class="grid grid-cols-2 gap-2">
+                <button onclick="enviarPedido('Fintoc')" class="bg-black text-white py-3 rounded-lg text-xs font-bold">Fintoc</button>
+                <button onclick="enviarPedido('MercadoPago')" class="bg-[#009EE3] text-white py-3 rounded-lg text-xs font-bold">Tarjeta</button>
             </div>
         </div>
     </div>
 
     <div id="vista-principal">
-        <section class="relative py-40 px-6 border-b-8 border-green-700 overflow-hidden flex items-center justify-center bg-green-900">
-            <video autoplay loop muted playsinline class="absolute inset-0 w-full h-full object-cover z-0" poster="">
-                <source src="video.mp4" type="video/mp4">
-            </video>
+        <section class="relative py-40 flex items-center justify-center bg-green-900">
+            <video autoplay loop muted playsinline class="absolute inset-0 w-full h-full object-cover z-0"><source src="video.mp4" type="video/mp4"></video>
             <div class="absolute inset-0 video-overlay z-10"></div>
-            <div class="relative z-20 max-w-4xl mx-auto text-center text-white">
-                <h2 class="text-5xl font-extrabold mb-6 leading-tight text-shadow-lg tracking-tight">Expertos en Taza, Aliados en Origen</h2>
-                <p class="text-xl text-green-100 font-light max-w-2xl mx-auto leading-relaxed italic text-shadow-lg">Transparentando el camino del grano desde la finca hasta tu tostaduría.</p>
+            <div class="relative z-20 text-center text-white px-6">
+                <h2 class="text-5xl font-extrabold mb-4 text-shadow-lg tracking-tight">Expertos en Taza, Aliados en Origen</h2>
+                <p class="text-xl font-light text-shadow-lg italic">Trazabilidad total desde la finca hasta tu tostaduría.</p>
             </div>
         </section>
 
         <main class="max-w-6xl mx-auto px-6 py-16">
-            <div id="loading" class="flex flex-col items-center justify-center py-20 text-gray-400">
+            <div id="loading" class="flex flex-col items-center py-20 text-gray-400">
                 <svg class="animate-spin h-10 w-10 text-green-800 mb-4" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-                <p class="font-medium animate-pulse">Sincronizando con origen...</p>
+                <p>Sincronizando con origen...</p>
             </div>
-            <div id="catalogo-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 hidden"></div>
+            <div id="catalogo-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 hidden"></div>
         </main>
     </div>
 
-    <div id="vista-detalle" class="hidden bg-gray-50 min-h-screen pb-20">
-        <div class="h-32 bg-green-900 relative">
-             <button onclick="volverCatalogo()" class="absolute top-6 left-6 bg-white bg-opacity-20 hover:bg-opacity-40 text-white px-4 py-2 rounded-full backdrop-blur-sm transition flex items-center gap-2 font-medium text-sm border border-white border-opacity-30 z-20">
-                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg> Volver al Catálogo
-             </button>
+    <div id="vista-detalle" class="hidden min-h-screen pb-20">
+        <div class="max-w-7xl mx-auto px-6 py-8">
+            <button onclick="volverCatalogo()" class="text-green-800 font-bold flex items-center gap-2 hover:translate-x-1 transition-transform">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg> Catálogo
+            </button>
         </div>
 
-        <div class="max-w-7xl mx-auto px-6 -mt-10 relative z-20">
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
                 
-                <div class="lg:col-span-8 space-y-6">
+                <div class="lg:col-span-8">
                     
-                    <div class="bg-white p-2 rounded-2xl shadow-sm border border-gray-100 relative watermark-overlay cursor-zoom-in" onclick="openLightbox(document.getElementById('detalle-img').src)" oncontextmenu="return false;">
-                        <img id="detalle-img" src="" class="w-full h-96 object-cover rounded-xl img-protegida bg-gray-200 shadow-inner">
+                    <div class="relative watermark-overlay mb-16 cursor-zoom-in" onclick="openLightbox(document.getElementById('detalle-img').src)">
+                        <img id="detalle-img" src="" class="w-full h-[500px] object-cover rounded-3xl shadow-2xl img-protegida">
                     </div>
 
-                    <div id="seccion-galeria" class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 hidden">
-                        <h4 class="text-xl font-extrabold text-gray-900 border-b pb-2 mb-6 uppercase tracking-tighter">Trazabilidad Visual (Origen)</h4>
-                        <div id="galeria-grid" class="grid grid-cols-1 md:grid-cols-3 gap-4" oncontextmenu="return false;"></div>
-                        <p class="text-[10px] text-gray-400 mt-4 italic">© Imágenes exclusivas. Haz clic para ampliar.</p>
+                    <div id="seccion-galeria" class="section-float hidden">
+                        <h4 class="text-xs font-black uppercase tracking-[0.3em] text-gray-400 mb-6">Trazabilidad Visual</h4>
+                        <div id="galeria-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
                     </div>
 
-                    <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
-                        <div class="flex justify-between items-end border-b pb-4 mb-6">
-                            <h4 class="text-xl font-extrabold text-gray-900 uppercase tracking-tighter">Evaluación Sensorial SCA</h4>
-                            <div id="detalle-puntaje-sca" class="text-3xl font-black text-green-700"></div>
-                        </div>
+                    <div class="section-float">
+                        <h4 class="text-xs font-black uppercase tracking-[0.3em] text-gray-400 mb-8">Evaluación Sensorial SCA</h4>
+                        <div class="flex flex-wrap gap-2 mb-10" id="contenedor-pildoras-sabor"></div>
                         
-                        <div id="contenedor-pildoras-sabor" class="flex flex-wrap gap-2 mb-8"></div>
-                        
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                            <div class="relative w-full h-72"><canvas id="radarChart"></canvas></div>
-                            <div class="overflow-hidden border border-gray-200 rounded-lg">
-                                <table class="w-full text-left text-[11px] text-gray-700">
-                                    <thead class="bg-gray-50 border-b border-gray-200">
-                                        <tr>
-                                            <th class="px-3 py-2 font-bold uppercase text-gray-500">Atributo</th>
-                                            <th class="px-3 py-2 font-bold uppercase text-gray-500 text-center">Pts</th>
-                                            <th class="px-3 py-2 font-bold uppercase text-gray-500">Notas</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="tabla-sca-desglose" class="divide-y divide-gray-100"></tbody>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                            <div class="relative w-full h-80"><canvas id="radarChart"></canvas></div>
+                            <div>
+                                <table class="w-full text-left text-xs text-gray-600">
+                                    <tbody id="tabla-sca-desglose" class="divide-y divide-gray-200"></tbody>
                                 </table>
                             </div>
                         </div>
                     </div>
 
-                    <div id="contenedor-pie-chart" class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 hidden">
-                        <h4 class="text-xl font-extrabold text-gray-900 border-b pb-2 mb-6 uppercase tracking-tighter">Análisis Físico: Tamaño de Grano</h4>
-                        <div class="relative w-full max-w-md mx-auto h-64"><canvas id="pieChart"></canvas></div>
+                    <div id="contenedor-pie-chart" class="section-float hidden">
+                        <h4 class="text-xs font-black uppercase tracking-[0.3em] text-gray-400 mb-8">Granulometría</h4>
+                        <div class="relative w-full max-w-sm h-64"><canvas id="pieChart"></canvas></div>
                     </div>
                 </div>
 
-                <div class="lg:col-span-4 space-y-6">
-                    <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 flex flex-col sticky top-24">
-                        
-                        <div class="mb-6 border-b border-gray-100 pb-4">
-                            <div class="flex justify-between items-start mb-3">
-                                <span id="detalle-categoria" class="text-[10px] font-extrabold px-3 py-1.5 rounded-full uppercase tracking-widest text-white"></span>
-                                <span id="detalle-stock" class="text-sm font-bold px-3 py-1 rounded border"></span>
-                            </div>
-                            <h2 id="detalle-nombre" class="text-3xl font-extrabold text-gray-900 leading-tight mb-1 tracking-tighter"></h2>
-                            
-                            <p id="detalle-origen-texto" class="text-green-700 font-medium text-sm"></p>
-                            <p id="detalle-ico" class="text-[11px] font-mono text-gray-500 mt-1 hidden"></p>
-
-                            <div id="detalle-certificaciones" class="flex flex-wrap gap-1 mt-3 hidden"></div>
+                <div class="lg:col-span-4">
+                    <div class="sticky top-28">
+                        <div class="mb-10">
+                            <h2 id="detalle-nombre" class="text-5xl font-black text-gray-900 tracking-tighter mb-4"></h2>
+                            <div id="detalle-certificaciones" class="flex flex-wrap gap-2 mb-4"></div>
+                            <p id="detalle-origen-texto" class="text-lg text-green-700 font-medium"></p>
+                            <p id="detalle-ico" class="text-xs font-mono text-gray-400 mt-2"></p>
                         </div>
 
-                        <div class="bg-blue-50 border border-blue-100 p-4 rounded-xl flex justify-between items-center gap-4 mb-4">
-                            <div class="text-blue-900"><h5 class="font-bold text-sm">Muestra 250gr</h5><p class="font-black text-lg">$5.000</p></div>
-                            <button onclick="agregarAlCarrito('Muestra')" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg text-xs transition">Añadir</button>
-                        </div>
-
-                        <div class="bg-gray-50 p-6 rounded-xl border border-gray-200 mb-6 space-y-4">
-                            <h4 class="text-xs font-bold text-gray-500 uppercase tracking-widest">Pedido Comercial</h4>
-                            <div class="grid grid-cols-2 gap-3">
-                                <button onclick="setFormato('1kg')" id="btn-format-1kg" class="py-2 rounded-lg border-2 font-bold text-xs bg-white border-gray-200 text-gray-600">1kg</button>
-                                <button onclick="setFormato('Saco')" id="btn-format-saco" class="py-2 rounded-lg border-2 font-bold text-xs border-green-600 bg-green-50 text-green-900">Saco</button>
+                        <div class="bg-white p-8 rounded-3xl shadow-xl border border-gray-100 mb-10">
+                            <div class="flex justify-between items-center mb-6">
+                                <span id="detalle-stock" class="text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full border border-gray-200"></span>
+                                <span class="text-xs font-bold text-gray-400 uppercase" id="detalle-categoria"></span>
                             </div>
-                            <div class="flex items-center justify-between bg-white p-2 rounded-lg border border-gray-200">
-                                <span class="font-bold text-xs">Cantidad:</span>
-                                <div class="flex items-center gap-2">
-                                    <button onclick="changeQty(-1)" class="w-6 h-6 rounded bg-gray-100 font-bold">-</button>
-                                    <input type="number" id="input-qty" value="1" class="w-8 text-center font-bold bg-transparent outline-none" readonly>
-                                    <button onclick="changeQty(1)" class="w-6 h-6 rounded bg-gray-100 font-bold">+</button>
+
+                            <div class="space-y-4">
+                                <div class="grid grid-cols-2 gap-2">
+                                    <button onclick="setFormato('1kg')" id="btn-format-1kg" class="py-3 rounded-xl border-2 font-bold text-xs transition">1kg</button>
+                                    <button onclick="setFormato('Saco')" id="btn-format-saco" class="py-3 rounded-xl border-2 font-bold text-xs transition">Saco</button>
                                 </div>
+                                <div class="flex items-center justify-between border-y border-gray-100 py-4">
+                                    <span class="font-bold text-sm">Cantidad:</span>
+                                    <div class="flex items-center gap-4">
+                                        <button onclick="changeQty(-1)" class="w-8 h-8 rounded-full bg-gray-100 font-black">-</button>
+                                        <input type="number" id="input-qty" value="1" class="w-10 text-center font-black bg-transparent outline-none" readonly>
+                                        <button onclick="changeQty(1)" class="w-8 h-8 rounded-full bg-gray-100 font-black">+</button>
+                                    </div>
+                                </div>
+                                <div class="flex justify-between items-end py-2">
+                                    <span class="text-xs font-bold text-gray-400">Subtotal</span>
+                                    <span class="text-3xl font-black">$<span id="txt-subtotal-item">0</span></span>
+                                </div>
+                                <button id="btn-add-cart" onclick="agregarAlCarrito('Lote')" class="w-full bg-green-900 text-white py-4 rounded-2xl font-bold text-sm shadow-lg shadow-green-900/20 hover:bg-green-800 transition">Añadir al Carrito</button>
+                                <button onclick="agregarAlCarrito('Muestra')" class="w-full text-blue-600 font-bold text-xs py-2">O pedir muestra de 250gr ($5.000)</button>
                             </div>
-                            <div class="flex justify-between items-center mt-2 px-1">
-                                <span class="text-xs text-gray-500 font-bold">Subtotal:</span>
-                                <span class="text-xl font-black text-gray-900">$<span id="txt-subtotal-item">0</span></span>
-                            </div>
-                            <button id="btn-add-cart" onclick="agregarAlCarrito('Lote')" class="w-full bg-green-800 hover:bg-green-700 text-white py-3 rounded-xl font-bold text-sm transition mt-2 shadow-md">Agregar al Carrito</button>
                         </div>
 
-                        <div class="bg-white border-t border-gray-100 pt-4">
-                            <h4 class="text-xs font-bold text-gray-400 mb-3 uppercase tracking-widest">Ficha Técnica</h4>
-                            <div id="detalle-ficha" class="space-y-1.5 text-xs text-gray-600"></div>
+                        <div class="mt-10">
+                            <h4 class="text-xs font-black uppercase tracking-[0.3em] text-gray-400 mb-6">Especificaciones Técnicas</h4>
+                            <div id="detalle-ficha" class="space-y-4">
+                                </div>
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
     </div>
@@ -214,16 +185,8 @@
         let currentProduct = null, selectedFormat = 'Saco', currentQty = 1, currentSackWeight = 30; 
         let carrito = JSON.parse(localStorage.getItem('st_carrito')) || [];
 
-        // Funciones del Lightbox
-        function openLightbox(url) {
-            if(!url) return;
-            document.getElementById('lightbox-img').src = url;
-            document.getElementById('lightbox').classList.remove('hidden');
-        }
-        function closeLightbox() {
-            document.getElementById('lightbox').classList.add('hidden');
-            document.getElementById('lightbox-img').src = '';
-        }
+        function openLightbox(url) { if(url) { document.getElementById('lightbox-img').src = url; document.getElementById('lightbox').classList.remove('hidden'); } }
+        function closeLightbox() { document.getElementById('lightbox').classList.add('hidden'); }
 
         async function cargarCatalogo() {
             actualizarUI_Carrito();
@@ -233,24 +196,21 @@
                 document.getElementById('loading').classList.add('hidden');
                 const grid = document.getElementById('catalogo-grid');
                 grid.classList.remove('hidden');
-                
                 grid.innerHTML = productosGlobal.map((p, i) => {
                     const nro = parseInt(p.Stock);
                     const isAgotado = isNaN(nro) ? (p.Stock && p.Stock.toLowerCase() === 'agotado') : (nro <= 0);
                     return `
-                        <div onclick="verDetalle(${i})" class="bg-white cursor-pointer rounded-2xl shadow-sm hover:shadow-xl transition-all border border-gray-200 overflow-hidden group flex flex-col">
-                            <div class="h-48 relative overflow-hidden bg-gray-100">
-                                <img src="${p.Imagen || ''}" class="w-full h-full object-cover transition transform group-hover:scale-105 img-protegida">
-                                <div class="absolute top-4 left-4 bg-green-900 text-white text-[9px] font-black px-3 py-1.5 rounded-full uppercase tracking-widest shadow">${p.Categoria || 'ORIGEN'}</div>
-                                ${p.Puntaje ? `<div class="absolute bottom-4 right-4 bg-white/90 backdrop-blur px-2 py-1 rounded font-bold text-xs shadow-sm">SCA: ${p.Puntaje}</div>` : ''}
+                        <div onclick="verDetalle(${i})" class="cursor-pointer group flex flex-col">
+                            <div class="h-64 relative overflow-hidden rounded-3xl mb-4">
+                                <img src="${p.Imagen || ''}" class="w-full h-full object-cover transition transform group-hover:scale-110">
+                                <div class="absolute top-4 left-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest">${p.Categoria || 'ORIGEN'}</div>
+                                ${p.Puntaje ? `<div class="absolute bottom-4 right-4 bg-green-900 text-white px-2 py-1 rounded-lg font-black text-xs">${p.Puntaje}</div>` : ''}
                             </div>
-                            <div class="p-5 flex-grow flex flex-col">
-                                <h3 class="font-extrabold text-gray-900 text-lg leading-tight truncate">${p.Nombre}</h3>
-                                <p class="text-xs text-gray-400 font-medium mb-4">${p.Origen || '-'}</p>
-                                <div class="flex justify-between items-center mt-auto pt-4 border-t border-gray-100">
-                                    <span class="text-[10px] font-bold px-2 py-1 rounded ${isAgotado ? 'bg-red-50 text-red-600' : 'bg-green-50 text-green-700'} uppercase">${isAgotado ? 'Agotado' : nro + ' Sacos'}</span>
-                                    <span class="font-black text-xl text-gray-900">$${Number(p.Precio).toLocaleString('es-CL')}</span>
-                                </div>
+                            <h3 class="font-black text-gray-900 text-xl tracking-tight">${p.Nombre}</h3>
+                            <p class="text-sm text-gray-400 font-medium mb-3">${p.Origen || '-'}</p>
+                            <div class="flex justify-between items-center mt-2">
+                                <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">${isAgotado ? 'Sin Stock' : nro + ' Sacos'}</span>
+                                <span class="font-black text-gray-900">$${Number(p.Precio).toLocaleString('es-CL')}</span>
                             </div>
                         </div>`;
                 }).join('');
@@ -266,35 +226,23 @@
             else currentSackWeight = 30;
             
             document.getElementById('input-qty').value = 1;
-            document.getElementById('btn-format-saco').innerText = `Saco (${currentSackWeight}kg)`;
-
+            document.getElementById('btn-format-saco').innerText = `${currentSackWeight}kg`;
             document.getElementById('vista-principal').classList.add('hidden');
             document.getElementById('vista-detalle').classList.remove('hidden');
             window.scrollTo(0, 0);
 
-            // Información Principal
             document.getElementById('detalle-img').src = currentProduct.Imagen || '';
             document.getElementById('detalle-nombre').innerText = currentProduct.Nombre;
-            document.getElementById('detalle-origen-texto').innerText = currentProduct.Origen || 'Origen no especificado';
+            document.getElementById('detalle-origen-texto').innerText = currentProduct.Origen;
             document.getElementById('detalle-puntaje-sca').innerText = currentProduct.Puntaje || '-';
-            
-            // Código ICO
-            const elIco = document.getElementById('detalle-ico');
-            if(currentProduct['Código ICO']) {
-                elIco.innerText = `ICO: ${currentProduct['Código ICO']}`;
-                elIco.classList.remove('hidden');
-            } else { elIco.classList.add('hidden'); }
+            document.getElementById('detalle-ico').innerText = currentProduct['Código ICO'] ? `ICO ${currentProduct['Código ICO']}` : '';
 
             // Certificaciones
             const elCerts = document.getElementById('detalle-certificaciones');
-            if(currentProduct.Certificaciones) {
-                elCerts.innerHTML = currentProduct.Certificaciones.split(',').map(c => `<span class="bg-green-100 text-green-800 text-[9px] px-2 py-0.5 rounded border border-green-200 font-bold uppercase tracking-wider">${c.trim()}</span>`).join('');
-                elCerts.classList.remove('hidden');
-            } else { elCerts.classList.add('hidden'); }
+            elCerts.innerHTML = currentProduct.Certificaciones ? currentProduct.Certificaciones.split(',').map(c => `<span class="bg-green-100 text-green-800 text-[9px] px-2 py-1 rounded-full font-black uppercase tracking-widest border border-green-200">${c.trim()}</span>`).join('') : '';
 
             const cat = document.getElementById('detalle-categoria');
             cat.innerText = currentProduct.Categoria || 'ORIGEN';
-            cat.className = `text-[10px] font-extrabold px-3 py-1.5 rounded-full uppercase tracking-widest shadow ${currentProduct.Categoria && currentProduct.Categoria.toLowerCase().includes('micro') ? 'bg-yellow-500' : 'bg-green-900'}`;
 
             // Galería
             const fotosOrigen = [currentProduct['Imagen Origen 1'], currentProduct['Imagen Origen 2'], currentProduct['Imagen Origen 3']].filter(f => f);
@@ -302,56 +250,55 @@
             if(fotosOrigen.length > 0) {
                 secGaleria.classList.remove('hidden');
                 document.getElementById('galeria-grid').innerHTML = fotosOrigen.map(url => `
-                    <div onclick="openLightbox('${url}')" class="h-32 relative rounded-lg overflow-hidden border border-gray-100 watermark-overlay cursor-zoom-in">
-                        <img src="${url}" class="w-full h-full object-cover img-protegida grayscale hover:grayscale-0 transition duration-500">
+                    <div onclick="openLightbox('${url}')" class="h-48 relative rounded-2xl overflow-hidden cursor-zoom-in">
+                        <img src="${url}" class="w-full h-full object-cover grayscale hover:grayscale-0 transition duration-700">
                     </div>`).join('');
             } else { secGaleria.classList.add('hidden'); }
 
             // Desglose SCA
             const atributosSCA = ['Fragancia / Aroma', 'Sabor', 'Sabor Residual', 'Acidez', 'Cuerpo', 'Balance', 'Dulzor', 'Uniformidad', 'Taza Limpia', 'General'];
             document.getElementById('tabla-sca-desglose').innerHTML = atributosSCA.map(a => currentProduct[a] ? `
-                <tr class="hover:bg-gray-50"><td class="px-2 py-1.5 font-bold text-gray-800">${a}</td><td class="px-2 py-1.5 font-black text-green-700 text-center">${currentProduct[a]}</td><td class="px-2 py-1.5 text-[10px] text-gray-500 leading-tight italic">${currentProduct['Comentario ' + a.split(' ')[0]] || '-'}</td></tr>
-            ` : '').join('') || '<tr><td colspan="3" class="p-4 text-center text-gray-400">Sin desglose sensorial.</td></tr>';
+                <tr class="group"><td class="py-3 font-bold text-gray-900 border-b border-gray-100">${a}</td><td class="py-3 font-black text-green-700 text-right border-b border-gray-100">${currentProduct[a]}</td></tr>
+            ` : '').join('') || 'Sin desglose.';
 
             const notas = currentProduct['Notas de Cata'] || '';
-            document.getElementById('contenedor-pildoras-sabor').innerHTML = notas.split(',').filter(n => n.trim()).map(n => `<span class="bg-gray-100 text-gray-700 px-3 py-1.5 rounded-full text-[10px] uppercase font-bold border border-gray-200">☕ ${n.trim()}</span>`).join('');
+            document.getElementById('contenedor-pildoras-sabor').innerHTML = notas.split(',').filter(n => n.trim()).map(n => `<span class="bg-white px-4 py-2 rounded-full text-xs font-bold border border-gray-100 shadow-sm">☕ ${n.trim()}</span>`).join('');
 
             dibujarGraficoRadar(currentProduct);
             dibujarGraficoMalla(currentProduct);
             
-            const omitirFicha = ['Nombre','Categoria','Stock','Precio','Imagen','Notas de Cata','Puntaje','Logo Productor','Imagen Origen 1','Imagen Origen 2','Imagen Origen 3','Peso Saco','Malla 17','Malla 16','Malla 15','Malla 14','Fuera Malla','Acidez','Cuerpo','Dulzor','Sabor','Balance','Sabor Residual','Fragancia / Aroma','Uniformidad','Taza Limpia','General', 'Certificaciones', 'Código ICO'];
-            document.getElementById('detalle-ficha').innerHTML = Object.keys(currentProduct).filter(k => !omitirFicha.includes(k) && currentProduct[k]).map(k => `<div class="flex justify-between border-b border-gray-100 pb-1"><strong>${k}</strong><span class="text-right ml-4">${currentProduct[k]}</span></div>`).join('');
+            // --- FICHA TÉCNICA CURADA (Solo 10-12 parámetros importantes) ---
+            const camposCurados = ['Productor', 'Finca', 'Altitud', 'Variedad', 'Proceso', 'Cosecha', 'Grado', 'Malla', 'Humedad', 'WA', 'Color', 'Olor en Verde', 'Defectos'];
+            document.getElementById('detalle-ficha').innerHTML = camposCurados.map(campo => {
+                if(currentProduct[campo]) {
+                    return `<div class="flex justify-between items-baseline"><span class="text-[10px] font-black uppercase tracking-widest text-gray-400">${campo}</span><span class="text-xs font-bold text-gray-800 text-right ml-4">${currentProduct[campo]}</span></div>`;
+                }
+                return '';
+            }).join('');
 
-            // Validar Stock
             const nro = parseInt(currentProduct.Stock);
             const isAgotado = isNaN(nro) ? (currentProduct.Stock && currentProduct.Stock.toLowerCase() === 'agotado') : (nro <= 0);
-            const btnCart = document.getElementById('btn-add-cart');
-            if(isAgotado) {
-                btnCart.disabled = true; btnCart.classList.add('opacity-50', 'cursor-not-allowed'); btnCart.innerText = 'Agotado';
-            } else {
-                btnCart.disabled = false; btnCart.classList.remove('opacity-50', 'cursor-not-allowed'); btnCart.innerText = 'Agregar al Carrito';
-            }
+            document.getElementById('detalle-stock').innerText = isAgotado ? 'Sin Stock' : `${nro} Sacos Disponibles`;
+            document.getElementById('detalle-stock').className = isAgotado ? 'text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full border border-red-200 text-red-600' : 'text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full border border-green-200 text-green-700';
 
             setFormato('Saco');
         }
 
-        // --- FUNCIONES CARRITO & FORMATO ---
+        // --- CARRITO & FORMATO ---
         function setFormato(fmt) {
             selectedFormat = fmt;
-            document.getElementById('btn-format-1kg').className = fmt==='1kg' ? 'py-2 rounded-lg border-2 font-bold text-xs border-green-600 bg-green-50 text-green-900' : 'py-2 rounded-lg border-2 font-bold text-xs bg-white border-gray-200 text-gray-600';
-            document.getElementById('btn-format-saco').className = fmt==='Saco' ? 'py-2 rounded-lg border-2 font-bold text-xs border-green-600 bg-green-50 text-green-900' : 'py-2 rounded-lg border-2 font-bold text-xs bg-white border-gray-200 text-gray-600';
+            const active = "border-green-600 bg-green-50 text-green-900", inactive = "bg-white border-gray-100 text-gray-400";
+            document.getElementById('btn-format-1kg').className = fmt==='1kg' ? "py-3 rounded-xl border-2 font-bold text-xs transition " + active : "py-3 rounded-xl border-2 font-bold text-xs transition " + inactive;
+            document.getElementById('btn-format-saco').className = fmt==='Saco' ? "py-3 rounded-xl border-2 font-bold text-xs transition " + active : "py-3 rounded-xl border-2 font-bold text-xs transition " + inactive;
             calcularSubtotalItem();
         }
         function changeQty(v) { currentQty = Math.max(1, currentQty + v); document.getElementById('input-qty').value = currentQty; calcularSubtotalItem(); }
         function calcularSubtotalItem() {
             if(!currentProduct) return 0;
-            const p = Number(currentProduct.Precio);
-            const factorPeso = selectedFormat === 'Saco' ? currentSackWeight : 1;
-            const total = p * factorPeso * currentQty;
-            document.getElementById('txt-subtotal-item').innerText = total.toLocaleString('es-CL');
-            return total;
+            const p = Number(currentProduct.Precio), f = selectedFormat === 'Saco' ? currentSackWeight : 1, t = p * f * currentQty;
+            document.getElementById('txt-subtotal-item').innerText = t.toLocaleString('es-CL');
+            return t;
         }
-
         function agregarAlCarrito(tipo) {
             let i = { nombre: currentProduct.Nombre, img: currentProduct.Imagen, tipo: tipo, formato: tipo==='Muestra'?'250gr':selectedFormat, cantidad: tipo==='Muestra'?1:currentQty };
             i.subtotal = tipo==='Muestra'?5000:calcularSubtotalItem();
@@ -362,25 +309,23 @@
             actualizarUI_Carrito();
             if(document.getElementById('cart-panel').classList.contains('cart-closed')) toggleCarrito();
         }
-
         function actualizarUI_Carrito() {
             const b = document.getElementById('cart-badge'), c = document.getElementById('cart-items'), s = document.getElementById('cart-subtotal');
             b.innerText = carrito.reduce((a, x) => a + x.cantidad, 0);
             b.classList.toggle('hidden', carrito.length === 0);
             let t = 0;
-            c.innerHTML = carrito.length === 0 ? '<p class="text-center text-gray-400 text-xs mt-10">Vacío</p>' : carrito.map((x, idx) => {
+            c.innerHTML = carrito.length === 0 ? '<p class="text-center text-gray-400 text-xs mt-10">Tu carrito está vacío.</p>' : carrito.map((x, idx) => {
                 t += x.subtotal;
-                return `<div class="flex gap-4 bg-white p-3 rounded-xl border border-gray-100 shadow-sm"><img src="${x.img}" class="w-12 h-12 object-cover rounded-lg bg-gray-200"><div class="flex-grow flex flex-col justify-between"><div class="flex justify-between items-start font-bold text-[10px] text-gray-900 leading-tight"><span>${x.nombre}</span><button onclick="eliminarDelCarrito(${idx})" class="text-red-300 hover:text-red-600">×</button></div><div class="flex justify-between items-end mt-2"><span class="text-[9px] text-gray-500">${x.cantidad}x ${x.formato} ${x.tipo==='Lote'?`(${x.detalleFormato})`:''}</span><span class="font-black text-gray-900">$${x.subtotal.toLocaleString('es-CL')}</span></div></div></div>`;
+                return `<div class="flex gap-4 bg-white p-4 rounded-2xl border border-gray-100"><img src="${x.img}" class="w-16 h-16 object-cover rounded-xl bg-gray-100"><div class="flex-grow flex flex-col justify-between"><div class="flex justify-between items-start font-bold text-xs"><span>${x.nombre}</span><button onclick="eliminarDelCarrito(${idx})" class="text-gray-300">×</button></div><div class="flex justify-between items-end mt-2"><span class="text-[10px] font-bold text-gray-400">${x.cantidad}x ${x.formato}</span><span class="font-black text-gray-900">$${x.subtotal.toLocaleString('es-CL')}</span></div></div></div>`;
             }).join('');
             s.innerText = t.toLocaleString('es-CL');
         }
-
         function eliminarDelCarrito(idx) { carrito.splice(idx,1); localStorage.setItem('st_carrito', JSON.stringify(carrito)); actualizarUI_Carrito(); }
         function toggleCarrito() { const p = document.getElementById('cart-panel'), o = document.getElementById('cart-overlay'); p.classList.toggle('cart-closed'); p.classList.toggle('cart-open'); o.classList.toggle('hidden'); }
         function enviarPedido(m) {
             if(carrito.length===0) return;
             let tB = carrito.reduce((a,x) => a + x.subtotal, 0), tF = m === 'MercadoPago' ? Math.round(tB * 1.035) : tB;
-            let msg = `Hola *Super Tasters* ☕, pedido:\n\n` + carrito.map((x, i) => `${i+1}. *${x.nombre}* (${x.formato} x${x.cantidad}) - $${x.subtotal.toLocaleString('es-CL')}`).join('\n') + `\n\n*Pago:* ${m}\n*TOTAL:* $${tF.toLocaleString('es-CL')}`;
+            let msg = `Hola *Super Tasters* ☕, envío mi pedido:\n\n` + carrito.map((x, i) => `${i+1}. *${x.nombre}* (${x.formato} x${x.cantidad}) - $${x.subtotal.toLocaleString('es-CL')}`).join('\n') + `\n\n*Pago:* ${m}\n*TOTAL:* $${tF.toLocaleString('es-CL')} (+IVA)`;
             window.open(`https://wa.me/56975552708?text=${encodeURIComponent(msg)}`, '_blank');
         }
 
@@ -392,29 +337,28 @@
                 type: 'radar',
                 data: {
                     labels: ['Aroma', 'Sabor', 'Residual', 'Acidez', 'Cuerpo', 'Balance'],
-                    datasets: [{ data: [p['Fragancia / Aroma']||8, p.Sabor||8, p['Sabor Residual']||8, p.Acidez||8, p.Cuerpo||8, p.Balance||8], backgroundColor: 'rgba(59, 130, 246, 0.2)', borderColor: '#3b82f6', borderWidth: 2 }]
+                    datasets: [{ data: [p['Fragancia / Aroma']||8, p.Sabor||8, p['Sabor Residual']||8, p.Acidez||8, p.Cuerpo||8, p.Balance||8], backgroundColor: 'rgba(59, 130, 246, 0.1)', borderColor: '#3b82f6', borderWidth: 2, pointBackgroundColor: '#3b82f6' }]
                 },
-                options: { scales: { r: { min: 6, max: 10, ticks: { display: false } } }, plugins: { legend: { display: false } } }
+                options: { 
+                    scales: { r: { min: 6, max: 10, ticks: { display: false }, pointLabels: { font: { size: 10, weight: '600' } } } },
+                    plugins: { legend: { display: false } }
+                }
             });
         }
-        
         function dibujarGraficoMalla(p) {
-            const container = document.getElementById('contenedor-pie-chart');
-            const ctx = document.getElementById('pieChart').getContext('2d');
+            const container = document.getElementById('contenedor-pie-chart'), ctx = document.getElementById('pieChart').getContext('2d');
             if(p['Malla 17'] || p['Malla 16'] || p['Malla 15']) {
-                container.classList.remove('hidden');
-                if(pieInstancia) pieInstancia.destroy();
+                container.classList.remove('hidden'); if(pieInstancia) pieInstancia.destroy();
                 pieInstancia = new Chart(ctx, {
                     type: 'pie',
                     data: {
                         labels: ['M17', 'M16', 'M15', 'M14', 'Fuera'],
-                        datasets: [{ data: [parseFloat(p['Malla 17'])||0, parseFloat(p['Malla 16'])||0, parseFloat(p['Malla 15'])||0, parseFloat(p['Malla 14'])||0, parseFloat(p['Fuera Malla'])||0], backgroundColor: ['#4285F4','#DB4437','#F4B400','#0F9D58','#FF6D00'] }]
+                        datasets: [{ data: [parseFloat(p['Malla 17'])||0, parseFloat(p['Malla 16'])||0, parseFloat(p['Malla 15'])||0, parseFloat(p['Malla 14'])||0, parseFloat(p['Fuera Malla'])||0], backgroundColor: ['#4285F4','#DB4437','#F4B400','#0F9D58','#FF6D00'], borderWidth: 0 }]
                     },
-                    options: { plugins: { legend: { position: 'right', labels: { boxWidth: 10, font: { size: 10 } } } } }
+                    options: { plugins: { legend: { position: 'right', labels: { boxWidth: 10, font: { size: 10, weight: 'bold' } } } } }
                 });
             } else { container.classList.add('hidden'); }
         }
-
         function volverCatalogo() { document.getElementById('vista-detalle').classList.add('hidden'); document.getElementById('vista-principal').classList.remove('hidden'); window.scrollTo(0,0); }
         cargarCatalogo();
     </script>
