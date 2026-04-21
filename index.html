@@ -11,12 +11,16 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
-        body { font-family: 'Inter', sans-serif; }
+        body { font-family: 'Inter', sans-serif; overflow-x: hidden; }
         .cursor-pointer:hover .group-hover\:scale-105 { transform: scale(1.05); }
         .video-overlay { background: rgba(20, 83, 45, 0.85); }
         .img-protegida { pointer-events: none; user-select: none; -webkit-user-drag: none; }
         input[type=number]::-webkit-inner-spin-button, 
         input[type=number]::-webkit-outer-spin-button { opacity: 1; }
+        
+        /* Animaciones del panel del carrito */
+        .cart-open { transform: translateX(0%); }
+        .cart-closed { transform: translateX(100%); }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-800">
@@ -27,16 +31,51 @@
                 <h1 class="text-3xl font-extrabold tracking-tighter text-green-900">Super Tasters</h1>
                 <p class="text-[10px] font-bold uppercase tracking-[0.3em] text-gray-500">Café de Origen</p>
             </div>
-            <a href="https://wa.me/56975552708" target="_blank" class="text-sm font-semibold text-green-800 hover:text-green-600 transition flex items-center gap-2">
-                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
-                +569 75552708
-            </a>
+            <div class="flex items-center gap-6">
+                <button onclick="toggleCarrito()" class="relative text-green-900 hover:text-green-700 transition">
+                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                    <span id="cart-badge" class="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full shadow-md hidden">0</span>
+                </button>
+            </div>
         </div>
     </nav>
 
+    <div id="cart-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-[60] hidden transition-opacity" onclick="toggleCarrito()"></div>
+    <div id="cart-panel" class="fixed inset-y-0 right-0 z-[70] w-full max-w-md bg-white shadow-2xl cart-closed transition-transform duration-300 ease-in-out flex flex-col">
+        <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+            <h2 class="text-lg font-extrabold text-gray-900 flex items-center gap-2">🛒 Tu Pedido</h2>
+            <button onclick="toggleCarrito()" class="text-gray-400 hover:text-gray-800 transition">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+        </div>
+        
+        <div id="cart-items" class="flex-grow overflow-y-auto p-6 space-y-4">
+            <p class="text-center text-gray-400 text-sm mt-10">Tu carrito está vacío.</p>
+        </div>
+
+        <div class="border-t border-gray-100 p-6 bg-gray-50">
+            <div class="flex justify-between items-end mb-4">
+                <span class="font-bold text-gray-600 text-sm">Subtotal Pedido</span>
+                <span class="text-2xl font-black text-gray-900">$<span id="cart-subtotal">0</span></span>
+            </div>
+            
+            <p class="text-xs text-gray-500 mb-3 uppercase tracking-widest font-bold">Selecciona Método de Pago para finalizar:</p>
+            <div class="grid grid-cols-2 gap-3">
+                <button onclick="enviarPedido('Fintoc')" class="w-full bg-gray-900 text-white py-3 rounded-lg font-bold text-xs hover:bg-black transition flex flex-col items-center">
+                    Pagar con Fintoc
+                    <span class="text-[9px] font-normal text-gray-400">Sin recargo</span>
+                </button>
+                <button onclick="enviarPedido('MercadoPago')" class="w-full bg-[#009EE3] text-white py-3 rounded-lg font-bold text-xs hover:bg-[#0089C7] transition flex flex-col items-center">
+                    Mercado Pago
+                    <span class="text-[9px] font-normal text-blue-200">+3.5% Recargo Total</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
     <div id="vista-principal">
         <section class="relative py-40 px-6 border-b-8 border-green-700 overflow-hidden flex items-center justify-center bg-green-900">
-            <video autoplay loop muted playsinline class="absolute inset-0 w-full h-full object-cover z-0 opacity-40">
+            <video autoplay loop muted playsinline class="absolute inset-0 w-full h-full object-cover z-0 opacity-40" poster="https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?q=80&w=2000&auto=format&fit=crop">
                 <source src="video.mp4" type="video/mp4">
             </video>
             <div class="absolute inset-0 video-overlay z-10"></div>
@@ -88,18 +127,28 @@
                                 <span id="detalle-stock" class="text-sm font-bold px-3 py-1 rounded border"></span>
                             </div>
                             <h2 id="detalle-nombre" class="text-4xl font-extrabold text-gray-900 leading-tight mb-2 tracking-tighter"></h2>
-                            <p id="detalle-origen-texto" class="text-green-700 font-medium text-sm"></p>
+                            <p id="detalle-origen-texto" class="text-green-700 font-medium text-sm mb-6"></p>
+                        </div>
+
+                        <div class="bg-blue-50 border border-blue-100 p-4 rounded-xl flex justify-between items-center gap-4 mb-4">
+                            <div class="text-blue-900">
+                                <h5 class="font-bold text-sm">Muestra 250gr</h5>
+                                <p class="font-black text-lg">$5.000 <span class="text-[9px]">+ ENVÍO</span></p>
+                            </div>
+                            <button id="btn-add-muestra" onclick="agregarAlCarrito('Muestra')" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg text-xs transition shadow-sm">
+                                Añadir Muestra
+                            </button>
                         </div>
 
                         <div class="bg-gray-50 p-6 rounded-xl border border-gray-200 mb-6 space-y-4">
-                            <h4 class="text-xs font-bold text-gray-500 uppercase tracking-widest">Configurar Pedido</h4>
+                            <h4 class="text-xs font-bold text-gray-500 uppercase tracking-widest">Lote Comercial</h4>
                             
                             <div class="grid grid-cols-2 gap-3">
                                 <button onclick="setFormato('1kg')" id="btn-format-1kg" class="format-btn py-3 px-4 rounded-lg border-2 font-bold text-sm transition bg-white border-gray-200 text-gray-600">
-                                    🛒 Formato 1kg
+                                    1kg
                                 </button>
                                 <button onclick="setFormato('Saco')" id="btn-format-saco" class="format-btn py-3 px-4 rounded-lg border-2 font-bold text-sm transition border-green-600 bg-green-50 text-green-900">
-                                    📦 Formato Saco
+                                    Saco
                                 </button>
                             </div>
 
@@ -111,23 +160,15 @@
                                     <button onclick="changeQty(1)" class="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 font-bold">+</button>
                                 </div>
                             </div>
-                        </div>
+                            
+                            <div class="flex justify-between items-center pt-2">
+                                <span class="text-xs text-gray-500 font-bold">Subtotal Item:</span>
+                                <span class="font-black text-xl text-gray-900">$<span id="txt-subtotal-item">0</span></span>
+                            </div>
 
-                        <div class="space-y-3 mb-8">
-                            <button id="btn-pago-fintoc" class="w-full bg-gray-900 text-white p-4 rounded-xl hover:bg-black transition flex justify-between items-center shadow-lg">
-                                <div class="text-left leading-tight">
-                                    <span class="block font-bold text-sm">Fintoc / Transfer</span>
-                                    <span class="text-[10px] text-gray-400">Sin comisión</span>
-                                </div>
-                                <span class="text-xl font-black">$<span id="txt-precio-fintoc">0</span></span>
-                            </button>
-
-                            <button id="btn-pago-mp" class="w-full bg-[#009EE3] text-white p-4 rounded-xl hover:bg-[#0089C7] transition flex justify-between items-center shadow-lg">
-                                <div class="text-left leading-tight">
-                                    <span class="block font-bold text-sm">Mercado Pago</span>
-                                    <span class="text-[10px] text-blue-100">+3.5% recargo tarjetas</span>
-                                </div>
-                                <span class="text-xl font-black">$<span id="txt-precio-mp">0</span></span>
+                            <button id="btn-add-cart" onclick="agregarAlCarrito('Lote')" class="w-full bg-green-800 hover:bg-green-700 text-white py-3 rounded-xl font-bold text-sm transition shadow-lg mt-2 flex justify-center items-center gap-2">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+                                Agregar al Carrito
                             </button>
                         </div>
 
@@ -146,12 +187,14 @@
         let productosGlobal = []; 
         let radarInstancia = null;
         
-        // Estado del pedido actual
+        // Estado de Compra
         let currentProduct = null;
         let selectedFormat = 'Saco';
         let currentQty = 1;
+        let carrito = JSON.parse(localStorage.getItem('st_carrito')) || [];
 
         async function cargarCatalogo() {
+            actualizarUI_Carrito();
             try {
                 const respuesta = await fetch(API_URL);
                 productosGlobal = await respuesta.json();
@@ -167,7 +210,6 @@
                             <div class="h-52 relative overflow-hidden bg-gray-100">
                                 <img src="${p.Imagen || 'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7'}" class="w-full h-full object-cover transition transform group-hover:scale-105">
                                 <div class="absolute top-4 left-4 bg-green-900 text-white text-[9px] font-black px-3 py-1.5 rounded-full uppercase tracking-widest">${p.Categoria || 'ORIGEN'}</div>
-                                ${p.Puntaje ? `<div class="absolute bottom-4 right-4 bg-white/90 backdrop-blur px-2 py-1 rounded font-bold text-xs shadow-sm">SCA: ${p.Puntaje}</div>` : ''}
                             </div>
                             <div class="p-6">
                                 <h3 class="font-extrabold text-gray-900 text-lg leading-tight truncate">${p.Nombre}</h3>
@@ -189,7 +231,7 @@
             selectedFormat = 'Saco';
             
             document.getElementById('input-qty').value = 1;
-            updateUIPrices();
+            calcularSubtotalItem();
 
             document.getElementById('vista-principal').classList.add('hidden');
             document.getElementById('vista-detalle').classList.remove('hidden');
@@ -201,7 +243,25 @@
             
             const cat = document.getElementById('detalle-categoria');
             cat.innerText = currentProduct.Categoria || 'CAFÉ VERDE';
-            cat.className = `text-[10px] font-extrabold px-3 py-1.5 rounded-full uppercase tracking-widest ${currentProduct.Categoria.toLowerCase().includes('micro') ? 'bg-yellow-500' : 'bg-green-900'}`;
+            cat.className = `text-[10px] font-extrabold px-3 py-1.5 rounded-full uppercase tracking-widest ${currentProduct.Categoria.toLowerCase().includes('micro') ? 'bg-yellow-500 text-yellow-900' : 'bg-green-900 text-white'}`;
+
+            // Control de Botones si está agotado
+            const nro = parseInt(currentProduct.Stock);
+            const isAgotado = isNaN(nro) ? (currentProduct.Stock && currentProduct.Stock.toLowerCase() === 'agotado') : (nro <= 0);
+            
+            document.getElementById('detalle-stock').innerText = isAgotado ? 'Sin Stock' : (!isNaN(nro) ? `${nro} Sacos Disponibles` : currentProduct.Stock);
+            document.getElementById('detalle-stock').className = `text-xs font-bold px-3 py-1.5 rounded border ${isAgotado ? 'bg-red-50 text-red-700 border-red-200' : 'bg-green-50 text-green-800 border-green-200'}`;
+            
+            const btnCart = document.getElementById('btn-add-cart');
+            if(isAgotado) {
+                btnCart.disabled = true;
+                btnCart.classList.add('opacity-50', 'cursor-not-allowed');
+                btnCart.innerHTML = 'Producto Agotado';
+            } else {
+                btnCart.disabled = false;
+                btnCart.classList.remove('opacity-50', 'cursor-not-allowed');
+                btnCart.innerHTML = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg> Agregar al Carrito';
+            }
 
             // Ficha Técnica
             const omitir = ['Nombre','Categoria','Stock','Precio','Imagen','Notas de Cata','Acidez','Cuerpo','Dulzor','Sabor','Balance','Puntaje','Logo Productor'];
@@ -209,7 +269,6 @@
                 <div class="flex justify-between border-b border-gray-100 pb-1"><strong>${k}</strong><span>${currentProduct[k]}</span></div>
             `).join('');
 
-            // Píldoras de sabor
             const notas = currentProduct['Notas de Cata'] || '';
             document.getElementById('contenedor-pildoras-sabor').innerHTML = notas.split(',').map(n => `
                 <span class="bg-gray-100 text-gray-700 px-4 py-2 rounded-full text-xs font-bold border border-gray-200">☕ ${n.trim()}</span>
@@ -218,6 +277,7 @@
             dibujarGrafico(currentProduct);
         }
 
+        // --- LÓGICA DE CANTIDAD Y FORMATO ---
         function setFormato(fmt) {
             selectedFormat = fmt;
             const b1 = document.getElementById('btn-format-1kg');
@@ -230,40 +290,161 @@
                 bs.className = 'py-3 px-4 rounded-lg border-2 font-bold text-sm transition border-green-600 bg-green-50 text-green-900';
                 b1.className = 'py-3 px-4 rounded-lg border-2 font-bold text-sm transition bg-white border-gray-200 text-gray-600';
             }
-            updateUIPrices();
+            calcularSubtotalItem();
         }
 
         function changeQty(val) {
             currentQty = Math.max(1, currentQty + val);
             document.getElementById('input-qty').value = currentQty;
-            updateUIPrices();
+            calcularSubtotalItem();
         }
 
-        function updateUIPrices() {
-            if(!currentProduct) return;
+        function calcularSubtotalItem() {
+            if(!currentProduct) return 0;
             const precioBase = Number(currentProduct.Precio);
-            
-            // Si es saco, multiplicamos por un estándar (ej: 30kg) o simplemente por cantidad si el precio es por saco.
-            // Según tu PDF, el precio suele ser por KG. Asumiremos que el botón 'Saco' vende el peso del saco.
-            // Extraemos el peso del empaque si existe (ej: '30kg' -> 30)
             let factorPeso = 1;
             if(selectedFormat === 'Saco') {
                 const empaqueTxt = currentProduct.Empaque || '30kg';
                 const match = empaqueTxt.match(/\d+/);
                 factorPeso = match ? parseInt(match[0]) : 30;
             }
-
             const subtotal = precioBase * factorPeso * currentQty;
-            const totalMP = Math.round(subtotal * 1.035);
+            document.getElementById('txt-subtotal-item').innerText = subtotal.toLocaleString('es-CL');
+            return subtotal;
+        }
 
-            document.getElementById('txt-precio-fintoc').innerText = subtotal.toLocaleString('es-CL');
-            document.getElementById('txt-precio-mp').innerText = totalMP.toLocaleString('es-CL');
+        // --- LÓGICA DEL CARRITO ---
+        function agregarAlCarrito(tipo) {
+            let itemToAdd = {
+                nombre: currentProduct.Nombre,
+                img: currentProduct.Imagen || 'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7',
+                tipo: tipo, // 'Muestra' o 'Lote'
+            };
 
-            const wsp = "https://wa.me/56975552708?text=";
-            const msgBase = `Hola Super Tasters! Quiero comprar:\n- Lote: ${currentProduct.Nombre}\n- Formato: ${selectedFormat}\n- Cantidad: ${currentQty}\n- Pago: `;
+            if(tipo === 'Muestra') {
+                itemToAdd.formato = '250gr';
+                itemToAdd.cantidad = 1;
+                itemToAdd.precioUnitario = 5000;
+                itemToAdd.subtotal = 5000;
+            } else {
+                itemToAdd.formato = selectedFormat;
+                itemToAdd.cantidad = currentQty;
+                itemToAdd.subtotal = calcularSubtotalItem();
+                itemToAdd.precioUnitario = itemToAdd.subtotal / currentQty;
+                
+                // Extra info para el WA
+                let peso = "1kg";
+                if(selectedFormat === 'Saco') {
+                    const match = (currentProduct.Empaque || '30kg').match(/\d+/);
+                    peso = match ? `${match[0]}kg` : '30kg';
+                }
+                itemToAdd.detalleFormato = peso;
+            }
+
+            // Validar si ya existe para sumar cantidad
+            const indexExistente = carrito.findIndex(i => i.nombre === itemToAdd.nombre && i.formato === itemToAdd.formato);
+            if(indexExistente > -1) {
+                carrito[indexExistente].cantidad += itemToAdd.cantidad;
+                carrito[indexExistente].subtotal += itemToAdd.subtotal;
+            } else {
+                carrito.push(itemToAdd);
+            }
+
+            localStorage.setItem('st_carrito', JSON.stringify(carrito));
+            actualizarUI_Carrito();
             
-            document.getElementById('btn-pago-fintoc').onclick = () => window.open(wsp + encodeURIComponent(msgBase + "Transferencia/Fintoc"), '_blank');
-            document.getElementById('btn-pago-mp').onclick = () => window.open(wsp + encodeURIComponent(msgBase + "Mercado Pago"), '_blank');
+            // Abrir el panel para que vea que se agregó
+            if(document.getElementById('cart-panel').classList.contains('cart-closed')) {
+                toggleCarrito();
+            }
+        }
+
+        function eliminarDelCarrito(index) {
+            carrito.splice(index, 1);
+            localStorage.setItem('st_carrito', JSON.stringify(carrito));
+            actualizarUI_Carrito();
+        }
+
+        function actualizarUI_Carrito() {
+            const badge = document.getElementById('cart-badge');
+            const container = document.getElementById('cart-items');
+            const totalEl = document.getElementById('cart-subtotal');
+            
+            if(carrito.length > 0) {
+                badge.innerText = carrito.reduce((acc, item) => acc + item.cantidad, 0);
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+
+            let html = '';
+            let total = 0;
+
+            if(carrito.length === 0) {
+                html = '<p class="text-center text-gray-400 text-sm mt-10">Tu carrito está vacío.</p>';
+            } else {
+                carrito.forEach((item, idx) => {
+                    total += item.subtotal;
+                    html += `
+                        <div class="flex gap-4 bg-white p-3 rounded-xl border border-gray-100 shadow-sm">
+                            <img src="${item.img}" class="w-16 h-16 object-cover rounded-lg bg-gray-200">
+                            <div class="flex-grow flex flex-col justify-between">
+                                <div class="flex justify-between items-start">
+                                    <h5 class="font-bold text-gray-900 text-sm leading-tight">${item.nombre}</h5>
+                                    <button onclick="eliminarDelCarrito(${idx})" class="text-red-300 hover:text-red-600"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg></button>
+                                </div>
+                                <div class="flex justify-between items-end mt-2">
+                                    <span class="text-xs text-gray-500 bg-gray-50 px-2 py-1 rounded border border-gray-200">${item.cantidad}x ${item.formato} ${item.tipo === 'Lote' ? `(${item.detalleFormato})` : ''}</span>
+                                    <span class="font-black text-gray-900">$${item.subtotal.toLocaleString('es-CL')}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+
+            container.innerHTML = html;
+            totalEl.innerText = total.toLocaleString('es-CL');
+        }
+
+        function toggleCarrito() {
+            const panel = document.getElementById('cart-panel');
+            const overlay = document.getElementById('cart-overlay');
+            
+            if(panel.classList.contains('cart-closed')) {
+                panel.classList.remove('cart-closed');
+                panel.classList.add('cart-open');
+                overlay.classList.remove('hidden');
+            } else {
+                panel.classList.add('cart-closed');
+                panel.classList.remove('cart-open');
+                overlay.classList.add('hidden');
+            }
+        }
+
+        function enviarPedido(metodoPago) {
+            if(carrito.length === 0) return alert("Tu carrito está vacío.");
+
+            let totalBase = carrito.reduce((acc, item) => acc + item.subtotal, 0);
+            let totalFinal = metodoPago === 'MercadoPago' ? Math.round(totalBase * 1.035) : totalBase;
+            
+            let mensaje = `Hola *Super Tasters* ☕, quiero realizar el siguiente pedido:\n\n`;
+            
+            carrito.forEach((item, idx) => {
+                mensaje += `${idx + 1}. *${item.nombre}*\n`;
+                mensaje += `   - Formato: ${item.formato} ${item.tipo === 'Lote' ? `(${item.detalleFormato})` : ''}\n`;
+                mensaje += `   - Cantidad: ${item.cantidad}\n`;
+                mensaje += `   - Subtotal: $${item.subtotal.toLocaleString('es-CL')}\n\n`;
+            });
+
+            mensaje += `💳 *Método de Pago:* ${metodoPago === 'MercadoPago' ? 'Mercado Pago (+3.5%)' : 'Transferencia/Fintoc'}\n`;
+            mensaje += `💰 *TOTAL A PAGAR: $${totalFinal.toLocaleString('es-CL')}* (+IVA)\n\n`;
+            mensaje += `Quedo atento/a para coordinar el pago y envío.`;
+
+            const url = `https://wa.me/56975552708?text=${encodeURIComponent(mensaje)}`;
+            
+            // Opcional: Vaciar carrito al enviar? Mejor dejarlo por si se arrepienten y vuelven.
+            window.open(url, '_blank');
         }
 
         function dibujarGrafico(p) {
