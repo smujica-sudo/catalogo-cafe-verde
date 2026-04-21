@@ -17,8 +17,6 @@
         .img-protegida { pointer-events: none; user-select: none; -webkit-user-drag: none; }
         input[type=number]::-webkit-inner-spin-button, 
         input[type=number]::-webkit-outer-spin-button { opacity: 1; }
-        
-        /* Animaciones del panel del carrito */
         .cart-open { transform: translateX(0%); }
         .cart-closed { transform: translateX(100%); }
     </style>
@@ -116,6 +114,13 @@
                             <canvas id="radarChart"></canvas>
                         </div>
                     </div>
+
+                    <div id="contenedor-pie-chart" class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 hidden">
+                        <h4 class="text-xl font-extrabold text-gray-900 border-b pb-2 mb-6 uppercase tracking-tighter">Tamaño del Grano</h4>
+                        <div class="relative w-full max-w-md mx-auto h-64">
+                            <canvas id="pieChart"></canvas>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="lg:col-span-5 space-y-6">
@@ -127,7 +132,7 @@
                                 <span id="detalle-stock" class="text-sm font-bold px-3 py-1 rounded border"></span>
                             </div>
                             <h2 id="detalle-nombre" class="text-4xl font-extrabold text-gray-900 leading-tight mb-2 tracking-tighter"></h2>
-                            <p id="detalle-origen-texto" class="text-green-700 font-medium text-sm mb-6"></p>
+                            <p id="detalle-origen-texto" class="text-green-700 font-medium text-sm"></p>
                         </div>
 
                         <div class="bg-blue-50 border border-blue-100 p-4 rounded-xl flex justify-between items-center gap-4 mb-4">
@@ -135,14 +140,13 @@
                                 <h5 class="font-bold text-sm">Muestra 250gr</h5>
                                 <p class="font-black text-lg">$5.000 <span class="text-[9px]">+ ENVÍO</span></p>
                             </div>
-                            <button id="btn-add-muestra" onclick="agregarAlCarrito('Muestra')" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg text-xs transition shadow-sm">
+                            <button onclick="agregarAlCarrito('Muestra')" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg text-xs transition shadow-sm">
                                 Añadir Muestra
                             </button>
                         </div>
 
                         <div class="bg-gray-50 p-6 rounded-xl border border-gray-200 mb-6 space-y-4">
                             <h4 class="text-xs font-bold text-gray-500 uppercase tracking-widest">Lote Comercial</h4>
-                            
                             <div class="grid grid-cols-2 gap-3">
                                 <button onclick="setFormato('1kg')" id="btn-format-1kg" class="format-btn py-3 px-4 rounded-lg border-2 font-bold text-sm transition bg-white border-gray-200 text-gray-600">
                                     1kg
@@ -151,7 +155,6 @@
                                     Saco
                                 </button>
                             </div>
-
                             <div class="flex items-center justify-between bg-white p-3 rounded-lg border border-gray-200">
                                 <span class="font-bold text-sm text-gray-700">Cantidad:</span>
                                 <div class="flex items-center gap-3">
@@ -160,12 +163,10 @@
                                     <button onclick="changeQty(1)" class="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 font-bold">+</button>
                                 </div>
                             </div>
-                            
                             <div class="flex justify-between items-center pt-2">
                                 <span class="text-xs text-gray-500 font-bold">Subtotal Item:</span>
                                 <span class="font-black text-xl text-gray-900">$<span id="txt-subtotal-item">0</span></span>
                             </div>
-
                             <button id="btn-add-cart" onclick="agregarAlCarrito('Lote')" class="w-full bg-green-800 hover:bg-green-700 text-white py-3 rounded-xl font-bold text-sm transition shadow-lg mt-2 flex justify-center items-center gap-2">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
                                 Agregar al Carrito
@@ -186,8 +187,8 @@
         const API_URL = 'https://script.google.com/macros/s/AKfycbzLrChkaUqiWMyDgYpzfHHjmwPcZJ2afiiXQEFbFZ_-2iE-6pV1m4CnVlIAUlKCVc1g/exec';
         let productosGlobal = []; 
         let radarInstancia = null;
+        let pieInstancia = null; // Variable global para el gráfico de torta
         
-        // Estado de Compra
         let currentProduct = null;
         let selectedFormat = 'Saco';
         let currentQty = 1;
@@ -210,6 +211,7 @@
                             <div class="h-52 relative overflow-hidden bg-gray-100">
                                 <img src="${p.Imagen || 'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7'}" class="w-full h-full object-cover transition transform group-hover:scale-105">
                                 <div class="absolute top-4 left-4 bg-green-900 text-white text-[9px] font-black px-3 py-1.5 rounded-full uppercase tracking-widest">${p.Categoria || 'ORIGEN'}</div>
+                                ${p.Puntaje ? `<div class="absolute bottom-4 right-4 bg-white/90 backdrop-blur px-2 py-1 rounded font-bold text-xs shadow-sm">SCA: ${p.Puntaje}</div>` : ''}
                             </div>
                             <div class="p-6">
                                 <h3 class="font-extrabold text-gray-900 text-lg leading-tight truncate">${p.Nombre}</h3>
@@ -243,28 +245,24 @@
             
             const cat = document.getElementById('detalle-categoria');
             cat.innerText = currentProduct.Categoria || 'CAFÉ VERDE';
-            cat.className = `text-[10px] font-extrabold px-3 py-1.5 rounded-full uppercase tracking-widest ${currentProduct.Categoria.toLowerCase().includes('micro') ? 'bg-yellow-500 text-yellow-900' : 'bg-green-900 text-white'}`;
+            cat.className = `text-[10px] font-extrabold px-3 py-1.5 rounded-full uppercase tracking-widest ${currentProduct.Categoria.toLowerCase().includes('micro') ? 'bg-yellow-500' : 'bg-green-900'}`;
 
-            // Control de Botones si está agotado
             const nro = parseInt(currentProduct.Stock);
             const isAgotado = isNaN(nro) ? (currentProduct.Stock && currentProduct.Stock.toLowerCase() === 'agotado') : (nro <= 0);
-            
             document.getElementById('detalle-stock').innerText = isAgotado ? 'Sin Stock' : (!isNaN(nro) ? `${nro} Sacos Disponibles` : currentProduct.Stock);
             document.getElementById('detalle-stock').className = `text-xs font-bold px-3 py-1.5 rounded border ${isAgotado ? 'bg-red-50 text-red-700 border-red-200' : 'bg-green-50 text-green-800 border-green-200'}`;
             
             const btnCart = document.getElementById('btn-add-cart');
             if(isAgotado) {
-                btnCart.disabled = true;
-                btnCart.classList.add('opacity-50', 'cursor-not-allowed');
+                btnCart.disabled = true; btnCart.classList.add('opacity-50', 'cursor-not-allowed');
                 btnCart.innerHTML = 'Producto Agotado';
             } else {
-                btnCart.disabled = false;
-                btnCart.classList.remove('opacity-50', 'cursor-not-allowed');
+                btnCart.disabled = false; btnCart.classList.remove('opacity-50', 'cursor-not-allowed');
                 btnCart.innerHTML = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg> Agregar al Carrito';
             }
 
-            // Ficha Técnica
-            const omitir = ['Nombre','Categoria','Stock','Precio','Imagen','Notas de Cata','Acidez','Cuerpo','Dulzor','Sabor','Balance','Puntaje','Logo Productor'];
+            // Excluir los datos de Malla de la tabla de texto, ya que irán en el gráfico
+            const omitir = ['Nombre','Categoria','Stock','Precio','Imagen','Notas de Cata','Acidez','Cuerpo','Dulzor','Sabor','Balance','Puntaje','Logo Productor', 'Malla 17', 'Malla 16', 'Malla 15', 'Malla 14', 'Fuera Malla'];
             document.getElementById('detalle-ficha').innerHTML = Object.keys(currentProduct).filter(k => !omitir.includes(k) && currentProduct[k]).map(k => `
                 <div class="flex justify-between border-b border-gray-100 pb-1"><strong>${k}</strong><span>${currentProduct[k]}</span></div>
             `).join('');
@@ -274,15 +272,14 @@
                 <span class="bg-gray-100 text-gray-700 px-4 py-2 rounded-full text-xs font-bold border border-gray-200">☕ ${n.trim()}</span>
             `).join('');
 
-            dibujarGrafico(currentProduct);
+            dibujarGraficoRadar(currentProduct);
+            dibujarGraficoMalla(currentProduct);
         }
 
-        // --- LÓGICA DE CANTIDAD Y FORMATO ---
         function setFormato(fmt) {
             selectedFormat = fmt;
             const b1 = document.getElementById('btn-format-1kg');
             const bs = document.getElementById('btn-format-saco');
-            
             if(fmt === '1kg') {
                 b1.className = 'py-3 px-4 rounded-lg border-2 font-bold text-sm transition border-green-600 bg-green-50 text-green-900';
                 bs.className = 'py-3 px-4 rounded-lg border-2 font-bold text-sm transition bg-white border-gray-200 text-gray-600';
@@ -313,12 +310,12 @@
             return subtotal;
         }
 
-        // --- LÓGICA DEL CARRITO ---
+        // --- CARRITO ---
         function agregarAlCarrito(tipo) {
             let itemToAdd = {
                 nombre: currentProduct.Nombre,
                 img: currentProduct.Imagen || 'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7',
-                tipo: tipo, // 'Muestra' o 'Lote'
+                tipo: tipo,
             };
 
             if(tipo === 'Muestra') {
@@ -331,8 +328,6 @@
                 itemToAdd.cantidad = currentQty;
                 itemToAdd.subtotal = calcularSubtotalItem();
                 itemToAdd.precioUnitario = itemToAdd.subtotal / currentQty;
-                
-                // Extra info para el WA
                 let peso = "1kg";
                 if(selectedFormat === 'Saco') {
                     const match = (currentProduct.Empaque || '30kg').match(/\d+/);
@@ -341,7 +336,6 @@
                 itemToAdd.detalleFormato = peso;
             }
 
-            // Validar si ya existe para sumar cantidad
             const indexExistente = carrito.findIndex(i => i.nombre === itemToAdd.nombre && i.formato === itemToAdd.formato);
             if(indexExistente > -1) {
                 carrito[indexExistente].cantidad += itemToAdd.cantidad;
@@ -353,7 +347,6 @@
             localStorage.setItem('st_carrito', JSON.stringify(carrito));
             actualizarUI_Carrito();
             
-            // Abrir el panel para que vea que se agregó
             if(document.getElementById('cart-panel').classList.contains('cart-closed')) {
                 toggleCarrito();
             }
@@ -410,7 +403,6 @@
         function toggleCarrito() {
             const panel = document.getElementById('cart-panel');
             const overlay = document.getElementById('cart-overlay');
-            
             if(panel.classList.contains('cart-closed')) {
                 panel.classList.remove('cart-closed');
                 panel.classList.add('cart-open');
@@ -424,30 +416,26 @@
 
         function enviarPedido(metodoPago) {
             if(carrito.length === 0) return alert("Tu carrito está vacío.");
-
             let totalBase = carrito.reduce((acc, item) => acc + item.subtotal, 0);
             let totalFinal = metodoPago === 'MercadoPago' ? Math.round(totalBase * 1.035) : totalBase;
             
             let mensaje = `Hola *Super Tasters* ☕, quiero realizar el siguiente pedido:\n\n`;
-            
             carrito.forEach((item, idx) => {
                 mensaje += `${idx + 1}. *${item.nombre}*\n`;
                 mensaje += `   - Formato: ${item.formato} ${item.tipo === 'Lote' ? `(${item.detalleFormato})` : ''}\n`;
                 mensaje += `   - Cantidad: ${item.cantidad}\n`;
                 mensaje += `   - Subtotal: $${item.subtotal.toLocaleString('es-CL')}\n\n`;
             });
-
             mensaje += `💳 *Método de Pago:* ${metodoPago === 'MercadoPago' ? 'Mercado Pago (+3.5%)' : 'Transferencia/Fintoc'}\n`;
             mensaje += `💰 *TOTAL A PAGAR: $${totalFinal.toLocaleString('es-CL')}* (+IVA)\n\n`;
             mensaje += `Quedo atento/a para coordinar el pago y envío.`;
 
             const url = `https://wa.me/56975552708?text=${encodeURIComponent(mensaje)}`;
-            
-            // Opcional: Vaciar carrito al enviar? Mejor dejarlo por si se arrepienten y vuelven.
             window.open(url, '_blank');
         }
 
-        function dibujarGrafico(p) {
+        // --- GRÁFICOS ---
+        function dibujarGraficoRadar(p) {
             const ctx = document.getElementById('radarChart').getContext('2d');
             if(radarInstancia) radarInstancia.destroy();
             radarInstancia = new Chart(ctx, {
@@ -463,9 +451,49 @@
             });
         }
 
+        function dibujarGraficoMalla(p) {
+            const container = document.getElementById('contenedor-pie-chart');
+            const ctx = document.getElementById('pieChart').getContext('2d');
+            
+            // Verificamos si existe data de Malla en el Excel para este producto
+            if(p['Malla 17'] || p['Malla 16'] || p['Malla 15'] || p['Malla 14']) {
+                container.classList.remove('hidden');
+                if(pieInstancia) pieInstancia.destroy();
+
+                const dataValues = [
+                    parseFloat(p['Malla 17']) || 0,
+                    parseFloat(p['Malla 16']) || 0,
+                    parseFloat(p['Malla 15']) || 0,
+                    parseFloat(p['Malla 14']) || 0,
+                    parseFloat(p['Fuera Malla'] || p['Fuera de malla']) || 0
+                ];
+
+                pieInstancia = new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                        labels: ['Malla 17', 'Malla 16', 'Malla 15', 'Malla 14', 'Fuera de malla'],
+                        datasets: [{
+                            data: dataValues,
+                            backgroundColor: ['#3b82f6', '#ef4444', '#f59e0b', '#10b981', '#f97316'],
+                            borderWidth: 1, borderColor: '#ffffff'
+                        }]
+                    },
+                    options: {
+                        responsive: true, maintainAspectRatio: false,
+                        plugins: {
+                            legend: { position: 'right', labels: { boxWidth: 12, font: { size: 10 } } }
+                        }
+                    }
+                });
+            } else {
+                container.classList.add('hidden'); // Ocultar si no hay datos para no mostrar un gráfico vacío
+            }
+        }
+
         function volverCatalogo() {
             document.getElementById('vista-detalle').classList.add('hidden');
             document.getElementById('vista-principal').classList.remove('hidden');
+            window.scrollTo(0, 0);
         }
 
         cargarCatalogo();
