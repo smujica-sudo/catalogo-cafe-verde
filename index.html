@@ -18,15 +18,9 @@
         .watermark-overlay::after {
             content: "SUPER TASTERS EXCLUSIVE";
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) rotate(-30deg);
-            font-size: 2rem;
-            font-weight: 900;
-            color: rgba(255,255,255,0.1);
-            white-space: nowrap;
-            pointer-events: none;
-            z-index: 10;
+            top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-30deg);
+            font-size: 2rem; font-weight: 900; color: rgba(255,255,255,0.1);
+            white-space: nowrap; pointer-events: none; z-index: 10;
         }
         .cart-open { transform: translateX(0%); }
         .cart-closed { transform: translateX(100%); }
@@ -74,10 +68,10 @@
 
     <div id="vista-principal">
         <section class="relative py-40 px-6 border-b-8 border-green-700 overflow-hidden flex items-center justify-center bg-green-900">
-            <video autoplay loop muted playsinline class="absolute inset-0 w-full h-full object-cover z-0 opacity-100">
+            <video autoplay loop muted playsinline class="absolute inset-0 w-full h-full object-cover z-0 opacity-40">
                 <source src="video.mp4" type="video/mp4">
             </video>
-            <div class="absolute inset-0 video-overlay z-0"></div>
+            <div class="absolute inset-0 video-overlay z-10"></div>
             <div class="relative z-20 max-w-4xl mx-auto text-center text-white">
                 <h2 class="text-5xl font-extrabold mb-6 leading-tight drop-shadow-xl tracking-tight">Expertos en Taza, Aliados en Origen</h2>
                 <p class="text-xl text-green-100 font-light max-w-2xl mx-auto leading-relaxed italic">Transparentando el camino del grano desde la finca hasta tu tostaduría.</p>
@@ -109,10 +103,8 @@
                     </div>
 
                     <div id="seccion-galeria" class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 hidden">
-                        <h4 class="text-xl font-extrabold text-gray-900 border-b pb-2 mb-6 uppercase tracking-tighter">Trazabilidad Visual (Origen)</h4>
-                        <div id="galeria-grid" class="grid grid-cols-1 md:grid-cols-3 gap-4" oncontextmenu="return false;">
-                            </div>
-                        <p class="text-[10px] text-gray-400 mt-4 italic">© Imágenes exclusivas de Super Tasters. Protegidas contra descarga.</p>
+                        <h4 class="text-xl font-extrabold text-gray-900 border-b pb-2 mb-6 uppercase tracking-tighter">Trazabilidad Visual</h4>
+                        <div id="galeria-grid" class="grid grid-cols-1 md:grid-cols-3 gap-4" oncontextmenu="return false;"></div>
                     </div>
 
                     <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
@@ -166,7 +158,11 @@
                                     <button onclick="changeQty(1)" class="w-6 h-6 rounded bg-gray-100 font-bold">+</button>
                                 </div>
                             </div>
-                            <button id="btn-add-cart" onclick="agregarAlCarrito('Lote')" class="w-full bg-green-800 hover:bg-green-700 text-white py-3 rounded-xl font-bold text-sm transition">Agregar al Carrito</button>
+                            <div class="flex justify-between items-center mt-2 px-1">
+                                <span class="text-xs text-gray-500 font-bold">Subtotal:</span>
+                                <span class="text-xl font-black text-gray-900">$<span id="txt-subtotal-item">0</span></span>
+                            </div>
+                            <button id="btn-add-cart" onclick="agregarAlCarrito('Lote')" class="w-full bg-green-800 hover:bg-green-700 text-white py-3 rounded-xl font-bold text-sm transition mt-2">Agregar al Carrito</button>
                         </div>
 
                         <div class="bg-white border-t border-gray-100 pt-6">
@@ -182,7 +178,8 @@
     <script>
         const API_URL = 'https://script.google.com/macros/s/AKfycbzLrChkaUqiWMyDgYpzfHHjmwPcZJ2afiiXQEFbFZ_-2iE-6pV1m4CnVlIAUlKCVc1g/exec';
         let productosGlobal = [], radarInstancia = null, pieInstancia = null;
-        let currentProduct = null, selectedFormat = 'Saco', currentQty = 1, carrito = JSON.parse(localStorage.getItem('st_carrito')) || [];
+        let currentProduct = null, selectedFormat = 'Saco', currentQty = 1, currentSackWeight = 30; 
+        let carrito = JSON.parse(localStorage.getItem('st_carrito')) || [];
 
         async function cargarCatalogo() {
             actualizarUI_Carrito();
@@ -218,7 +215,20 @@
         function verDetalle(index) {
             currentProduct = productosGlobal[index];
             currentQty = 1; selectedFormat = 'Saco';
+            
+            // Determinar Peso del Saco dinámicamente
+            if(currentProduct['Peso Saco']) {
+                currentSackWeight = parseFloat(currentProduct['Peso Saco']);
+            } else if (currentProduct.Empaque) {
+                const match = currentProduct.Empaque.match(/\d+/);
+                currentSackWeight = match ? parseInt(match[0]) : 30;
+            } else {
+                currentSackWeight = 30;
+            }
+            
             document.getElementById('input-qty').value = 1;
+            document.getElementById('btn-format-saco').innerText = `Saco (${currentSackWeight}kg)`;
+
             document.getElementById('vista-principal').classList.add('hidden');
             document.getElementById('vista-detalle').classList.remove('hidden');
             window.scrollTo(0, 0);
@@ -232,31 +242,15 @@
             cat.innerText = currentProduct.Categoria || 'ORIGEN';
             cat.className = `text-[10px] font-extrabold px-3 py-1.5 rounded-full uppercase tracking-widest ${currentProduct.Categoria && currentProduct.Categoria.toLowerCase().includes('micro') ? 'bg-yellow-500' : 'bg-green-900'}`;
 
-            // --- Lógica de Galería de Origen ---
-            const secGaleria = document.getElementById('seccion-galeria');
-            const gridGaleria = document.getElementById('galeria-grid');
             const fotosOrigen = [currentProduct['Imagen Origen 1'], currentProduct['Imagen Origen 2'], currentProduct['Imagen Origen 3']].filter(f => f);
-            
+            const secGaleria = document.getElementById('seccion-galeria');
             if(fotosOrigen.length > 0) {
                 secGaleria.classList.remove('hidden');
-                gridGaleria.innerHTML = fotosOrigen.map(url => `
-                    <div class="h-40 relative rounded-lg overflow-hidden border border-gray-100 watermark-overlay">
-                        <img src="${url}" class="w-full h-full object-cover img-protegida grayscale hover:grayscale-0 transition duration-500">
-                    </div>
-                `).join('');
-            } else {
-                secGaleria.classList.add('hidden');
-            }
+                document.getElementById('galeria-grid').innerHTML = fotosOrigen.map(url => `<div class="h-40 relative rounded-lg overflow-hidden border border-gray-100 watermark-overlay"><img src="${url}" class="w-full h-full object-cover img-protegida grayscale hover:grayscale-0 transition duration-500"></div>`).join('');
+            } else { secGaleria.classList.add('hidden'); }
 
-            // --- Atributos SCA ---
             const atributosSCA = ['Fragancia / Aroma', 'Sabor', 'Sabor Residual', 'Acidez', 'Cuerpo', 'Balance', 'Dulzor', 'Uniformidad', 'Taza Limpia', 'General'];
-            let htmlSca = '';
-            atributosSCA.forEach(attr => {
-                if(currentProduct[attr]) {
-                    htmlSca += `<tr class="hover:bg-gray-50"><td class="px-3 py-1.5 font-bold text-gray-800">${attr}</td><td class="px-3 py-1.5 font-black text-green-700 text-center">${currentProduct[attr]}</td><td class="px-3 py-1.5 text-[9px] text-gray-500 leading-tight italic">${currentProduct['Comentario ' + attr.split(' ')[0]] || '-'}</td></tr>`;
-                }
-            });
-            document.getElementById('tabla-sca-desglose').innerHTML = htmlSca || '<tr><td colspan="3" class="p-4 text-center">Sin desglose.</td></tr>';
+            document.getElementById('tabla-sca-desglose').innerHTML = atributosSCA.map(a => currentProduct[a] ? `<tr class="hover:bg-gray-50"><td class="px-3 py-1.5 font-bold text-gray-800">${a}</td><td class="px-3 py-1.5 font-black text-green-700 text-center">${currentProduct[a]}</td><td class="px-3 py-1.5 text-[9px] text-gray-500 leading-tight italic">${currentProduct['Comentario ' + a.split(' ')[0]] || '-'}</td></tr>` : '').join('') || '<tr><td colspan="3" class="p-4 text-center">Sin desglose.</td></tr>';
 
             const notas = currentProduct['Notas de Cata'] || '';
             document.getElementById('contenedor-pildoras-sabor').innerHTML = notas.split(',').filter(n => n.trim()).map(n => `<span class="bg-gray-100 text-gray-700 px-3 py-1.5 rounded-full text-[10px] uppercase font-bold border border-gray-200">☕ ${n.trim()}</span>`).join('');
@@ -264,35 +258,57 @@
             dibujarGraficoRadar(currentProduct);
             dibujarGraficoMalla(currentProduct);
             
-            const omitirFicha = ['Nombre','Categoria','Stock','Precio','Imagen','Notas de Cata','Puntaje','Logo Productor','Imagen Origen 1','Imagen Origen 2','Imagen Origen 3','Malla 17','Malla 16','Malla 15','Malla 14','Fuera Malla','Acidez','Cuerpo','Dulzor','Sabor','Balance','Sabor Residual','Fragancia / Aroma','Uniformidad','Taza Limpia','General'];
+            const omitirFicha = ['Nombre','Categoria','Stock','Precio','Imagen','Notas de Cata','Puntaje','Logo Productor','Imagen Origen 1','Imagen Origen 2','Imagen Origen 3','Peso Saco','Malla 17','Malla 16','Malla 15','Malla 14','Fuera Malla','Acidez','Cuerpo','Dulzor','Sabor','Balance','Sabor Residual','Fragancia / Aroma','Uniformidad','Taza Limpia','General'];
             document.getElementById('detalle-ficha').innerHTML = Object.keys(currentProduct).filter(k => !omitirFicha.includes(k) && currentProduct[k]).map(k => `<div class="flex justify-between border-b border-gray-100 pb-1"><strong>${k}</strong><span class="text-right ml-4">${currentProduct[k]}</span></div>`).join('');
+
+            // Bloquear botón si está agotado
+            const nro = parseInt(currentProduct.Stock);
+            const isAgotado = isNaN(nro) ? (currentProduct.Stock && currentProduct.Stock.toLowerCase() === 'agotado') : (nro <= 0);
+            const btnCart = document.getElementById('btn-add-cart');
+            if(isAgotado) {
+                btnCart.disabled = true; btnCart.classList.add('opacity-50', 'cursor-not-allowed'); btnCart.innerText = 'Agotado';
+            } else {
+                btnCart.disabled = false; btnCart.classList.remove('opacity-50', 'cursor-not-allowed'); btnCart.innerText = 'Agregar al Carrito';
+            }
+
+            // Calculo inicial
+            setFormato('Saco');
         }
 
-        // --- FUNCIONES CARRITO ---
         function setFormato(fmt) {
             selectedFormat = fmt;
             document.getElementById('btn-format-1kg').className = fmt==='1kg' ? 'py-2 rounded-lg border-2 font-bold text-xs border-green-600 bg-green-50 text-green-900' : 'py-2 rounded-lg border-2 font-bold text-xs bg-white border-gray-200 text-gray-600';
             document.getElementById('btn-format-saco').className = fmt==='Saco' ? 'py-2 rounded-lg border-2 font-bold text-xs border-green-600 bg-green-50 text-green-900' : 'py-2 rounded-lg border-2 font-bold text-xs bg-white border-gray-200 text-gray-600';
             calcularSubtotalItem();
         }
-        function changeQty(v) { currentQty = Math.max(1, currentQty + v); document.getElementById('input-qty').value = currentQty; calcularSubtotalItem(); }
+
+        function changeQty(v) { 
+            currentQty = Math.max(1, currentQty + v); 
+            document.getElementById('input-qty').value = currentQty; 
+            calcularSubtotalItem(); 
+        }
+
         function calcularSubtotalItem() {
             if(!currentProduct) return 0;
-            const p = Number(currentProduct.Precio);
-            const m = (currentProduct.Empaque || '30kg').match(/\d+/);
-            const f = selectedFormat === 'Saco' ? (m ? parseInt(m[0]) : 30) : 1;
-            const t = p * f * currentQty;
-            return t;
+            const precioBase = Number(currentProduct.Precio);
+            const factorPeso = selectedFormat === 'Saco' ? currentSackWeight : 1;
+            const total = precioBase * factorPeso * currentQty;
+            document.getElementById('txt-subtotal-item').innerText = total.toLocaleString('es-CL');
+            return total;
         }
+
         function agregarAlCarrito(tipo) {
             let i = { nombre: currentProduct.Nombre, img: currentProduct.Imagen, tipo: tipo, formato: tipo==='Muestra'?'250gr':selectedFormat, cantidad: tipo==='Muestra'?1:currentQty };
-            i.subtotal = tipo==='Muestra'?5000:calcularSubtotalItem();
+            i.subtotal = tipo==='Muestra' ? 5000 : calcularSubtotalItem();
+            i.detalleFormato = tipo==='Muestra' ? '250gr' : (selectedFormat === 'Saco' ? `${currentSackWeight}kg` : '1kg');
+            
             const idx = carrito.findIndex(x => x.nombre === i.nombre && x.formato === i.formato);
             if(idx > -1) { carrito[idx].cantidad += i.cantidad; carrito[idx].subtotal += i.subtotal; } else { carrito.push(i); }
             localStorage.setItem('st_carrito', JSON.stringify(carrito));
             actualizarUI_Carrito();
             if(document.getElementById('cart-panel').classList.contains('cart-closed')) toggleCarrito();
         }
+
         function actualizarUI_Carrito() {
             const b = document.getElementById('cart-badge');
             const c = document.getElementById('cart-items');
@@ -302,19 +318,20 @@
             let t = 0;
             c.innerHTML = carrito.length === 0 ? '<p class="text-center text-gray-400 text-xs mt-10">Vacío</p>' : carrito.map((x, idx) => {
                 t += x.subtotal;
-                return `<div class="flex gap-4 bg-white p-3 rounded-xl border border-gray-100 shadow-sm"><img src="${x.img}" class="w-12 h-12 object-cover rounded-lg bg-gray-200"><div class="flex-grow flex flex-col justify-between"><div class="flex justify-between items-start font-bold text-[10px] text-gray-900 leading-tight"><span>${x.nombre}</span><button onclick="eliminarDelCarrito(${idx})" class="text-red-300 hover:text-red-600">×</button></div><div class="flex justify-between items-end mt-2"><span class="text-[9px] text-gray-500">${x.cantidad}x ${x.formato}</span><span class="font-black text-gray-900">$${x.subtotal.toLocaleString('es-CL')}</span></div></div></div>`;
+                return `<div class="flex gap-4 bg-white p-3 rounded-xl border border-gray-100 shadow-sm"><img src="${x.img}" class="w-12 h-12 object-cover rounded-lg bg-gray-200"><div class="flex-grow flex flex-col justify-between"><div class="flex justify-between items-start font-bold text-[10px] text-gray-900 leading-tight"><span>${x.nombre}</span><button onclick="eliminarDelCarrito(${idx})" class="text-red-300 hover:text-red-600">×</button></div><div class="flex justify-between items-end mt-2"><span class="text-[9px] text-gray-500">${x.cantidad}x ${x.formato} ${x.tipo==='Lote'?`(${x.detalleFormato})`:''}</span><span class="font-black text-gray-900">$${x.subtotal.toLocaleString('es-CL')}</span></div></div></div>`;
             }).join('');
             s.innerText = t.toLocaleString('es-CL');
         }
+
         function eliminarDelCarrito(idx) { carrito.splice(idx,1); localStorage.setItem('st_carrito', JSON.stringify(carrito)); actualizarUI_Carrito(); }
         function toggleCarrito() { const p = document.getElementById('cart-panel'), o = document.getElementById('cart-overlay'); p.classList.toggle('cart-closed'); p.classList.toggle('cart-open'); o.classList.toggle('hidden'); }
         function enviarPedido(m) {
+            if(carrito.length===0) return;
             let tB = carrito.reduce((a,x) => a + x.subtotal, 0), tF = m === 'MercadoPago' ? Math.round(tB * 1.035) : tB;
             let msg = `Hola *Super Tasters* ☕, pedido:\n\n` + carrito.map((x, i) => `${i+1}. *${x.nombre}* (${x.formato} x${x.cantidad}) - $${x.subtotal.toLocaleString('es-CL')}`).join('\n') + `\n\n*Pago:* ${m}\n*TOTAL:* $${tF.toLocaleString('es-CL')}`;
             window.open(`https://wa.me/56975552708?text=${encodeURIComponent(msg)}`, '_blank');
         }
 
-        // --- GRÁFICOS ---
         function dibujarGraficoRadar(p) {
             const ctx = document.getElementById('radarChart').getContext('2d');
             if(radarInstancia) radarInstancia.destroy();
@@ -343,7 +360,7 @@
                 });
             } else { container.classList.add('hidden'); }
         }
-        function volverCatalogo() { document.getElementById('vista-detalle').classList.add('hidden'); document.getElementById('vista-principal').classList.remove('hidden'); }
+        function volverCatalogo() { document.getElementById('vista-detalle').classList.add('hidden'); document.getElementById('vista-principal').classList.remove('hidden'); window.scrollTo(0,0); }
         cargarCatalogo();
     </script>
 </body>
