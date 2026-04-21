@@ -13,7 +13,13 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
         body { font-family: 'Inter', sans-serif; overflow-x: hidden; }
         .cursor-pointer:hover .group-hover\:scale-105 { transform: scale(1.05); }
-        .video-overlay { background: rgba(20, 83, 45, 0.85); }
+        
+        /* CAMBIO: Overlay verde muy muy ligero (5% de opacidad) */
+        .video-overlay { background: rgba(20, 83, 45, 0.05); }
+        
+        /* CAMBIO: Sombra de texto para legibilidad sobre video claro */
+        .text-shadow-lg { text-shadow: 0 2px 4px rgba(0,0,0,0.8); }
+
         .img-protegida { pointer-events: none; user-select: none; -webkit-user-drag: none; }
         .watermark-overlay::after {
             content: "SUPER TASTERS EXCLUSIVE";
@@ -68,13 +74,13 @@
 
     <div id="vista-principal">
         <section class="relative py-40 px-6 border-b-8 border-green-700 overflow-hidden flex items-center justify-center bg-green-900">
-            <video autoplay loop muted playsinline class="absolute inset-0 w-full h-full object-cover z-0 opacity-40">
+            <video autoplay loop muted playsinline class="absolute inset-0 w-full h-full object-cover z-0">
                 <source src="video.mp4" type="video/mp4">
             </video>
             <div class="absolute inset-0 video-overlay z-10"></div>
             <div class="relative z-20 max-w-4xl mx-auto text-center text-white">
-                <h2 class="text-5xl font-extrabold mb-6 leading-tight drop-shadow-xl tracking-tight">Expertos en Taza, Aliados en Origen</h2>
-                <p class="text-xl text-green-100 font-light max-w-2xl mx-auto leading-relaxed italic">Transparentando el camino del grano desde la finca hasta tu tostaduría.</p>
+                <h2 class="text-5xl font-extrabold mb-6 leading-tight text-shadow-lg tracking-tight">Expertos en Taza, Aliados en Origen</h2>
+                <p class="text-xl text-green-100 font-light max-w-2xl mx-auto leading-relaxed italic text-shadow-lg">Transparentando el camino del grano desde la finca hasta tu tostaduría.</p>
             </div>
         </section>
 
@@ -216,7 +222,6 @@
             currentProduct = productosGlobal[index];
             currentQty = 1; selectedFormat = 'Saco';
             
-            // Determinar Peso del Saco dinámicamente
             if(currentProduct['Peso Saco']) {
                 currentSackWeight = parseFloat(currentProduct['Peso Saco']);
             } else if (currentProduct.Empaque) {
@@ -261,7 +266,6 @@
             const omitirFicha = ['Nombre','Categoria','Stock','Precio','Imagen','Notas de Cata','Puntaje','Logo Productor','Imagen Origen 1','Imagen Origen 2','Imagen Origen 3','Peso Saco','Malla 17','Malla 16','Malla 15','Malla 14','Fuera Malla','Acidez','Cuerpo','Dulzor','Sabor','Balance','Sabor Residual','Fragancia / Aroma','Uniformidad','Taza Limpia','General'];
             document.getElementById('detalle-ficha').innerHTML = Object.keys(currentProduct).filter(k => !omitirFicha.includes(k) && currentProduct[k]).map(k => `<div class="flex justify-between border-b border-gray-100 pb-1"><strong>${k}</strong><span class="text-right ml-4">${currentProduct[k]}</span></div>`).join('');
 
-            // Bloquear botón si está agotado
             const nro = parseInt(currentProduct.Stock);
             const isAgotado = isNaN(nro) ? (currentProduct.Stock && currentProduct.Stock.toLowerCase() === 'agotado') : (nro <= 0);
             const btnCart = document.getElementById('btn-add-cart');
@@ -271,7 +275,6 @@
                 btnCart.disabled = false; btnCart.classList.remove('opacity-50', 'cursor-not-allowed'); btnCart.innerText = 'Agregar al Carrito';
             }
 
-            // Calculo inicial
             setFormato('Saco');
         }
 
@@ -281,34 +284,23 @@
             document.getElementById('btn-format-saco').className = fmt==='Saco' ? 'py-2 rounded-lg border-2 font-bold text-xs border-green-600 bg-green-50 text-green-900' : 'py-2 rounded-lg border-2 font-bold text-xs bg-white border-gray-200 text-gray-600';
             calcularSubtotalItem();
         }
-
-        function changeQty(v) { 
-            currentQty = Math.max(1, currentQty + v); 
-            document.getElementById('input-qty').value = currentQty; 
-            calcularSubtotalItem(); 
-        }
-
+        function changeQty(v) { currentQty = Math.max(1, currentQty + v); document.getElementById('input-qty').value = currentQty; calcularSubtotalItem(); }
         function calcularSubtotalItem() {
             if(!currentProduct) return 0;
-            const precioBase = Number(currentProduct.Precio);
+            const p = Number(currentProduct.Precio);
             const factorPeso = selectedFormat === 'Saco' ? currentSackWeight : 1;
-            const total = precioBase * factorPeso * currentQty;
-            document.getElementById('txt-subtotal-item').innerText = total.toLocaleString('es-CL');
+            const total = p * factorPeso * currentQty;
             return total;
         }
-
         function agregarAlCarrito(tipo) {
             let i = { nombre: currentProduct.Nombre, img: currentProduct.Imagen, tipo: tipo, formato: tipo==='Muestra'?'250gr':selectedFormat, cantidad: tipo==='Muestra'?1:currentQty };
-            i.subtotal = tipo==='Muestra' ? 5000 : calcularSubtotalItem();
-            i.detalleFormato = tipo==='Muestra' ? '250gr' : (selectedFormat === 'Saco' ? `${currentSackWeight}kg` : '1kg');
-            
+            i.subtotal = tipo==='Muestra'?5000:calcularSubtotalItem();
             const idx = carrito.findIndex(x => x.nombre === i.nombre && x.formato === i.formato);
             if(idx > -1) { carrito[idx].cantidad += i.cantidad; carrito[idx].subtotal += i.subtotal; } else { carrito.push(i); }
             localStorage.setItem('st_carrito', JSON.stringify(carrito));
             actualizarUI_Carrito();
             if(document.getElementById('cart-panel').classList.contains('cart-closed')) toggleCarrito();
         }
-
         function actualizarUI_Carrito() {
             const b = document.getElementById('cart-badge');
             const c = document.getElementById('cart-items');
@@ -318,20 +310,19 @@
             let t = 0;
             c.innerHTML = carrito.length === 0 ? '<p class="text-center text-gray-400 text-xs mt-10">Vacío</p>' : carrito.map((x, idx) => {
                 t += x.subtotal;
-                return `<div class="flex gap-4 bg-white p-3 rounded-xl border border-gray-100 shadow-sm"><img src="${x.img}" class="w-12 h-12 object-cover rounded-lg bg-gray-200"><div class="flex-grow flex flex-col justify-between"><div class="flex justify-between items-start font-bold text-[10px] text-gray-900 leading-tight"><span>${x.nombre}</span><button onclick="eliminarDelCarrito(${idx})" class="text-red-300 hover:text-red-600">×</button></div><div class="flex justify-between items-end mt-2"><span class="text-[9px] text-gray-500">${x.cantidad}x ${x.formato} ${x.tipo==='Lote'?`(${x.detalleFormato})`:''}</span><span class="font-black text-gray-900">$${x.subtotal.toLocaleString('es-CL')}</span></div></div></div>`;
+                return `<div class="flex gap-4 bg-white p-3 rounded-xl border border-gray-100 shadow-sm"><img src="${x.img}" class="w-12 h-12 object-cover rounded-lg bg-gray-200"><div class="flex-grow flex flex-col justify-between"><div class="flex justify-between items-start font-bold text-[10px] text-gray-900 leading-tight"><span>${x.nombre}</span><button onclick="eliminarDelCarrito(${idx})" class="text-red-300 hover:text-red-600">×</button></div><div class="flex justify-between items-end mt-2"><span class="text-[9px] text-gray-500">${x.cantidad}x ${x.formato}</span><span class="font-black text-gray-900">$${x.subtotal.toLocaleString('es-CL')}</span></div></div></div>`;
             }).join('');
             s.innerText = t.toLocaleString('es-CL');
         }
-
         function eliminarDelCarrito(idx) { carrito.splice(idx,1); localStorage.setItem('st_carrito', JSON.stringify(carrito)); actualizarUI_Carrito(); }
         function toggleCarrito() { const p = document.getElementById('cart-panel'), o = document.getElementById('cart-overlay'); p.classList.toggle('cart-closed'); p.classList.toggle('cart-open'); o.classList.toggle('hidden'); }
         function enviarPedido(m) {
-            if(carrito.length===0) return;
             let tB = carrito.reduce((a,x) => a + x.subtotal, 0), tF = m === 'MercadoPago' ? Math.round(tB * 1.035) : tB;
             let msg = `Hola *Super Tasters* ☕, pedido:\n\n` + carrito.map((x, i) => `${i+1}. *${x.nombre}* (${x.formato} x${x.cantidad}) - $${x.subtotal.toLocaleString('es-CL')}`).join('\n') + `\n\n*Pago:* ${m}\n*TOTAL:* $${tF.toLocaleString('es-CL')}`;
             window.open(`https://wa.me/56975552708?text=${encodeURIComponent(msg)}`, '_blank');
         }
 
+        // --- GRÁFICOS ---
         function dibujarGraficoRadar(p) {
             const ctx = document.getElementById('radarChart').getContext('2d');
             if(radarInstancia) radarInstancia.destroy();
