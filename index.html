@@ -34,8 +34,8 @@
     <div id="vista-principal">
         
         <section class="relative py-40 px-6 border-b-8 border-green-700 overflow-hidden flex items-center justify-center bg-green-900">
-            <video autoplay loop muted playsinline class="absolute inset-0 w-full h-full object-cover z-0 opacity-40">
-                <source src="https://drive.google.com/uc?export=download&id=1uByxFLqIIQtOILHeZx7qUCXUpXv3JrnX" type="video/mp4">
+            <video autoplay loop muted playsinline class="absolute inset-0 w-full h-full object-cover z-0 opacity-40" poster="https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?q=80&w=2000&auto=format&fit=crop">
+                <source src="video.mp4" type="video/mp4">
             </video>
             <div class="absolute inset-0 video-overlay z-10"></div>
             <div class="relative z-20 max-w-4xl mx-auto text-center text-white">
@@ -208,9 +208,9 @@
             dibujarGrafico(p);
             
             const wsp = "https://wa.me/56975552708?text=";
-            document.getElementById('btn-muestra').onclick = () => window.open(wsp + encodeURIComponent(`Solicitud MUESTRA: ${p.Nombre}.`), '_blank');
-            document.getElementById('btn-fintoc').onclick = () => window.open(wsp + encodeURIComponent(`Interés Lote: ${p.Nombre} (Transferencia).`), '_blank');
-            document.getElementById('btn-mp').onclick = () => window.open(wsp + encodeURIComponent(`Interés Lote: ${p.Nombre} (Mercado Pago).`), '_blank');
+            document.getElementById('btn-muestra').onclick = () => window.open(wsp + encodeURIComponent(`Hola Super Tasters, quiero solicitar una MUESTRA: ${p.Nombre}.`), '_blank');
+            document.getElementById('btn-fintoc').onclick = () => window.open(wsp + encodeURIComponent(`Hola Super Tasters, quiero adquirir el Lote: ${p.Nombre} (Transferencia).`), '_blank');
+            document.getElementById('btn-mp').onclick = () => window.open(wsp + encodeURIComponent(`Hola Super Tasters, quiero adquirir el Lote: ${p.Nombre} (Mercado Pago).`), '_blank');
         }
 
         function dibujarGrafico(p) {
