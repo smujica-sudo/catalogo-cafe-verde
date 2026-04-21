@@ -26,20 +26,20 @@
             </div>
             <a href="https://wa.me/56975552708" target="_blank" class="text-sm font-semibold text-green-800 hover:text-green-600 transition flex items-center gap-2">
                 <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
-                +1 600-600-cafeverde
+                +569 75552708
             </a>
         </div>
     </nav>
 
     <div id="vista-principal">
         
-        <section class="relative py-40 px-6 border-b-8 border-green-900 overflow-hidden flex items-center justify-center bg-green-900">
-            <video autoplay loop muted playsinline class="absolute inset-0 w-full h-full object-cover z-0 opacity-99" poster="https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?q=80&w=2000&auto=format&fit=crop">
+        <section class="relative py-40 px-6 border-b-8 border-green-700 overflow-hidden flex items-center justify-center bg-green-900">
+            <video autoplay loop muted playsinline class="absolute inset-0 w-full h-full object-cover z-0 opacity-40" poster="https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?q=80&w=2000&auto=format&fit=crop">
                 <source src="video.mp4" type="video/mp4">
             </video>
             <div class="absolute inset-0 video-overlay z-10"></div>
             <div class="relative z-20 max-w-4xl mx-auto text-center text-white">
-                <h2 class="text-5xl font-extrabold mb-6 leading-tight drop-shadow-xl">Conectamos Tostadores con Cafés Únicos, Justos y Sostenibles</h2>
+                <h2 class="text-5xl font-extrabold mb-6 leading-tight drop-shadow-xl">Conectamos Tostadores con Orígenes Extraordinarios</h2>
                 <p class="text-xl text-green-100 font-light max-w-2xl mx-auto leading-relaxed drop-shadow-md">Establecemos relaciones directas y de largo plazo con socios caficultores en origen para asegurar transparencia, calidad e innovación.</p>
             </div>
         </section>
@@ -160,17 +160,44 @@
                 grid.classList.remove('hidden');
 
                 grid.innerHTML = productosGlobal.map((p, i) => {
+                    // Lógica Badge y Stock
+                    const isMicrolote = p.Categoria && p.Categoria.toLowerCase().includes('micro');
+                    const catBadgeClass = isMicrolote ? 'bg-yellow-400 text-yellow-900' : 'bg-green-800 text-white';
+                    
                     const nro = parseInt(p.Stock);
-                    const stockTxt = isNaN(nro) ? p.Stock : (nro <= 0 ? 'Agotado' : `${nro} Sacos Disp.`);
+                    const isAgotado = isNaN(nro) ? (p.Stock && p.Stock.toLowerCase() === 'agotado') : (nro <= 0);
+                    const stockTxt = isAgotado ? 'Agotado' : (!isNaN(nro) ? `${nro} Sacos Disp.` : p.Stock);
+                    const stockClass = isAgotado ? 'text-red-600 bg-red-50 border-red-200' : 'text-green-800 bg-green-50 border-green-200';
+
+                    // Info extra para la tarjeta
+                    const notasCard = p['Notas de Cata'] || p['Sabor'];
+                    const puntajeSCA = p.Puntaje ? `<div class="absolute bottom-4 right-4 bg-white/90 backdrop-blur text-xs font-bold text-gray-800 px-2 py-1 rounded shadow flex items-center gap-1"><svg class="w-3 h-3 text-yellow-500" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>${p.Puntaje}</div>` : '';
+
                     return `
-                        <div onclick="verDetalle(${i})" class="bg-white cursor-pointer rounded-xl shadow-sm hover:shadow-xl transition overflow-hidden border border-gray-200">
-                            <img src="${p.Imagen || 'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7'}" class="h-48 w-full object-cover">
-                            <div class="p-6">
-                                <h3 class="font-bold text-gray-900">${p.Nombre}</h3>
-                                <p class="text-xs text-gray-500 mb-4">${p.Origen || '-'}</p>
-                                <div class="flex justify-between items-center pt-4 border-t border-gray-100">
-                                    <span class="text-[10px] font-bold px-2 py-1 rounded bg-green-50 text-green-800">${stockTxt}</span>
-                                    <span class="font-black text-gray-900">$${Number(p.Precio).toLocaleString('es-CL')}</span>
+                        <div onclick="verDetalle(${i})" class="bg-white cursor-pointer rounded-xl shadow-sm hover:shadow-xl transition overflow-hidden border border-gray-200 flex flex-col">
+                            <div class="h-48 relative overflow-hidden bg-gray-200">
+                                <img src="${p.Imagen || 'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7'}" class="w-full h-full object-cover transition duration-500 transform group-hover:scale-105">
+                                <div class="absolute top-4 left-4 ${catBadgeClass} text-[10px] font-extrabold px-3 py-1.5 rounded-full uppercase tracking-widest shadow-md">
+                                    ${p.Categoria || 'Café Verde'}
+                                </div>
+                                ${puntajeSCA}
+                            </div>
+                            <div class="p-5 flex-grow flex flex-col">
+                                <h3 class="font-bold text-gray-900 text-lg leading-tight mb-1">${p.Nombre}</h3>
+                                <p class="text-xs text-green-700 font-medium mb-3 flex items-center gap-1">
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                                    ${p.Origen || '-'}
+                                </p>
+                                
+                                <div class="bg-gray-50 rounded border border-gray-100 p-3 mb-4 flex-grow space-y-1">
+                                    ${p.Productor ? `<p class="text-[11px] text-gray-600 truncate"><span class="font-semibold text-gray-800">Prod:</span> ${p.Productor}</p>` : ''}
+                                    ${p.Proceso ? `<p class="text-[11px] text-gray-600 truncate"><span class="font-semibold text-gray-800">Proc:</span> ${p.Proceso}</p>` : ''}
+                                    ${notasCard ? `<p class="text-[11px] text-gray-600 truncate"><span class="font-semibold text-gray-800">Notas:</span> ${notasCard}</p>` : ''}
+                                </div>
+
+                                <div class="flex justify-between items-end mt-auto pt-3 border-t border-gray-100">
+                                    <span class="text-[10px] font-bold px-2 py-1 rounded border ${stockClass}">${stockTxt}</span>
+                                    <span class="text-lg font-black text-gray-900">$${Number(p.Precio).toLocaleString('es-CL')}</span>
                                 </div>
                             </div>
                         </div>
@@ -187,30 +214,45 @@
             document.getElementById('detalle-img').src = p.Imagen || 'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7';
             document.getElementById('detalle-notas').innerText = p['Notas de Cata'] || p['Sabor'] || 'Perfil equilibrado';
             document.getElementById('detalle-nombre').innerText = p.Nombre;
-            document.getElementById('detalle-origen-texto').innerText = p.Origen;
+            document.getElementById('detalle-origen-texto').innerText = p.Origen || '-';
             
             const n = parseInt(p.Stock);
-            document.getElementById('detalle-stock').innerText = isNaN(n) ? p.Stock : (n <= 0 ? 'Sin Stock' : `${n} Sacos Disponibles`);
+            const isAgotado = isNaN(n) ? (p.Stock && p.Stock.toLowerCase() === 'agotado') : (n <= 0);
+            document.getElementById('detalle-stock').innerText = isAgotado ? 'Sin Stock' : (!isNaN(n) ? `${n} Sacos Disponibles` : p.Stock);
+            document.getElementById('detalle-stock').className = `text-xs font-bold px-3 py-1.5 rounded border ${isAgotado ? 'bg-red-50 text-red-700 border-red-200' : 'bg-green-50 text-green-800 border-green-200'}`;
             
             const base = Number(p.Precio);
             document.getElementById('precio-transferencia').innerText = base.toLocaleString('es-CL');
             document.getElementById('precio-mp').innerText = Math.round(base * 1.035).toLocaleString('es-CL');
 
             const cat = document.getElementById('detalle-categoria');
-            cat.innerText = p.Categoria;
-            cat.className = `text-[10px] font-extrabold px-3 py-1.5 rounded-full uppercase ${p.Categoria.toLowerCase().includes('micro') ? 'bg-yellow-400 text-yellow-900' : 'bg-green-800 text-white'}`;
+            cat.innerText = p.Categoria || 'Café Verde';
+            const isMicro = p.Categoria && p.Categoria.toLowerCase().includes('micro');
+            cat.className = `text-[10px] font-extrabold px-3 py-1.5 rounded-full uppercase tracking-widest shadow-sm ${isMicro ? 'bg-yellow-400 text-yellow-900' : 'bg-green-800 text-white'}`;
 
-            const omitir = ['Nombre','Categoria','Stock','Precio','Imagen','Notas de Cata','Acidez','Cuerpo','Dulzor','Sabor','Balance'];
-            document.getElementById('detalle-ficha').innerHTML = Object.keys(p).filter(k => !omitir.includes(k) && p[k]).map(k => `
-                <div class="flex justify-between border-b pb-2"><strong>${k}</strong><span>${p[k]}</span></div>
+            const omitir = ['Nombre','Categoria','Stock','Precio','Imagen','Notas de Cata','Acidez','Cuerpo','Dulzor','Sabor','Balance', 'Puntaje'];
+            let fichaHTML = p.Puntaje ? `<div class="flex justify-between border-b pb-2"><strong>Puntaje SCA</strong><span class="font-black text-green-800">${p.Puntaje}</span></div>` : '';
+            fichaHTML += Object.keys(p).filter(k => !omitir.includes(k) && p[k]).map(k => `
+                <div class="flex justify-between border-b pb-2"><strong>${k}</strong><span class="text-right ml-4">${p[k]}</span></div>
             `).join('');
+            document.getElementById('detalle-ficha').innerHTML = fichaHTML;
 
             dibujarGrafico(p);
             
             const wsp = "https://wa.me/56975552708?text=";
             document.getElementById('btn-muestra').onclick = () => window.open(wsp + encodeURIComponent(`Hola Super Tasters, quiero solicitar una MUESTRA: ${p.Nombre}.`), '_blank');
-            document.getElementById('btn-fintoc').onclick = () => window.open(wsp + encodeURIComponent(`Hola Super Tasters, quiero adquirir el Lote: ${p.Nombre} (Transferencia).`), '_blank');
-            document.getElementById('btn-mp').onclick = () => window.open(wsp + encodeURIComponent(`Hola Super Tasters, quiero adquirir el Lote: ${p.Nombre} (Mercado Pago).`), '_blank');
+            const btnFintoc = document.getElementById('btn-fintoc');
+            const btnMp = document.getElementById('btn-mp');
+            
+            if(isAgotado) {
+                btnFintoc.disabled = true; btnFintoc.classList.add('opacity-50', 'cursor-not-allowed');
+                btnMp.disabled = true; btnMp.classList.add('opacity-50', 'cursor-not-allowed');
+            } else {
+                btnFintoc.disabled = false; btnFintoc.classList.remove('opacity-50', 'cursor-not-allowed');
+                btnMp.disabled = false; btnMp.classList.remove('opacity-50', 'cursor-not-allowed');
+                btnFintoc.onclick = () => window.open(wsp + encodeURIComponent(`Hola Super Tasters, quiero adquirir el Lote: ${p.Nombre} (Transferencia).`), '_blank');
+                btnMp.onclick = () => window.open(wsp + encodeURIComponent(`Hola Super Tasters, quiero adquirir el Lote: ${p.Nombre} (Mercado Pago).`), '_blank');
+            }
         }
 
         function dibujarGrafico(p) {
@@ -222,10 +264,11 @@
                     labels: ['Acidez', 'Cuerpo', 'Dulzor', 'Sabor', 'Balance'],
                     datasets: [{
                         data: [p.Acidez||8, p.Cuerpo||8, p.Dulzor||8, p.Sabor||8, p.Balance||8],
-                        backgroundColor: 'rgba(20, 83, 45, 0.2)', borderColor: '#14532d', borderWidth: 2
+                        backgroundColor: 'rgba(20, 83, 45, 0.2)', borderColor: '#14532d', borderWidth: 2,
+                        pointBackgroundColor: '#14532d', pointBorderColor: '#fff',
                     }]
                 },
-                options: { scales: { r: { min: 6, max: 10, ticks: { display: false } } }, plugins: { legend: { display: false } } }
+                options: { scales: { r: { min: 6, max: 10, ticks: { display: false, stepSize: 1 } } }, plugins: { legend: { display: false } } }
             });
         }
 
