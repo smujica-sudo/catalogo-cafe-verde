@@ -15,8 +15,19 @@
         .cursor-pointer:hover .group-hover\:scale-105 { transform: scale(1.05); }
         .video-overlay { background: rgba(20, 83, 45, 0.85); }
         .img-protegida { pointer-events: none; user-select: none; -webkit-user-drag: none; }
-        input[type=number]::-webkit-inner-spin-button, 
-        input[type=number]::-webkit-outer-spin-button { opacity: 1; }
+        .watermark-overlay::after {
+            content: "SUPER TASTERS EXCLUSIVE";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-30deg);
+            font-size: 2rem;
+            font-weight: 900;
+            color: rgba(255,255,255,0.1);
+            white-space: nowrap;
+            pointer-events: none;
+            z-index: 10;
+        }
         .cart-open { transform: translateX(0%); }
         .cart-closed { transform: translateX(100%); }
     </style>
@@ -46,47 +57,37 @@
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
             </button>
         </div>
-        
         <div id="cart-items" class="flex-grow overflow-y-auto p-6 space-y-4">
             <p class="text-center text-gray-400 text-sm mt-10">Tu carrito está vacío.</p>
         </div>
-
         <div class="border-t border-gray-100 p-6 bg-gray-50">
             <div class="flex justify-between items-end mb-4">
                 <span class="font-bold text-gray-600 text-sm">Subtotal Pedido</span>
                 <span class="text-2xl font-black text-gray-900">$<span id="cart-subtotal">0</span></span>
             </div>
-            
-            <p class="text-xs text-gray-500 mb-3 uppercase tracking-widest font-bold">Selecciona Método de Pago para finalizar:</p>
             <div class="grid grid-cols-2 gap-3">
-                <button onclick="enviarPedido('Fintoc')" class="w-full bg-gray-900 text-white py-3 rounded-lg font-bold text-xs hover:bg-black transition flex flex-col items-center">
-                    Pagar con Fintoc
-                    <span class="text-[9px] font-normal text-gray-400">Sin recargo</span>
-                </button>
-                <button onclick="enviarPedido('MercadoPago')" class="w-full bg-[#009EE3] text-white py-3 rounded-lg font-bold text-xs hover:bg-[#0089C7] transition flex flex-col items-center">
-                    Mercado Pago
-                    <span class="text-[9px] font-normal text-blue-200">+3.5% Recargo Total</span>
-                </button>
+                <button onclick="enviarPedido('Fintoc')" class="w-full bg-gray-900 text-white py-3 rounded-lg font-bold text-xs hover:bg-black transition flex flex-col items-center">Transferencia/Fintoc</button>
+                <button onclick="enviarPedido('MercadoPago')" class="w-full bg-[#009EE3] text-white py-3 rounded-lg font-bold text-xs hover:bg-[#0089C7] transition flex flex-col items-center">Mercado Pago</button>
             </div>
         </div>
     </div>
 
     <div id="vista-principal">
         <section class="relative py-40 px-6 border-b-8 border-green-700 overflow-hidden flex items-center justify-center bg-green-900">
-            <video autoplay loop muted playsinline class="absolute inset-0 w-full h-full object-cover z-0 opacity-100" poster="">
+            <video autoplay loop muted playsinline class="absolute inset-0 w-full h-full object-cover z-0 opacity-40">
                 <source src="video.mp4" type="video/mp4">
             </video>
             <div class="absolute inset-0 video-overlay z-10"></div>
             <div class="relative z-20 max-w-4xl mx-auto text-center text-white">
                 <h2 class="text-5xl font-extrabold mb-6 leading-tight drop-shadow-xl tracking-tight">Expertos en Taza, Aliados en Origen</h2>
-                <p class="text-xl text-green-100 font-light max-w-2xl mx-auto leading-relaxed">Suministramos café verde de especialidad con trazabilidad total y análisis técnico riguroso.</p>
+                <p class="text-xl text-green-100 font-light max-w-2xl mx-auto leading-relaxed italic">Transparentando el camino del grano desde la finca hasta tu tostaduría.</p>
             </div>
         </section>
 
         <main class="max-w-6xl mx-auto px-6 py-16">
             <div id="loading" class="flex flex-col items-center justify-center py-20 text-gray-400">
                 <svg class="animate-spin h-10 w-10 text-green-800 mb-4" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-                <p class="font-medium animate-pulse">Cargando catálogo técnico...</p>
+                <p class="font-medium animate-pulse">Sincronizando con origen...</p>
             </div>
             <div id="catalogo-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 hidden"></div>
         </main>
@@ -103,60 +104,42 @@
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
                 
                 <div class="lg:col-span-8 space-y-6">
-                    
-                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 lg:hidden">
-                        <h2 id="detalle-nombre-mobile" class="text-3xl font-extrabold text-gray-900 leading-tight mb-2 tracking-tighter"></h2>
-                        <p id="detalle-origen-texto-mobile" class="text-green-700 font-medium text-sm"></p>
+                    <div class="bg-white p-2 rounded-2xl shadow-sm border border-gray-100 relative watermark-overlay" oncontextmenu="return false;">
+                        <img id="detalle-img" src="" class="w-full h-96 object-cover rounded-xl img-protegida bg-gray-200 shadow-inner">
                     </div>
 
-                    <div class="bg-white p-2 rounded-2xl shadow-sm border border-gray-100 relative" oncontextmenu="return false;">
-                        <img id="detalle-img" src="" class="w-full h-80 object-cover rounded-xl img-protegida bg-gray-200 shadow-inner">
+                    <div id="seccion-galeria" class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 hidden">
+                        <h4 class="text-xl font-extrabold text-gray-900 border-b pb-2 mb-6 uppercase tracking-tighter">Trazabilidad Visual (Origen)</h4>
+                        <div id="galeria-grid" class="grid grid-cols-1 md:grid-cols-3 gap-4" oncontextmenu="return false;">
+                            </div>
+                        <p class="text-[10px] text-gray-400 mt-4 italic">© Imágenes exclusivas de Super Tasters. Protegidas contra descarga.</p>
                     </div>
 
                     <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
                         <div class="flex justify-between items-end border-b pb-4 mb-6">
                             <h4 class="text-xl font-extrabold text-gray-900 uppercase tracking-tighter">Evaluación Sensorial SCA</h4>
-                            <div class="text-right">
-                                <span class="text-xs font-bold text-gray-400 uppercase">Puntaje Final</span>
-                                <div id="detalle-puntaje-sca" class="text-3xl font-black text-green-700"></div>
-                            </div>
+                            <div id="detalle-puntaje-sca" class="text-3xl font-black text-green-700"></div>
                         </div>
-
                         <div id="contenedor-pildoras-sabor" class="flex flex-wrap gap-2 mb-8"></div>
-
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                            <div class="relative w-full h-72">
-                                <canvas id="radarChart"></canvas>
-                            </div>
-                            
+                            <div class="relative w-full h-72"><canvas id="radarChart"></canvas></div>
                             <div class="overflow-hidden border border-gray-200 rounded-lg">
-                                <table class="w-full text-left text-xs text-gray-700">
-                                    <thead class="bg-gray-50 border-b border-gray-200">
-                                        <tr>
-                                            <th class="px-3 py-2 font-bold uppercase tracking-wider text-gray-500">Atributo</th>
-                                            <th class="px-3 py-2 font-bold uppercase tracking-wider text-gray-500 text-center">Ptos</th>
-                                            <th class="px-3 py-2 font-bold uppercase tracking-wider text-gray-500">Comentarios</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="tabla-sca-desglose" class="divide-y divide-gray-100">
-                                        </tbody>
+                                <table class="w-full text-left text-[10px] text-gray-700">
+                                    <tbody id="tabla-sca-desglose" class="divide-y divide-gray-100"></tbody>
                                 </table>
                             </div>
                         </div>
                     </div>
 
                     <div id="contenedor-pie-chart" class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 hidden">
-                        <h4 class="text-xl font-extrabold text-gray-900 border-b pb-2 mb-6 uppercase tracking-tighter">Análisis Físico: Tamaño del Grano</h4>
-                        <div class="relative w-full max-w-md mx-auto h-64">
-                            <canvas id="pieChart"></canvas>
-                        </div>
+                        <h4 class="text-xl font-extrabold text-gray-900 border-b pb-2 mb-6 uppercase tracking-tighter">Granulometría (Malla)</h4>
+                        <div class="relative w-full max-w-md mx-auto h-64"><canvas id="pieChart"></canvas></div>
                     </div>
                 </div>
 
                 <div class="lg:col-span-4 space-y-6">
                     <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 flex flex-col sticky top-24">
-                        
-                        <div class="mb-6 hidden lg:block">
+                        <div class="mb-6">
                             <div class="flex justify-between items-start mb-3">
                                 <span id="detalle-categoria" class="text-[10px] font-extrabold px-3 py-1.5 rounded-full uppercase tracking-widest text-white"></span>
                                 <span id="detalle-stock" class="text-sm font-bold px-3 py-1 rounded border"></span>
@@ -166,45 +149,28 @@
                         </div>
 
                         <div class="bg-blue-50 border border-blue-100 p-4 rounded-xl flex justify-between items-center gap-4 mb-4">
-                            <div class="text-blue-900">
-                                <h5 class="font-bold text-sm">Muestra 250gr</h5>
-                                <p class="font-black text-lg">$5.000 <span class="text-[9px]">+ ENVÍO</span></p>
-                            </div>
-                            <button onclick="agregarAlCarrito('Muestra')" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg text-xs transition shadow-sm">
-                                Añadir Muestra
-                            </button>
+                            <div class="text-blue-900"><h5 class="font-bold text-sm">Muestra 250gr</h5><p class="font-black text-lg">$5.000</p></div>
+                            <button onclick="agregarAlCarrito('Muestra')" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg text-xs transition">Añadir</button>
                         </div>
 
                         <div class="bg-gray-50 p-6 rounded-xl border border-gray-200 mb-6 space-y-4">
-                            <h4 class="text-xs font-bold text-gray-500 uppercase tracking-widest">Lote Comercial</h4>
                             <div class="grid grid-cols-2 gap-3">
-                                <button onclick="setFormato('1kg')" id="btn-format-1kg" class="format-btn py-3 px-4 rounded-lg border-2 font-bold text-sm transition bg-white border-gray-200 text-gray-600">
-                                    1kg
-                                </button>
-                                <button onclick="setFormato('Saco')" id="btn-format-saco" class="format-btn py-3 px-4 rounded-lg border-2 font-bold text-sm transition border-green-600 bg-green-50 text-green-900">
-                                    Saco
-                                </button>
+                                <button onclick="setFormato('1kg')" id="btn-format-1kg" class="py-2 rounded-lg border-2 font-bold text-xs bg-white border-gray-200 text-gray-600">1kg</button>
+                                <button onclick="setFormato('Saco')" id="btn-format-saco" class="py-2 rounded-lg border-2 font-bold text-xs border-green-600 bg-green-50 text-green-900">Saco</button>
                             </div>
-                            <div class="flex items-center justify-between bg-white p-3 rounded-lg border border-gray-200">
-                                <span class="font-bold text-sm text-gray-700">Cantidad:</span>
-                                <div class="flex items-center gap-3">
-                                    <button onclick="changeQty(-1)" class="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 font-bold">-</button>
-                                    <input type="number" id="input-qty" value="1" min="1" class="w-12 text-center font-bold bg-transparent outline-none" readonly>
-                                    <button onclick="changeQty(1)" class="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 font-bold">+</button>
+                            <div class="flex items-center justify-between bg-white p-2 rounded-lg border border-gray-200">
+                                <span class="font-bold text-xs">Cantidad:</span>
+                                <div class="flex items-center gap-2">
+                                    <button onclick="changeQty(-1)" class="w-6 h-6 rounded bg-gray-100 font-bold">-</button>
+                                    <input type="number" id="input-qty" value="1" class="w-8 text-center font-bold bg-transparent outline-none" readonly>
+                                    <button onclick="changeQty(1)" class="w-6 h-6 rounded bg-gray-100 font-bold">+</button>
                                 </div>
                             </div>
-                            <div class="flex justify-between items-center pt-2">
-                                <span class="text-xs text-gray-500 font-bold">Subtotal Item:</span>
-                                <span class="font-black text-xl text-gray-900">$<span id="txt-subtotal-item">0</span></span>
-                            </div>
-                            <button id="btn-add-cart" onclick="agregarAlCarrito('Lote')" class="w-full bg-green-800 hover:bg-green-700 text-white py-3 rounded-xl font-bold text-sm transition shadow-lg mt-2 flex justify-center items-center gap-2">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
-                                Agregar al Carrito
-                            </button>
+                            <button id="btn-add-cart" onclick="agregarAlCarrito('Lote')" class="w-full bg-green-800 hover:bg-green-700 text-white py-3 rounded-xl font-bold text-sm transition">Agregar al Carrito</button>
                         </div>
 
                         <div class="bg-white border-t border-gray-100 pt-6">
-                            <h4 class="text-sm font-bold text-gray-900 mb-4 uppercase tracking-widest">Ficha Técnica</h4>
+                            <h4 class="text-xs font-bold text-gray-400 mb-4 uppercase tracking-widest">Ficha Técnica</h4>
                             <div id="detalle-ficha" class="space-y-2 text-xs text-gray-600"></div>
                         </div>
                     </div>
@@ -215,35 +181,28 @@
 
     <script>
         const API_URL = 'https://script.google.com/macros/s/AKfycbzLrChkaUqiWMyDgYpzfHHjmwPcZJ2afiiXQEFbFZ_-2iE-6pV1m4CnVlIAUlKCVc1g/exec';
-        let productosGlobal = []; 
-        let radarInstancia = null;
-        let pieInstancia = null;
-        
-        let currentProduct = null;
-        let selectedFormat = 'Saco';
-        let currentQty = 1;
-        let carrito = JSON.parse(localStorage.getItem('st_carrito')) || [];
+        let productosGlobal = [], radarInstancia = null, pieInstancia = null;
+        let currentProduct = null, selectedFormat = 'Saco', currentQty = 1, carrito = JSON.parse(localStorage.getItem('st_carrito')) || [];
 
         async function cargarCatalogo() {
             actualizarUI_Carrito();
             try {
-                const respuesta = await fetch(API_URL);
-                productosGlobal = await respuesta.json();
+                const res = await fetch(API_URL);
+                productosGlobal = await res.json();
                 document.getElementById('loading').classList.add('hidden');
                 const grid = document.getElementById('catalogo-grid');
                 grid.classList.remove('hidden');
-
                 grid.innerHTML = productosGlobal.map((p, i) => {
                     const nro = parseInt(p.Stock);
                     const isAgotado = isNaN(nro) ? (p.Stock && p.Stock.toLowerCase() === 'agotado') : (nro <= 0);
                     return `
                         <div onclick="verDetalle(${i})" class="bg-white cursor-pointer rounded-2xl shadow-sm hover:shadow-xl transition-all border border-gray-200 overflow-hidden group flex flex-col">
-                            <div class="h-52 relative overflow-hidden bg-gray-100">
-                                <img src="${p.Imagen || 'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7'}" class="w-full h-full object-cover transition transform group-hover:scale-105">
+                            <div class="h-48 relative overflow-hidden bg-gray-100">
+                                <img src="${p.Imagen || ''}" class="w-full h-full object-cover transition transform group-hover:scale-105 img-protegida">
                                 <div class="absolute top-4 left-4 bg-green-900 text-white text-[9px] font-black px-3 py-1.5 rounded-full uppercase tracking-widest">${p.Categoria || 'ORIGEN'}</div>
                                 ${p.Puntaje ? `<div class="absolute bottom-4 right-4 bg-white/90 backdrop-blur px-2 py-1 rounded font-bold text-xs shadow-sm">SCA: ${p.Puntaje}</div>` : ''}
                             </div>
-                            <div class="p-6 flex-grow flex flex-col">
+                            <div class="p-5 flex-grow flex flex-col">
                                 <h3 class="font-extrabold text-gray-900 text-lg leading-tight truncate">${p.Nombre}</h3>
                                 <p class="text-xs text-gray-400 font-medium mb-4">${p.Origen || '-'}</p>
                                 <div class="flex justify-between items-center mt-auto pt-4 border-t border-gray-100">
@@ -251,342 +210,140 @@
                                     <span class="font-black text-xl text-gray-900">$${Number(p.Precio).toLocaleString('es-CL')}</span>
                                 </div>
                             </div>
-                        </div>
-                    `;
+                        </div>`;
                 }).join('');
             } catch (e) { document.getElementById('loading').innerText = 'Error de conexión.'; }
         }
 
         function verDetalle(index) {
             currentProduct = productosGlobal[index];
-            currentQty = 1;
-            selectedFormat = 'Saco';
-            
+            currentQty = 1; selectedFormat = 'Saco';
             document.getElementById('input-qty').value = 1;
-            calcularSubtotalItem();
-
             document.getElementById('vista-principal').classList.add('hidden');
             document.getElementById('vista-detalle').classList.remove('hidden');
             window.scrollTo(0, 0);
 
             document.getElementById('detalle-img').src = currentProduct.Imagen || '';
             document.getElementById('detalle-nombre').innerText = currentProduct.Nombre;
-            document.getElementById('detalle-nombre-mobile').innerText = currentProduct.Nombre;
             document.getElementById('detalle-origen-texto').innerText = currentProduct.Origen;
-            document.getElementById('detalle-origen-texto-mobile').innerText = currentProduct.Origen;
             document.getElementById('detalle-puntaje-sca').innerText = currentProduct.Puntaje || '-';
             
             const cat = document.getElementById('detalle-categoria');
-            cat.innerText = currentProduct.Categoria || 'CAFÉ VERDE';
+            cat.innerText = currentProduct.Categoria || 'ORIGEN';
             cat.className = `text-[10px] font-extrabold px-3 py-1.5 rounded-full uppercase tracking-widest ${currentProduct.Categoria && currentProduct.Categoria.toLowerCase().includes('micro') ? 'bg-yellow-500' : 'bg-green-900'}`;
 
-            const nro = parseInt(currentProduct.Stock);
-            const isAgotado = isNaN(nro) ? (currentProduct.Stock && currentProduct.Stock.toLowerCase() === 'agotado') : (nro <= 0);
-            document.getElementById('detalle-stock').innerText = isAgotado ? 'Sin Stock' : (!isNaN(nro) ? `${nro} Sacos Disp.` : currentProduct.Stock);
-            document.getElementById('detalle-stock').className = `text-xs font-bold px-3 py-1.5 rounded border ${isAgotado ? 'bg-red-50 text-red-700 border-red-200' : 'bg-green-50 text-green-800 border-green-200'}`;
+            // --- Lógica de Galería de Origen ---
+            const secGaleria = document.getElementById('seccion-galeria');
+            const gridGaleria = document.getElementById('galeria-grid');
+            const fotosOrigen = [currentProduct['Imagen Origen 1'], currentProduct['Imagen Origen 2'], currentProduct['Imagen Origen 3']].filter(f => f);
             
-            const btnCart = document.getElementById('btn-add-cart');
-            if(isAgotado) {
-                btnCart.disabled = true; btnCart.classList.add('opacity-50', 'cursor-not-allowed');
-                btnCart.innerHTML = 'Producto Agotado';
+            if(fotosOrigen.length > 0) {
+                secGaleria.classList.remove('hidden');
+                gridGaleria.innerHTML = fotosOrigen.map(url => `
+                    <div class="h-40 relative rounded-lg overflow-hidden border border-gray-100 watermark-overlay">
+                        <img src="${url}" class="w-full h-full object-cover img-protegida grayscale hover:grayscale-0 transition duration-500">
+                    </div>
+                `).join('');
             } else {
-                btnCart.disabled = false; btnCart.classList.remove('opacity-50', 'cursor-not-allowed');
-                btnCart.innerHTML = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg> Agregar al Carrito';
+                secGaleria.classList.add('hidden');
             }
 
-            // Atributos SCA (Para ignorarlos en la Ficha Técnica Básica)
-            const atributosSCA = ['Fragancia / Aroma', 'Comentario Fragancia', 'Sabor', 'Comentario Sabor', 'Sabor Residual', 'Comentario Residual', 'Acidez', 'Comentario Acidez', 'Cuerpo', 'Comentario Cuerpo', 'Balance', 'Comentario Balance', 'Dulzor', 'Comentario Dulzor', 'Uniformidad', 'Comentario Uniformidad', 'Taza Limpia', 'Comentario Taza Limpia', 'General', 'Comentario General'];
-            
-            const omitirFicha = ['Nombre','Categoria','Stock','Precio','Imagen','Notas de Cata','Puntaje','Logo Productor', 'Malla 17', 'Malla 16', 'Malla 15', 'Malla 14', 'Fuera Malla', ...atributosSCA];
-            
-            document.getElementById('detalle-ficha').innerHTML = Object.keys(currentProduct).filter(k => !omitirFicha.includes(k) && currentProduct[k]).map(k => `
-                <div class="flex justify-between border-b border-gray-100 pb-1"><strong>${k}</strong><span class="text-right ml-4">${currentProduct[k]}</span></div>
-            `).join('');
-
-            // Generar Tabla SCA Dinámica
-            const tbodySCA = document.getElementById('tabla-sca-desglose');
-            const paresSCA = [
-                { label: 'Fragancia / Aroma', keyPts: 'Fragancia / Aroma', keyCom: 'Comentario Fragancia' },
-                { label: 'Sabor', keyPts: 'Sabor', keyCom: 'Comentario Sabor' },
-                { label: 'Sabor Residual', keyPts: 'Sabor Residual', keyCom: 'Comentario Residual' },
-                { label: 'Acidez', keyPts: 'Acidez', keyCom: 'Comentario Acidez' },
-                { label: 'Cuerpo', keyPts: 'Cuerpo', keyCom: 'Comentario Cuerpo' },
-                { label: 'Balance', keyPts: 'Balance', keyCom: 'Comentario Balance' },
-                { label: 'Dulzor', keyPts: 'Dulzor', keyCom: 'Comentario Dulzor' },
-                { label: 'Uniformidad', keyPts: 'Uniformidad', keyCom: 'Comentario Uniformidad' },
-                { label: 'Taza Limpia', keyPts: 'Taza Limpia', keyCom: 'Comentario Taza Limpia' },
-                { label: 'General', keyPts: 'General', keyCom: 'Comentario General' }
-            ];
-
+            // --- Atributos SCA ---
+            const atributosSCA = ['Fragancia / Aroma', 'Sabor', 'Sabor Residual', 'Acidez', 'Cuerpo', 'Balance', 'Dulzor', 'Uniformidad', 'Taza Limpia', 'General'];
             let htmlSca = '';
-            paresSCA.forEach(attr => {
-                if(currentProduct[attr.keyPts]) {
-                    htmlSca += `
-                        <tr class="hover:bg-gray-50 transition">
-                            <td class="px-3 py-2 font-bold text-gray-800 whitespace-nowrap border-r border-gray-100">${attr.label}</td>
-                            <td class="px-3 py-2 font-black text-green-700 text-center border-r border-gray-100">${currentProduct[attr.keyPts]}</td>
-                            <td class="px-3 py-2 text-gray-600 leading-tight">${currentProduct[attr.keyCom] || '-'}</td>
-                        </tr>
-                    `;
+            atributosSCA.forEach(attr => {
+                if(currentProduct[attr]) {
+                    htmlSca += `<tr class="hover:bg-gray-50"><td class="px-3 py-1.5 font-bold text-gray-800">${attr}</td><td class="px-3 py-1.5 font-black text-green-700 text-center">${currentProduct[attr]}</td><td class="px-3 py-1.5 text-[9px] text-gray-500 leading-tight italic">${currentProduct['Comentario ' + attr.split(' ')[0]] || '-'}</td></tr>`;
                 }
             });
-            tbodySCA.innerHTML = htmlSca || '<tr><td colspan="3" class="px-3 py-4 text-center text-gray-400">Desglose sensorial no disponible.</td></tr>';
+            document.getElementById('tabla-sca-desglose').innerHTML = htmlSca || '<tr><td colspan="3" class="p-4 text-center">Sin desglose.</td></tr>';
 
-            // Píldoras
             const notas = currentProduct['Notas de Cata'] || '';
-            document.getElementById('contenedor-pildoras-sabor').innerHTML = notas.split(',').filter(n => n.trim() !== '').map(n => `
-                <span class="bg-gray-100 text-gray-700 px-3 py-1.5 rounded-full text-[10px] uppercase tracking-widest font-bold border border-gray-200">☕ ${n.trim()}</span>
-            `).join('');
+            document.getElementById('contenedor-pildoras-sabor').innerHTML = notas.split(',').filter(n => n.trim()).map(n => `<span class="bg-gray-100 text-gray-700 px-3 py-1.5 rounded-full text-[10px] uppercase font-bold border border-gray-200">☕ ${n.trim()}</span>`).join('');
 
             dibujarGraficoRadar(currentProduct);
             dibujarGraficoMalla(currentProduct);
+            
+            const omitirFicha = ['Nombre','Categoria','Stock','Precio','Imagen','Notas de Cata','Puntaje','Logo Productor','Imagen Origen 1','Imagen Origen 2','Imagen Origen 3','Malla 17','Malla 16','Malla 15','Malla 14','Fuera Malla','Acidez','Cuerpo','Dulzor','Sabor','Balance','Sabor Residual','Fragancia / Aroma','Uniformidad','Taza Limpia','General'];
+            document.getElementById('detalle-ficha').innerHTML = Object.keys(currentProduct).filter(k => !omitirFicha.includes(k) && currentProduct[k]).map(k => `<div class="flex justify-between border-b border-gray-100 pb-1"><strong>${k}</strong><span class="text-right ml-4">${currentProduct[k]}</span></div>`).join('');
         }
 
-        // --- LÓGICA DE FORMATOS ---
+        // --- FUNCIONES CARRITO ---
         function setFormato(fmt) {
             selectedFormat = fmt;
-            const b1 = document.getElementById('btn-format-1kg');
-            const bs = document.getElementById('btn-format-saco');
-            if(fmt === '1kg') {
-                b1.className = 'py-3 px-4 rounded-lg border-2 font-bold text-sm transition border-green-600 bg-green-50 text-green-900';
-                bs.className = 'py-3 px-4 rounded-lg border-2 font-bold text-sm transition bg-white border-gray-200 text-gray-600';
-            } else {
-                bs.className = 'py-3 px-4 rounded-lg border-2 font-bold text-sm transition border-green-600 bg-green-50 text-green-900';
-                b1.className = 'py-3 px-4 rounded-lg border-2 font-bold text-sm transition bg-white border-gray-200 text-gray-600';
-            }
+            document.getElementById('btn-format-1kg').className = fmt==='1kg' ? 'py-2 rounded-lg border-2 font-bold text-xs border-green-600 bg-green-50 text-green-900' : 'py-2 rounded-lg border-2 font-bold text-xs bg-white border-gray-200 text-gray-600';
+            document.getElementById('btn-format-saco').className = fmt==='Saco' ? 'py-2 rounded-lg border-2 font-bold text-xs border-green-600 bg-green-50 text-green-900' : 'py-2 rounded-lg border-2 font-bold text-xs bg-white border-gray-200 text-gray-600';
             calcularSubtotalItem();
         }
-
-        function changeQty(val) {
-            currentQty = Math.max(1, currentQty + val);
-            document.getElementById('input-qty').value = currentQty;
-            calcularSubtotalItem();
-        }
-
+        function changeQty(v) { currentQty = Math.max(1, currentQty + v); document.getElementById('input-qty').value = currentQty; calcularSubtotalItem(); }
         function calcularSubtotalItem() {
             if(!currentProduct) return 0;
-            const precioBase = Number(currentProduct.Precio);
-            let factorPeso = 1;
-            if(selectedFormat === 'Saco') {
-                const empaqueTxt = currentProduct.Empaque || '30kg';
-                const match = empaqueTxt.match(/\d+/);
-                factorPeso = match ? parseInt(match[0]) : 30;
-            }
-            const subtotal = precioBase * factorPeso * currentQty;
-            document.getElementById('txt-subtotal-item').innerText = subtotal.toLocaleString('es-CL');
-            return subtotal;
+            const p = Number(currentProduct.Precio);
+            const m = (currentProduct.Empaque || '30kg').match(/\d+/);
+            const f = selectedFormat === 'Saco' ? (m ? parseInt(m[0]) : 30) : 1;
+            const t = p * f * currentQty;
+            return t;
         }
-
-        // --- CARRITO ---
         function agregarAlCarrito(tipo) {
-            let itemToAdd = {
-                nombre: currentProduct.Nombre,
-                img: currentProduct.Imagen || 'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7',
-                tipo: tipo,
-            };
-
-            if(tipo === 'Muestra') {
-                itemToAdd.formato = '250gr';
-                itemToAdd.cantidad = 1;
-                itemToAdd.precioUnitario = 5000;
-                itemToAdd.subtotal = 5000;
-            } else {
-                itemToAdd.formato = selectedFormat;
-                itemToAdd.cantidad = currentQty;
-                itemToAdd.subtotal = calcularSubtotalItem();
-                itemToAdd.precioUnitario = itemToAdd.subtotal / currentQty;
-                let peso = "1kg";
-                if(selectedFormat === 'Saco') {
-                    const match = (currentProduct.Empaque || '30kg').match(/\d+/);
-                    peso = match ? `${match[0]}kg` : '30kg';
-                }
-                itemToAdd.detalleFormato = peso;
-            }
-
-            const indexExistente = carrito.findIndex(i => i.nombre === itemToAdd.nombre && i.formato === itemToAdd.formato);
-            if(indexExistente > -1) {
-                carrito[indexExistente].cantidad += itemToAdd.cantidad;
-                carrito[indexExistente].subtotal += itemToAdd.subtotal;
-            } else {
-                carrito.push(itemToAdd);
-            }
-
+            let i = { nombre: currentProduct.Nombre, img: currentProduct.Imagen, tipo: tipo, formato: tipo==='Muestra'?'250gr':selectedFormat, cantidad: tipo==='Muestra'?1:currentQty };
+            i.subtotal = tipo==='Muestra'?5000:calcularSubtotalItem();
+            const idx = carrito.findIndex(x => x.nombre === i.nombre && x.formato === i.formato);
+            if(idx > -1) { carrito[idx].cantidad += i.cantidad; carrito[idx].subtotal += i.subtotal; } else { carrito.push(i); }
             localStorage.setItem('st_carrito', JSON.stringify(carrito));
             actualizarUI_Carrito();
-            
             if(document.getElementById('cart-panel').classList.contains('cart-closed')) toggleCarrito();
         }
-
-        function eliminarDelCarrito(index) {
-            carrito.splice(index, 1);
-            localStorage.setItem('st_carrito', JSON.stringify(carrito));
-            actualizarUI_Carrito();
-        }
-
         function actualizarUI_Carrito() {
-            const badge = document.getElementById('cart-badge');
-            const container = document.getElementById('cart-items');
-            const totalEl = document.getElementById('cart-subtotal');
-            
-            if(carrito.length > 0) {
-                badge.innerText = carrito.reduce((acc, item) => acc + item.cantidad, 0);
-                badge.classList.remove('hidden');
-            } else {
-                badge.classList.add('hidden');
-            }
-
-            let html = '';
-            let total = 0;
-
-            if(carrito.length === 0) {
-                html = '<p class="text-center text-gray-400 text-sm mt-10">Tu carrito está vacío.</p>';
-            } else {
-                carrito.forEach((item, idx) => {
-                    total += item.subtotal;
-                    html += `
-                        <div class="flex gap-4 bg-white p-3 rounded-xl border border-gray-100 shadow-sm">
-                            <img src="${item.img}" class="w-16 h-16 object-cover rounded-lg bg-gray-200">
-                            <div class="flex-grow flex flex-col justify-between">
-                                <div class="flex justify-between items-start">
-                                    <h5 class="font-bold text-gray-900 text-sm leading-tight pr-2">${item.nombre}</h5>
-                                    <button onclick="eliminarDelCarrito(${idx})" class="text-red-300 hover:text-red-600"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg></button>
-                                </div>
-                                <div class="flex justify-between items-end mt-2">
-                                    <span class="text-xs text-gray-500 bg-gray-50 px-2 py-1 rounded border border-gray-200">${item.cantidad}x ${item.formato} ${item.tipo === 'Lote' ? `(${item.detalleFormato})` : ''}</span>
-                                    <span class="font-black text-gray-900">$${item.subtotal.toLocaleString('es-CL')}</span>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                });
-            }
-
-            container.innerHTML = html;
-            totalEl.innerText = total.toLocaleString('es-CL');
+            const b = document.getElementById('cart-badge');
+            const c = document.getElementById('cart-items');
+            const s = document.getElementById('cart-subtotal');
+            b.innerText = carrito.reduce((a, x) => a + x.cantidad, 0);
+            b.classList.toggle('hidden', carrito.length === 0);
+            let t = 0;
+            c.innerHTML = carrito.length === 0 ? '<p class="text-center text-gray-400 text-xs mt-10">Vacío</p>' : carrito.map((x, idx) => {
+                t += x.subtotal;
+                return `<div class="flex gap-4 bg-white p-3 rounded-xl border border-gray-100 shadow-sm"><img src="${x.img}" class="w-12 h-12 object-cover rounded-lg bg-gray-200"><div class="flex-grow flex flex-col justify-between"><div class="flex justify-between items-start font-bold text-[10px] text-gray-900 leading-tight"><span>${x.nombre}</span><button onclick="eliminarDelCarrito(${idx})" class="text-red-300 hover:text-red-600">×</button></div><div class="flex justify-between items-end mt-2"><span class="text-[9px] text-gray-500">${x.cantidad}x ${x.formato}</span><span class="font-black text-gray-900">$${x.subtotal.toLocaleString('es-CL')}</span></div></div></div>`;
+            }).join('');
+            s.innerText = t.toLocaleString('es-CL');
         }
-
-        function toggleCarrito() {
-            const panel = document.getElementById('cart-panel');
-            const overlay = document.getElementById('cart-overlay');
-            if(panel.classList.contains('cart-closed')) {
-                panel.classList.remove('cart-closed');
-                panel.classList.add('cart-open');
-                overlay.classList.remove('hidden');
-            } else {
-                panel.classList.add('cart-closed');
-                panel.classList.remove('cart-open');
-                overlay.classList.add('hidden');
-            }
-        }
-
-        function enviarPedido(metodoPago) {
-            if(carrito.length === 0) return alert("Tu carrito está vacío.");
-            let totalBase = carrito.reduce((acc, item) => acc + item.subtotal, 0);
-            let totalFinal = metodoPago === 'MercadoPago' ? Math.round(totalBase * 1.035) : totalBase;
-            
-            let mensaje = `Hola *Super Tasters* ☕, quiero realizar el siguiente pedido:\n\n`;
-            carrito.forEach((item, idx) => {
-                mensaje += `${idx + 1}. *${item.nombre}*\n`;
-                mensaje += `   - Formato: ${item.formato} ${item.tipo === 'Lote' ? `(${item.detalleFormato})` : ''}\n`;
-                mensaje += `   - Cantidad: ${item.cantidad}\n`;
-                mensaje += `   - Subtotal: $${item.subtotal.toLocaleString('es-CL')}\n\n`;
-            });
-            mensaje += `💳 *Método de Pago:* ${metodoPago === 'MercadoPago' ? 'Mercado Pago (+3.5%)' : 'Transferencia/Fintoc'}\n`;
-            mensaje += `💰 *TOTAL A PAGAR: $${totalFinal.toLocaleString('es-CL')}* (+IVA)\n\n`;
-            mensaje += `Quedo atento/a para coordinar el pago y envío.`;
-
-            const url = `https://wa.me/56975552708?text=${encodeURIComponent(mensaje)}`;
-            window.open(url, '_blank');
+        function eliminarDelCarrito(idx) { carrito.splice(idx,1); localStorage.setItem('st_carrito', JSON.stringify(carrito)); actualizarUI_Carrito(); }
+        function toggleCarrito() { const p = document.getElementById('cart-panel'), o = document.getElementById('cart-overlay'); p.classList.toggle('cart-closed'); p.classList.toggle('cart-open'); o.classList.toggle('hidden'); }
+        function enviarPedido(m) {
+            let tB = carrito.reduce((a,x) => a + x.subtotal, 0), tF = m === 'MercadoPago' ? Math.round(tB * 1.035) : tB;
+            let msg = `Hola *Super Tasters* ☕, pedido:\n\n` + carrito.map((x, i) => `${i+1}. *${x.nombre}* (${x.formato} x${x.cantidad}) - $${x.subtotal.toLocaleString('es-CL')}`).join('\n') + `\n\n*Pago:* ${m}\n*TOTAL:* $${tF.toLocaleString('es-CL')}`;
+            window.open(`https://wa.me/56975552708?text=${encodeURIComponent(msg)}`, '_blank');
         }
 
         // --- GRÁFICOS ---
         function dibujarGraficoRadar(p) {
             const ctx = document.getElementById('radarChart').getContext('2d');
             if(radarInstancia) radarInstancia.destroy();
-            
-            // Usamos las etiquetas exactas de tu captura de pantalla
-            const labels = ['Fragancia / Aroma', 'Sabor', 'Sabor Residual', 'Acidez', 'Cuerpo', 'Balance', 'Dulzor'];
-            const dataValues = [
-                parseFloat(p['Fragancia / Aroma']) || 8,
-                parseFloat(p['Sabor']) || 8,
-                parseFloat(p['Sabor Residual']) || 7.75,
-                parseFloat(p['Acidez']) || 7.5,
-                parseFloat(p['Cuerpo']) || 7.75,
-                parseFloat(p['Balance']) || 7.75,
-                parseFloat(p['Dulzor']) || 8
-            ];
-
             radarInstancia = new Chart(ctx, {
                 type: 'radar',
                 data: {
-                    labels: labels,
-                    datasets: [{
-                        data: dataValues,
-                        backgroundColor: 'rgba(59, 130, 246, 0.2)', // Azul claro tipo Sheets
-                        borderColor: '#3b82f6',
-                        borderWidth: 2, 
-                        pointBackgroundColor: '#3b82f6'
-                    }]
+                    labels: ['Aroma', 'Sabor', 'Residual', 'Acidez', 'Cuerpo', 'Balance'],
+                    datasets: [{ data: [p['Fragancia / Aroma']||8, p.Sabor||8, p['Sabor Residual']||8, p.Acidez||8, p.Cuerpo||8, p.Balance||8], backgroundColor: 'rgba(59, 130, 246, 0.2)', borderColor: '#3b82f6', borderWidth: 2 }]
                 },
-                options: { 
-                    responsive: true, 
-                    maintainAspectRatio: false,
-                    scales: { 
-                        r: { 
-                            min: 6, max: 10, 
-                            ticks: { stepSize: 1, color: '#9ca3af', font: {size: 10} },
-                            pointLabels: { font: { size: 11, weight: 'bold' }, color: '#374151' }
-                        } 
-                    }, 
-                    plugins: { legend: { display: false } } 
-                }
+                options: { scales: { r: { min: 6, max: 10, ticks: { display: false } } }, plugins: { legend: { display: false } } }
             });
         }
-
         function dibujarGraficoMalla(p) {
             const container = document.getElementById('contenedor-pie-chart');
             const ctx = document.getElementById('pieChart').getContext('2d');
-            
-            if(p['Malla 17'] || p['Malla 16'] || p['Malla 15'] || p['Malla 14']) {
+            if(p['Malla 17'] || p['Malla 16'] || p['Malla 15']) {
                 container.classList.remove('hidden');
                 if(pieInstancia) pieInstancia.destroy();
-
-                const dataValues = [
-                    parseFloat(p['Malla 17']) || 0,
-                    parseFloat(p['Malla 16']) || 0,
-                    parseFloat(p['Malla 15']) || 0,
-                    parseFloat(p['Malla 14']) || 0,
-                    parseFloat(p['Fuera Malla'] || p['Fuera de malla']) || 0
-                ];
-
                 pieInstancia = new Chart(ctx, {
                     type: 'pie',
                     data: {
-                        labels: ['Malla 17', 'Malla 16', 'Malla 15', 'Malla 14', 'Fuera de malla'],
-                        datasets: [{
-                            data: dataValues,
-                            backgroundColor: ['#4285F4', '#DB4437', '#F4B400', '#0F9D58', '#FF6D00'], // Colores exactos de Google Sheets
-                            borderWidth: 1, borderColor: '#ffffff'
-                        }]
+                        labels: ['M17', 'M16', 'M15', 'M14', 'Fuera'],
+                        datasets: [{ data: [parseFloat(p['Malla 17'])||0, parseFloat(p['Malla 16'])||0, parseFloat(p['Malla 15'])||0, parseFloat(p['Malla 14'])||0, parseFloat(p['Fuera Malla'])||0], backgroundColor: ['#4285F4','#DB4437','#F4B400','#0F9D58','#FF6D00'] }]
                     },
-                    options: {
-                        responsive: true, maintainAspectRatio: false,
-                        plugins: {
-                            legend: { position: 'right', labels: { usePointStyle: true, boxWidth: 8, font: { size: 11 } } }
-                        }
-                    }
+                    options: { plugins: { legend: { position: 'right', labels: { boxWidth: 10, font: { size: 10 } } } } }
                 });
-            } else {
-                container.classList.add('hidden');
-            }
+            } else { container.classList.add('hidden'); }
         }
-
-        function volverCatalogo() {
-            document.getElementById('vista-detalle').classList.add('hidden');
-            document.getElementById('vista-principal').classList.remove('hidden');
-            window.scrollTo(0, 0);
-        }
-
+        function volverCatalogo() { document.getElementById('vista-detalle').classList.add('hidden'); document.getElementById('vista-principal').classList.remove('hidden'); }
         cargarCatalogo();
     </script>
 </body>
