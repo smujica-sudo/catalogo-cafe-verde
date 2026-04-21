@@ -13,7 +13,7 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
         body { font-family: 'Inter', sans-serif; }
         .cursor-pointer:hover .group-hover\:scale-105 { transform: scale(1.05); }
-        .video-fallback { background: url('https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?q=80&w=2000&auto=format&fit=crop') center/cover; }
+        .video-overlay { background: rgba(20, 83, 45, 0.85); }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-800">
@@ -25,7 +25,7 @@
                 <p class="text-[10px] font-bold uppercase tracking-[0.3em] text-gray-500">Café de Origen</p>
             </div>
             <a href="https://wa.me/56975552708" target="_blank" class="text-sm font-semibold text-green-800 hover:text-green-600 transition flex items-center gap-2">
-                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
                 +569 75552708
             </a>
         </div>
@@ -33,57 +33,56 @@
 
     <div id="vista-principal">
         
-        <section class="video-fallback relative py-32 px-6 border-b-8 border-green-700 overflow-hidden flex items-center justify-center">
-            <video autoplay loop muted playsinline class="absolute inset-0 w-full h-full object-cover z-0">
-                <source src="https://assets.mixkit.co/videos/preview/mixkit-coffee-beans-roasting-in-a-machine-4246-large.mp4" type="video/mp4">
+        <section class="relative py-40 px-6 border-b-8 border-green-700 overflow-hidden flex items-center justify-center bg-green-900">
+            <video autoplay loop muted playsinline class="absolute inset-0 w-full h-full object-cover z-0 opacity-40">
+                <source src="https://drive.google.com/uc?export=download&id=1uByxFLqIIQtOILHeZx7qUCXUpXv3JrnX" type="video/mp4">
             </video>
-            <div class="absolute inset-0 bg-green-900 bg-opacity-80 z-10"></div>
+            <div class="absolute inset-0 video-overlay z-10"></div>
             <div class="relative z-20 max-w-4xl mx-auto text-center text-white">
-                <h2 class="text-5xl font-extrabold mb-6 leading-tight drop-shadow-lg">Relaciones directas, calidad e innovación</h2>
-                <p class="text-xl text-green-100 font-light max-w-2xl mx-auto leading-relaxed drop-shadow-md">Conectamos a productores, tostadores y consumidores en un esquema de relacionamiento directo, transparente y sostenible.</p>
+                <h2 class="text-5xl font-extrabold mb-6 leading-tight drop-shadow-xl">Conectamos Tostadores con Orígenes Extraordinarios</h2>
+                <p class="text-xl text-green-100 font-light max-w-2xl mx-auto leading-relaxed drop-shadow-md">Establecemos relaciones directas y de largo plazo con socios caficultores en origen para asegurar transparencia, calidad e innovación[cite: 6, 20].</p>
             </div>
         </section>
 
         <section class="max-w-6xl mx-auto px-6 py-16">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                 <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-                    <div class="bg-green-100 w-12 h-12 rounded-lg flex items-center justify-center mb-4 text-green-800"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div>
-                    <h4 class="text-lg font-bold mb-2">Comercio Directo</h4>
-                    <p class="text-gray-500 text-sm">Maximizamos las ganancias para el caficultor y estrechamos la brecha con el tostador.</p>
+                    <div class="bg-green-100 w-12 h-12 rounded-lg flex items-center justify-center mb-4 text-green-800"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg></div>
+                    <h4 class="text-lg font-bold mb-2">Presencia en Origen</h4>
+                    <p class="text-gray-500 text-sm italic">Visitamos personalmente productores en Indonesia, Tailandia, Centro y Sudamérica[cite: 7, 24].</p>
                 </div>
                 <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
                     <div class="bg-green-100 w-12 h-12 rounded-lg flex items-center justify-center mb-4 text-green-800"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path></svg></div>
-                    <h4 class="text-lg font-bold mb-2">Expertise SCA</h4>
-                    <p class="text-gray-500 text-sm">Equipo certificado (Brewing, Roasting, etc.). Lotes evaluados por un Q Grader.</p>
+                    <h4 class="text-lg font-bold mb-2">Equipo SCA</h4>
+                    <p class="text-gray-500 text-sm">Contamos con certificaciones SCA en Brewing, Barista, Sensory y Roasting[cite: 13].</p>
                 </div>
                 <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
                     <div class="bg-green-100 w-12 h-12 rounded-lg flex items-center justify-center mb-4 text-green-800"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg></div>
-                    <h4 class="text-lg font-bold mb-2">Orgánico & Sostenible</h4>
-                    <p class="text-gray-500 text-sm">Certificación orgánica (SAG) y enfoque en fincas de propiedad de mujeres.</p>
+                    <h4 class="text-lg font-bold mb-2">Sostenibilidad</h4>
+                    <p class="text-gray-500 text-sm">Importadores certificados orgánicos por el SAG y cafés de Comercio Justo[cite: 11, 35, 36].</p>
                 </div>
                 <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
                     <div class="bg-green-100 w-12 h-12 rounded-lg flex items-center justify-center mb-4 text-green-800"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg></div>
-                    <h4 class="text-lg font-bold mb-2">Logística</h4>
-                    <p class="text-gray-500 text-sm">Despachos en Santiago y Regiones. Descuentos mayoristas (3% y 5%).</p>
+                    <h4 class="text-lg font-bold mb-2">Logística Eficiente</h4>
+                    <p class="text-gray-500 text-sm">Despachos en Santiago y Regiones. Descuentos por volumen (3% y 5%)[cite: 157, 177, 178].</p>
                 </div>
             </div>
         </section>
 
         <main class="max-w-6xl mx-auto px-6 pb-20">
             <div class="flex justify-between items-end mb-8 border-b border-gray-200 pb-2">
-                <h3 class="text-3xl font-bold text-gray-900">Nuestra Oferta</h3>
+                <h3 class="text-3xl font-bold text-gray-900">Oferta Disponible</h3>
             </div>
             <div id="loading" class="flex flex-col items-center justify-center py-20 text-gray-400">
-                <svg class="animate-spin h-10 w-10 text-green-800 mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                <svg class="animate-spin h-10 w-10 text-green-800 mb-4" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
                 <p class="font-medium animate-pulse">Sincronizando inventario...</p>
             </div>
-            <div id="catalogo-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 hidden">
-                </div>
+            <div id="catalogo-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 hidden"></div>
         </main>
     </div>
 
     <div id="vista-detalle" class="hidden bg-gray-50 min-h-screen pb-20">
-        <div class="h-32 bg-green-900 relative overflow-hidden">
+        <div class="h-32 bg-green-900 relative">
              <button onclick="volverCatalogo()" class="absolute top-6 left-6 bg-white bg-opacity-20 hover:bg-opacity-40 text-white px-4 py-2 rounded-full backdrop-blur-sm transition flex items-center gap-2 font-medium text-sm border border-white border-opacity-30 z-20">
                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg> Volver al Catálogo
              </button>
@@ -91,18 +90,15 @@
 
         <div class="max-w-6xl mx-auto px-6 -mt-10 relative z-20">
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                
                 <div class="lg:col-span-7 space-y-6">
                     <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-                        <img id="detalle-img" src="" alt="Café" class="w-full h-80 object-cover rounded-xl shadow-inner mb-6">
-                        
-                        <div id="contenedor-notas" class="bg-green-50 border border-green-100 p-4 rounded-xl hidden mb-6">
-                            <h4 class="text-xs font-bold text-green-800 uppercase tracking-widest mb-2">Notas de Sabor (Perfil en Taza)</h4>
-                            <p id="detalle-notas" class="text-lg font-semibold text-gray-900"></p>
+                        <img id="detalle-img" src="" class="w-full h-80 object-cover rounded-xl mb-6 shadow-inner">
+                        <div id="contenedor-notas" class="bg-green-50 border border-green-100 p-4 rounded-xl mb-6">
+                            <h4 class="text-xs font-bold text-green-800 uppercase tracking-widest mb-2">Perfil en Taza (Notas de Sabor)</h4>
+                            <p id="detalle-notas" class="text-lg font-semibold text-gray-900 italic"></p>
                         </div>
-
                         <div class="mt-6">
-                            <h4 class="text-sm font-bold text-gray-900 border-b pb-2 mb-4">Evaluación Sensorial (SCA)</h4>
+                            <h4 class="text-sm font-bold text-gray-900 border-b pb-2 mb-4">Evaluación Sensorial SCA</h4>
                             <div class="relative w-full max-w-md mx-auto h-64">
                                 <canvas id="radarChart"></canvas>
                             </div>
@@ -114,65 +110,38 @@
                     <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 flex flex-col h-full">
                         <div class="mb-6">
                             <div class="flex justify-between items-start mb-3">
-                                <span id="detalle-categoria" class="text-[10px] font-extrabold px-3 py-1.5 rounded-full uppercase tracking-widest shadow-sm"></span>
-                                <span id="detalle-stock" class="text-sm font-bold px-3 py-1 rounded bg-gray-100 text-gray-800 border border-gray-200"></span>
+                                <span id="detalle-categoria" class="text-[10px] font-extrabold px-3 py-1.5 rounded-full uppercase tracking-widest"></span>
+                                <span id="detalle-stock" class="text-sm font-bold px-3 py-1 rounded bg-gray-100 border"></span>
                             </div>
                             <h2 id="detalle-nombre" class="text-4xl font-extrabold text-gray-900 leading-tight mb-2"></h2>
-                            <p id="detalle-origen" class="text-green-700 font-medium flex items-center gap-1">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                                <span id="detalle-origen-texto"></span>
-                            </p>
+                            <p id="detalle-origen-texto" class="text-green-700 font-medium flex items-center gap-1 mb-8"></p>
                         </div>
 
                         <div class="mb-8">
-                            <h4 class="text-sm font-bold text-gray-900 mb-3 border-b pb-2">Especificaciones Técnicas</h4>
-                            <div id="detalle-ficha" class="space-y-3 text-sm text-gray-700 bg-gray-50 p-4 rounded-lg">
-                                </div>
+                            <h4 class="text-sm font-bold text-gray-900 border-b pb-2 mb-3">Ficha Técnica</h4>
+                            <div id="detalle-ficha" class="space-y-3 text-sm text-gray-700 bg-gray-50 p-4 rounded-lg"></div>
                         </div>
 
                         <div class="mt-auto space-y-4">
                             <div class="bg-blue-50 border border-blue-100 p-4 rounded-xl">
-                                <div class="flex justify-between items-center mb-3">
-                                    <div>
-                                        <h5 class="font-bold text-blue-900 text-sm">Solicitar Muestra</h5>
-                                        <p class="text-[11px] text-blue-700">Formato 250gr.</p>
-                                    </div>
-                                    <div class="text-right">
-                                        <p class="font-black text-lg text-blue-900">$5.000</p>
-                                        <p class="text-[9px] font-bold text-blue-700 uppercase">+ ENVÍO</p>
-                                    </div>
+                                <div class="flex justify-between items-center mb-3 text-blue-900">
+                                    <h5 class="font-bold text-sm">Muestra 250gr</h5>
+                                    <p class="font-black text-lg">$5.000 <span class="text-[9px]">+ ENVÍO</span></p>
                                 </div>
-                                <button id="btn-muestra" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 rounded text-xs transition">
-                                    Pedir Muestra por WhatsApp
-                                </button>
+                                <button id="btn-muestra" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 rounded text-xs transition">Pedir por WhatsApp</button>
                             </div>
 
-                            <div class="space-y-2">
-                                <button id="btn-fintoc" class="w-full flex justify-between items-center bg-gray-900 hover:bg-gray-800 text-white p-4 rounded-xl transition">
-                                    <div class="text-left">
-                                        <p class="font-bold text-xs mb-1">Transferencia o Fintoc</p>
-                                    </div>
-                                    <div class="text-right flex items-baseline gap-1">
-                                        <p class="font-black text-lg">$<span id="precio-transferencia"></span></p>
-                                        <p class="text-[9px] text-gray-400 uppercase font-bold">+IVA/KG</p>
-                                    </div>
-                                </button>
-
-                                <button id="btn-mp" class="w-full flex justify-between items-center bg-[#009EE3] hover:bg-[#0089C7] text-white p-4 rounded-xl transition">
-                                    <div class="text-left">
-                                        <p class="font-bold text-xs mb-1">Mercado Pago</p>
-                                        <p class="text-[10px] text-blue-100">+3.5% recargo</p>
-                                    </div>
-                                    <div class="text-right flex items-baseline gap-1">
-                                        <p class="font-black text-lg">$<span id="precio-mp"></span></p>
-                                        <p class="text-[9px] text-blue-100 uppercase font-bold">+IVA/KG</p>
-                                    </div>
-                                </button>
-                            </div>
+                            <button id="btn-fintoc" class="w-full flex justify-between items-center bg-gray-900 text-white p-4 rounded-xl hover:bg-black transition">
+                                <span class="font-bold text-xs text-left">Fintoc / Transferencia<br><small class="text-gray-400">Sin recargo</small></span>
+                                <span class="font-black text-lg">$<span id="precio-transferencia"></span><small class="text-[9px] ml-1 uppercase">+IVA</small></span>
+                            </button>
+                            <button id="btn-mp" class="w-full flex justify-between items-center bg-[#009EE3] text-white p-4 rounded-xl hover:bg-[#0089C7] transition">
+                                <span class="font-bold text-xs text-left">Mercado Pago<br><small class="text-blue-100">Tarjetas (+3.5%)</small></span>
+                                <span class="font-black text-lg">$<span id="precio-mp"></span><small class="text-[9px] ml-1 uppercase">+IVA</small></span>
+                            </button>
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
     </div>
@@ -186,153 +155,77 @@
             try {
                 const respuesta = await fetch(API_URL);
                 productosGlobal = await respuesta.json();
-                
                 const grid = document.getElementById('catalogo-grid');
-                const loading = document.getElementById('loading');
-                let html = '';
-                
-                productosGlobal.forEach((producto, index) => {
-                    const isMicrolote = producto.Categoria && producto.Categoria.toLowerCase().includes('micro');
-                    const catBadgeClass = isMicrolote ? 'bg-yellow-400 text-yellow-900' : 'bg-green-800 text-white';
-                    
-                    const nroSacos = parseInt(producto.Stock);
-                    const isAgotado = isNaN(nroSacos) ? (producto.Stock.toLowerCase() === 'agotado') : (nroSacos <= 0);
-                    const stockText = isAgotado ? 'Agotado' : (!isNaN(nroSacos) ? `${nroSacos} Sacos Disp.` : producto.Stock);
-                    const stockClass = isAgotado ? 'text-red-600 bg-red-50' : 'text-green-800 bg-green-100';
-                    
-                    const imagenUrl = producto.Imagen ? producto.Imagen : 'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?auto=format&fit=crop&q=80&w=800';
+                document.getElementById('loading').classList.add('hidden');
+                grid.classList.remove('hidden');
 
-                    html += `
-                        <div onclick="verDetalle(${index})" class="bg-white cursor-pointer rounded-xl shadow-sm hover:shadow-xl transition duration-300 overflow-hidden flex flex-col group border border-gray-200">
-                            <div class="h-48 relative overflow-hidden bg-gray-200">
-                                <img src="${imagenUrl}" alt="${producto.Nombre}" class="w-full h-full object-cover transition duration-500 transform group-hover:scale-105">
-                                <div class="absolute top-4 left-4 ${catBadgeClass} text-[10px] font-extrabold px-3 py-1.5 rounded-full uppercase tracking-widest shadow-md">
-                                    ${producto.Categoria || 'Café Verde'}
-                                </div>
-                            </div>
-                            <div class="p-6 flex-grow bg-white">
-                                <h3 class="text-xl font-bold text-gray-900 mb-1 truncate">${producto.Nombre}</h3>
-                                <p class="text-gray-500 text-xs mb-4">${producto.Origen || '-'}</p>
-                                
-                                <div class="flex justify-between items-center mt-4 pt-4 border-t border-gray-100">
-                                    <span class="${stockClass} text-[11px] font-bold px-2 py-1 rounded border border-current border-opacity-20">${stockText}</span>
-                                    <div class="text-right">
-                                        <span class="text-lg font-black text-gray-900">$${Number(producto.Precio).toLocaleString('es-CL')}</span>
-                                    </div>
+                grid.innerHTML = productosGlobal.map((p, i) => {
+                    const nro = parseInt(p.Stock);
+                    const stockTxt = isNaN(nro) ? p.Stock : (nro <= 0 ? 'Agotado' : `${nro} Sacos Disp.`);
+                    return `
+                        <div onclick="verDetalle(${i})" class="bg-white cursor-pointer rounded-xl shadow-sm hover:shadow-xl transition overflow-hidden border border-gray-200">
+                            <img src="${p.Imagen || 'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7'}" class="h-48 w-full object-cover">
+                            <div class="p-6">
+                                <h3 class="font-bold text-gray-900">${p.Nombre}</h3>
+                                <p class="text-xs text-gray-500 mb-4">${p.Origen || '-'}</p>
+                                <div class="flex justify-between items-center pt-4 border-t border-gray-100">
+                                    <span class="text-[10px] font-bold px-2 py-1 rounded bg-green-50 text-green-800">${stockTxt}</span>
+                                    <span class="font-black text-gray-900">$${Number(p.Precio).toLocaleString('es-CL')}</span>
                                 </div>
                             </div>
                         </div>
                     `;
-                });
-
-                grid.innerHTML = html;
-                loading.classList.add('hidden');
-                grid.classList.remove('hidden');
-
-            } catch (error) {
-                document.getElementById('loading').innerHTML = '<p class="text-red-500 font-bold">Error al conectar con la base de datos.</p>';
-            }
+                }).join('');
+            } catch (e) { document.getElementById('loading').innerText = 'Error al cargar datos.'; }
         }
 
         function verDetalle(index) {
-            const producto = productosGlobal[index];
-            window.scrollTo(0, 0);
+            const p = productosGlobal[index];
             document.getElementById('vista-principal').classList.add('hidden');
             document.getElementById('vista-detalle').classList.remove('hidden');
-
-            // Categoría y Stock
-            const isMicrolote = producto.Categoria && producto.Categoria.toLowerCase().includes('micro');
-            const catBadge = document.getElementById('detalle-categoria');
-            catBadge.className = `text-[10px] font-extrabold px-3 py-1.5 rounded-full uppercase tracking-widest shadow-sm ${isMicrolote ? 'bg-yellow-400 text-yellow-900' : 'bg-green-800 text-white'}`;
-            catBadge.innerText = producto.Categoria || 'Café Verde';
-
-            const nroSacos = parseInt(producto.Stock);
-            const isAgotado = isNaN(nroSacos) ? (producto.Stock.toLowerCase() === 'agotado') : (nroSacos <= 0);
-            document.getElementById('detalle-stock').innerText = isAgotado ? 'Sin Stock' : (!isNaN(nroSacos) ? `${nroSacos} Sacos Disponibles` : producto.Stock);
-            document.getElementById('detalle-stock').className = `text-xs font-bold px-3 py-1.5 rounded border ${isAgotado ? 'bg-red-50 text-red-700 border-red-200' : 'bg-green-50 text-green-800 border-green-200'}`;
-
-            // Info Principal
-            document.getElementById('detalle-nombre').innerText = producto.Nombre;
-            document.getElementById('detalle-origen-texto').innerText = producto.Origen || '-';
-            document.getElementById('detalle-img').src = producto.Imagen || 'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?auto=format&fit=crop&q=80&w=800';
             
-            // Notas de Cata (Sabor)
-            const notasCata = producto['Notas de Cata'] || producto['Sabor'] || producto['Perfil'];
-            const contenedorNotas = document.getElementById('contenedor-notas');
-            if(notasCata) {
-                document.getElementById('detalle-notas').innerText = notasCata;
-                contenedorNotas.classList.remove('hidden');
-            } else {
-                contenedorNotas.classList.add('hidden');
-            }
-
-            // Cálculos Precios
-            const precioBase = Number(producto.Precio);
-            document.getElementById('precio-transferencia').innerText = precioBase.toLocaleString('es-CL');
-            document.getElementById('precio-mp').innerText = Math.round(precioBase * 1.035).toLocaleString('es-CL');
-
-            // Ficha Técnica (excluyendo columnas que ya se muestran gráficamente o no aportan a la tabla)
-            const omitirColumnas = ['Nombre', 'Categoria', 'Stock', 'Precio', 'Imagen', 'Notas de Cata', 'Acidez', 'Cuerpo', 'Dulzor', 'Sabor', 'Balance'];
-            let fichaHTML = '';
-            Object.keys(producto).forEach(key => {
-                if(!omitirColumnas.includes(key) && producto[key] && producto[key] !== '') {
-                    fichaHTML += `<div class="flex justify-between border-b border-gray-200 pb-2"><span class="font-semibold text-gray-900">${key}</span> <span class="text-right">${producto[key]}</span></div>`;
-                }
-            });
-            document.getElementById('detalle-ficha').innerHTML = fichaHTML;
-
-            // Dibujar Gráfico Interactivo de Radar
-            dibujarGrafico(producto);
-
-            // Enlaces WhatsApp
-            const baseWsp = "https://wa.me/56975552708?text=";
-            document.getElementById('btn-muestra').onclick = () => window.open(baseWsp + encodeURIComponent(`Hola KAWAS, quiero solicitar una MUESTRA de 250gr del lote: ${producto.Nombre}. Entiendo que el valor es $5.000 + envío.`), '_blank');
+            document.getElementById('detalle-img').src = p.Imagen || 'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7';
+            document.getElementById('detalle-notas').innerText = p['Notas de Cata'] || p['Sabor'] || 'Perfil equilibrado';
+            document.getElementById('detalle-nombre').innerText = p.Nombre;
+            document.getElementById('detalle-origen-texto').innerText = p.Origen;
             
-            const btnFintoc = document.getElementById('btn-fintoc');
-            const btnMp = document.getElementById('btn-mp');
-            if(isAgotado){
-                btnFintoc.disabled = true; btnFintoc.classList.add('opacity-50', 'cursor-not-allowed');
-                btnMp.disabled = true; btnMp.classList.add('opacity-50', 'cursor-not-allowed');
-            } else {
-                btnFintoc.disabled = false; btnFintoc.classList.remove('opacity-50', 'cursor-not-allowed');
-                btnMp.disabled = false; btnMp.classList.remove('opacity-50', 'cursor-not-allowed');
-                btnFintoc.onclick = () => window.open(baseWsp + encodeURIComponent(`Hola KAWAS, quiero adquirir sacos del lote: ${producto.Nombre}. Deseo pagar vía TRANSFERENCIA/FINTOC.`), '_blank');
-                btnMp.onclick = () => window.open(baseWsp + encodeURIComponent(`Hola KAWAS, quiero adquirir sacos del lote: ${producto.Nombre}. Deseo que me envíen un Link de MERCADO PAGO.`), '_blank');
-            }
+            const n = parseInt(p.Stock);
+            document.getElementById('detalle-stock').innerText = isNaN(n) ? p.Stock : (n <= 0 ? 'Sin Stock' : `${n} Sacos Disponibles`);
+            
+            const base = Number(p.Precio);
+            document.getElementById('precio-transferencia').innerText = base.toLocaleString('es-CL');
+            document.getElementById('precio-mp').innerText = Math.round(base * 1.035).toLocaleString('es-CL');
+
+            const cat = document.getElementById('detalle-categoria');
+            cat.innerText = p.Categoria;
+            cat.className = `text-[10px] font-extrabold px-3 py-1.5 rounded-full uppercase ${p.Categoria.toLowerCase().includes('micro') ? 'bg-yellow-400 text-yellow-900' : 'bg-green-800 text-white'}`;
+
+            const omitir = ['Nombre','Categoria','Stock','Precio','Imagen','Notas de Cata','Acidez','Cuerpo','Dulzor','Sabor','Balance'];
+            document.getElementById('detalle-ficha').innerHTML = Object.keys(p).filter(k => !omitir.includes(k) && p[k]).map(k => `
+                <div class="flex justify-between border-b pb-2"><strong>${k}</strong><span>${p[k]}</span></div>
+            `).join('');
+
+            dibujarGrafico(p);
+            
+            const wsp = "https://wa.me/56975552708?text=";
+            document.getElementById('btn-muestra').onclick = () => window.open(wsp + encodeURIComponent(`Solicitud MUESTRA: ${p.Nombre}.`), '_blank');
+            document.getElementById('btn-fintoc').onclick = () => window.open(wsp + encodeURIComponent(`Interés Lote: ${p.Nombre} (Transferencia).`), '_blank');
+            document.getElementById('btn-mp').onclick = () => window.open(wsp + encodeURIComponent(`Interés Lote: ${p.Nombre} (Mercado Pago).`), '_blank');
         }
 
-        function dibujarGrafico(producto) {
+        function dibujarGrafico(p) {
             const ctx = document.getElementById('radarChart').getContext('2d');
-            if(radarInstancia) radarInstancia.destroy(); 
-            
-            // Si las columnas existen en Sheets, las usa. Si no, simula datos visuales.
-            const dataPuntos = [
-                parseFloat(producto['Acidez']) || (Math.random() * 2 + 7).toFixed(1),
-                parseFloat(producto['Cuerpo']) || (Math.random() * 2 + 7).toFixed(1),
-                parseFloat(producto['Dulzor']) || (Math.random() * 2 + 7).toFixed(1),
-                parseFloat(producto['Sabor']) || (Math.random() * 2 + 7).toFixed(1),
-                parseFloat(producto['Balance']) || (Math.random() * 2 + 7).toFixed(1)
-            ];
-
+            if(radarInstancia) radarInstancia.destroy();
             radarInstancia = new Chart(ctx, {
                 type: 'radar',
                 data: {
                     labels: ['Acidez', 'Cuerpo', 'Dulzor', 'Sabor', 'Balance'],
                     datasets: [{
-                        label: 'Perfil SCA',
-                        data: dataPuntos,
-                        backgroundColor: 'rgba(20, 83, 45, 0.2)',
-                        borderColor: 'rgba(20, 83, 45, 1)',
-                        pointBackgroundColor: 'rgba(20, 83, 45, 1)',
-                        pointBorderColor: '#fff',
-                        borderWidth: 2,
+                        data: [p.Acidez||8, p.Cuerpo||8, p.Dulzor||8, p.Sabor||8, p.Balance||8],
+                        backgroundColor: 'rgba(20, 83, 45, 0.2)', borderColor: '#14532d', borderWidth: 2
                     }]
                 },
-                options: {
-                    responsive: true, maintainAspectRatio: false,
-                    scales: { r: { min: 6, max: 10, ticks: { display: false, stepSize: 1 } } },
-                    plugins: { legend: { display: false } }
-                }
+                options: { scales: { r: { min: 6, max: 10, ticks: { display: false } } }, plugins: { legend: { display: false } } }
             });
         }
 
