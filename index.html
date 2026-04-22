@@ -23,9 +23,29 @@
         .nav-transition { transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
         .text-outline { -webkit-text-stroke: 1px rgba(255,255,255,0.4); color: transparent; }
         .img-protegida { pointer-events: none; user-select: none; -webkit-user-drag: none; }
+        
+        /* Animaciones sutiles */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in { animation: fadeInUp 0.8s ease-out forwards; opacity: 0; }
+        .delay-100 { animation-delay: 100ms; }
+        .delay-200 { animation-delay: 200ms; }
+        .delay-300 { animation-delay: 300ms; }
+        .delay-400 { animation-delay: 400ms; }
+        
+        /* Efecto Hover para filas y tarjetas */
+        .hover-lift { transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        .hover-lift:hover { transform: translateY(-5px); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); }
     </style>
 </head>
 <body>
+
+    <div id="lightbox" class="fixed inset-0 z-[200] bg-black/95 hidden flex items-center justify-center p-4 transition-opacity duration-300 opacity-0" onclick="closeLightbox()">
+        <button class="absolute top-6 right-6 text-white hover:text-green-400 transition text-5xl font-light">&times;</button>
+        <img id="lightbox-img" src="" class="max-h-[90vh] max-w-full rounded-xl shadow-[0_0_50px_rgba(0,0,0,0.5)] object-contain pointer-events-none">
+    </div>
 
     <nav id="main-nav" class="fixed top-0 w-full z-[100] nav-transition bg-white/95 backdrop-blur-[20px] border-b border-gray-100 py-4">
         <div class="max-w-7xl mx-auto px-6 flex flex-wrap md:flex-nowrap justify-between items-center gap-4">
@@ -67,11 +87,12 @@
 
     <div class="pt-32 md:pt-24 flex flex-col min-h-screen">
         <main class="flex-grow">
+            
             <section id="view-home" class="view-section view-active">
                 <div class="relative h-[85vh] flex items-center justify-center bg-black overflow-hidden">
                     <video autoplay loop muted playsinline class="absolute inset-0 w-full h-full object-cover opacity-60"><source src="video.mp4" type="video/mp4"></video>
                     <div class="absolute inset-0 video-overlay"></div>
-                    <div class="relative z-20 text-center px-6 max-w-5xl">
+                    <div class="relative z-20 text-center px-6 max-w-5xl animate-fade-in">
                         <h2 class="text-7xl md:text-9xl font-black text-white tracking-tighter leading-[0.8] mb-8">ROAST BETTER<br>COFFEE.</h2>
                         <p class="text-green-50 text-lg md:text-2xl mb-12 font-light italic opacity-90 max-w-3xl mx-auto">Curaduría técnica, trato directo y trazabilidad radical desde 2014.</p>
                         <button onclick="navigateTo('offerlist')" class="bg-white text-green-950 px-12 py-5 rounded-full font-black uppercase tracking-widest text-xs hover:scale-105 transition shadow-2xl italic">Ver Inventario B2B</button>
@@ -81,45 +102,45 @@
                 <div class="marquee-container"><div class="marquee-content">• Direct Trade • SCA Certified • Trazabilidad Radical • Q Grader Certified • Almacenaje Técnico • Innovación • Direct Trade • SCA Certified • Trazabilidad Radical •</div></div>
 
                 <div class="max-w-7xl mx-auto px-6 py-32 grid grid-cols-1 md:grid-cols-3 gap-20">
-                    <div class="space-y-4">
+                    <div class="space-y-4 animate-fade-in delay-100">
                         <h3 class="text-[10px] font-black uppercase tracking-[0.4em] text-green-700 italic">Ethos</h3>
                         <p class="text-2xl font-black text-green-950 tracking-tighter leading-none italic">Autoridad Técnica.</p>
-                        <p class="text-gray-500 text-sm leading-relaxed">Equipo certificado SCA y Q Graders. No somos intermediarios; somos socios que garantizan la integridad de cada grano mediante una trayectoria impecable.</p>
+                        <p class="text-gray-500 text-sm leading-relaxed">Equipo certificado SCA y Q Graders[cite: 13, 14]. No somos intermediarios; somos socios que garantizan la integridad de cada grano mediante una trayectoria impecable.</p>
                     </div>
-                    <div class="space-y-4">
+                    <div class="space-y-4 animate-fade-in delay-200">
                         <h3 class="text-[10px] font-black uppercase tracking-[0.4em] text-green-700 italic">Pathos</h3>
                         <p class="text-2xl font-black text-green-950 tracking-tighter leading-none italic">Relaciones en Origen.</p>
-                        <p class="text-gray-500 text-sm leading-relaxed">Visitamos personalmente a productores en Indonesia, Brasil y Bolivia. El café es un vehículo de confianza humana y sostenibilidad en el campo.</p>
+                        <p class="text-gray-500 text-sm leading-relaxed">Visitamos personalmente a productores en Indonesia, Brasil, Bolivia, Perú y Centroamérica[cite: 7]. El café es un vehículo de confianza humana y sostenibilidad en el campo.</p>
                     </div>
-                    <div class="space-y-4">
+                    <div class="space-y-4 animate-fade-in delay-300">
                         <h3 class="text-[10px] font-black uppercase tracking-[0.4em] text-green-700 italic">Logos</h3>
                         <p class="text-2xl font-black text-green-950 tracking-tighter leading-none italic">Análisis de Datos.</p>
-                        <p class="text-gray-500 text-sm leading-relaxed">Análisis físicos meticulosos y evaluaciones sensoriales bajo estándares SCA. Transparencia lógica y eficiencia logística en cada lote.</p>
+                        <p class="text-gray-500 text-sm leading-relaxed">Análisis físicos meticulosos y evaluaciones sensoriales bajo estándares SCA[cite: 16]. Transparencia lógica y eficiencia logística en cada lote.</p>
                     </div>
                 </div>
 
-                <div id="home-featured-grid" class="max-w-7xl mx-auto px-6 py-20 grid grid-cols-1 md:grid-cols-3 gap-16 border-t"></div>
+                <div id="home-featured-grid" class="max-w-7xl mx-auto px-6 py-20 grid grid-cols-1 md:grid-cols-3 gap-16 border-t animate-fade-in delay-400"></div>
             </section>
 
             <section id="view-auth" class="view-section py-32 px-6">
-                <div class="max-w-md mx-auto bg-white rounded-[50px] shadow-2xl p-16 text-center border">
+                <div class="max-w-md mx-auto bg-white rounded-[50px] shadow-2xl p-16 text-center border animate-fade-in">
                     <h2 class="text-3xl font-black mb-8 uppercase italic tracking-tighter">B2B Gate</h2>
                     <p class="text-xs text-gray-400 uppercase tracking-widest mb-10 leading-relaxed">Información técnica y precios exclusivos para tostadurías autorizadas.</p>
                     <input type="password" id="pass-field" placeholder="Ingresa Código" class="w-full bg-gray-50 border p-5 rounded-3xl text-center mb-8 outline-none focus:border-green-800 text-xl font-black tracking-widest transition-all">
-                    <button onclick="intentarAcceso()" class="w-full bg-green-950 text-white font-black py-5 rounded-3xl uppercase tracking-widest text-[10px] shadow-xl hover:bg-green-900 transition-all">Validar Acceso</button>
+                    <button onclick="intentarAcceso()" class="w-full bg-green-950 text-white font-black py-5 rounded-3xl uppercase tracking-widest text-[10px] shadow-xl hover:bg-green-900 transition-all hover-lift">Validar Acceso</button>
                     <p id="err-auth" class="text-red-500 text-[10px] mt-8 hidden font-black italic uppercase tracking-widest">CÓDIGO NO VÁLIDO</p>
                 </div>
             </section>
 
             <section id="view-offerlist" class="view-section py-20 px-6 max-w-7xl mx-auto">
-                <div class="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
+                <div class="flex flex-col md:flex-row justify-between items-end mb-12 gap-6 animate-fade-in">
                     <div>
                         <h2 class="text-6xl font-black tracking-tighter uppercase mb-2 italic">Offer List</h2>
                         <p class="text-gray-400 font-bold uppercase tracking-widest text-xs italic">Inventario en tiempo real · Venta por Saco y KG</p>
                     </div>
                     <input type="text" onkeyup="navPredictiveSearch(this.value)" placeholder="Filtrar catálogo..." class="w-full md:w-80 bg-white border border-gray-100 p-5 rounded-3xl shadow-sm outline-none focus:border-green-800 transition md:hidden">
                 </div>
-                <div class="overflow-x-auto bg-white rounded-[40px] border border-gray-100 shadow-2xl">
+                <div class="overflow-x-auto bg-white rounded-[40px] border border-gray-100 shadow-2xl animate-fade-in delay-100">
                     <table class="w-full text-left min-w-[900px] text-sm">
                         <thead class="bg-gray-50 text-[9px] font-black uppercase text-gray-400 border-b tracking-[0.2em]">
                             <tr><th class="p-10">Lote / Varietal</th><th class="p-10">Origen</th><th class="p-10 text-center">SCA</th><th class="p-10 text-right">Precio Neto/KG</th><th class="p-10"></th></tr>
@@ -130,78 +151,80 @@
             </section>
 
             <section id="view-detalle" class="view-section">
-                <div id="detalle-container"></div>
+                <div id="detalle-container" class="w-full"></div>
             </section>
 
             <section id="view-condiciones" class="view-section py-20 px-6 max-w-7xl mx-auto">
-                <h2 class="text-5xl md:text-7xl font-black uppercase tracking-tighter mb-4 italic text-green-950">Condiciones Comerciales</h2>
-                <p class="text-xl text-gray-500 mb-16 font-light italic">Transparencia y claridad en cada etapa de nuestra operación.</p>
+                <h2 class="text-5xl md:text-7xl font-black uppercase tracking-tighter mb-4 italic text-green-950 animate-fade-in">Condiciones Comerciales</h2>
+                <p class="text-xl text-gray-500 mb-16 font-light italic animate-fade-in">Transparencia y claridad en cada etapa de nuestra operación[cite: 45].</p>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
-                    <div class="bg-white p-10 rounded-[40px] border border-gray-100 shadow-xl">
+                    <div class="bg-white p-10 rounded-[40px] border border-gray-100 shadow-xl hover-lift animate-fade-in delay-100">
                         <div class="w-14 h-14 bg-green-50 text-green-800 flex items-center justify-center rounded-full mb-6"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" stroke-width="2"></path></svg></div>
                         <h3 class="text-2xl font-black uppercase italic tracking-tighter mb-4 text-green-950">Despachos & Envíos</h3>
                         <div class="space-y-4 text-sm text-gray-600 leading-relaxed">
-                            <p><b>Despachos en Santiago:</b> Se realizan los días Martes y Viernes entre las 14:00 y 18:00 hrs. El costo fijo es de $10.000 + IVA para envíos de hasta 60 kilos.</p>
-                            <p><b>Zona de Cobertura (SCL):</b> Providencia, Las Condes, Vitacura, Ñuñoa, La Reina, Macul, Quilicura, Huechuraba y Santiago Centro.</p>
-                            <p><b>Regiones y Mayor Volumen:</b> Todo envío superior a 60kg o con destino a regiones, se envía Por Pagar vía courier de elección del cliente, o se cotiza un flete especial según volumen.</p>
+                            <p><b>Despachos en Santiago:</b> Se realizan los días Martes y Viernes entre las 14:00 y 18:00 hrs. El costo fijo es de $10.000 + IVA para envíos de hasta 60 kilos[cite: 157, 160].</p>
+                            <p><b>Zona de Cobertura (SCL):</b> Providencia, Las Condes, Vitacura, Ñuñoa, La Reina, Macul, Quilicura, Huechuraba y Santiago Centro[cite: 155].</p>
+                            <p><b>Regiones y Mayor Volumen:</b> Todo envío superior a 60kg o con destino a regiones, se envía Por Pagar vía courier de elección del cliente, o se cotiza un flete especial según volumen[cite: 158, 162].</p>
                         </div>
                     </div>
-                    <div class="bg-white p-10 rounded-[40px] border border-gray-100 shadow-xl">
+                    <div class="bg-white p-10 rounded-[40px] border border-gray-100 shadow-xl hover-lift animate-fade-in delay-200">
                         <div class="w-14 h-14 bg-blue-50 text-blue-800 flex items-center justify-center rounded-full mb-6"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" stroke-width="2"></path></svg></div>
                         <h3 class="text-2xl font-black uppercase italic tracking-tighter mb-4 text-green-950">Muestras de Café</h3>
                         <div class="space-y-4 text-sm text-gray-600 leading-relaxed">
-                            <p>Sabemos que perfilar es vital. Para todos los lotes en stock, ofrecemos muestras estandarizadas de <b>200 gramos</b> por un valor de <b>$5.000 netos</b>.</p>
-                            <p>Puedes solicitar tu muestra directamente desde la ficha de cada producto, coordinando el pago y el envío con nuestro equipo vía WhatsApp.</p>
+                            <p>Sabemos que perfilar es vital. Ofrecemos hasta 3 muestras sin costo (sólo pagas el envío). Muestras adicionales tienen un valor de <b>$3.500 x 250gr c/u</b>[cite: 141, 142]. Excluye Geishas y Microlotes especiales[cite: 144].</p>
+                            <p>Para microlotes exclusivos de catálogo B2B, ofrecemos muestras estandarizadas de <b>200 gramos</b> por un valor de <b>$5.000 netos</b>.</p>
                         </div>
                     </div>
-                    <div class="bg-white p-10 rounded-[40px] border border-gray-100 shadow-xl">
+                    <div class="bg-white p-10 rounded-[40px] border border-gray-100 shadow-xl hover-lift animate-fade-in delay-300">
                         <div class="w-14 h-14 bg-amber-50 text-amber-800 flex items-center justify-center rounded-full mb-6"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0zM12 8v4l3 2" stroke-width="2"></path></svg></div>
                         <h3 class="text-2xl font-black uppercase italic tracking-tighter mb-4 text-green-950">Sesiones de Cata</h3>
                         <div class="space-y-4 text-sm text-gray-600 leading-relaxed">
-                            <p>Si te gustaría probar más opciones y conocer los perfiles en profundidad, coordinamos sesiones de cata técnica exclusivas.</p>
-                            <p>Las cataciones personalizadas pueden realizarse en tu taller o en el nuestro (sólo disponible dentro de Santiago). Para agendar tu cita, contáctanos a <b>contacto@supertasters.cl</b>.</p>
+                            <p>Si te gustaría probar más opciones y conocer los perfiles en profundidad, coordinamos sesiones de cata técnica exclusivas[cite: 146].</p>
+                            <p>Las cataciones personalizadas pueden realizarse en tu taller o en el nuestro (sólo disponible dentro de Santiago)[cite: 147]. Para agendar tu cita, contáctanos a <b>contacto@supertasters.cl</b>.</p>
                         </div>
                     </div>
-                    <div class="bg-white p-10 rounded-[40px] border border-gray-100 shadow-xl">
+                    <div class="bg-white p-10 rounded-[40px] border border-gray-100 shadow-xl hover-lift animate-fade-in delay-400">
                         <div class="w-14 h-14 bg-purple-50 text-purple-800 flex items-center justify-center rounded-full mb-6"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-width="2"></path></svg></div>
                         <h3 class="text-2xl font-black uppercase italic tracking-tighter mb-4 text-green-950">Pagos & Facturación</h3>
                         <div class="space-y-4 text-sm text-gray-600 leading-relaxed">
-                            <p>Emitimos la documentación tributaria (Factura) a tu razón social una vez confirmada la transferencia o pago.</p>
-                            <p>Los precios publicados en el catálogo son <b>Base Netos</b> y se calculará el IVA (19%).</p>
-                            <p><b>Recargos:</b> Transferencias vía Fintoc o desde cuenta Mercado Pago tienen <b>0% de recargo</b>. El pago con Tarjetas de Crédito/Débito vía Mercado Pago tiene un <b>3.28% de recargo</b>.</p>
+                            <p>Los pedidos se procesan previo pago al contado[cite: 179]. Emitimos la documentación tributaria correspondiente (Factura) a tu razón social[cite: 188].</p>
+                            <p>Los precios publicados en el catálogo son <b>Base Netos (Sin IVA)</b>[cite: 189].</p>
+                            <p><b>Recargos:</b> Transferencias vía Fintoc o desde cuenta Mercado Pago tienen <b>0% de recargo</b>[cite: 181]. El pago con Tarjetas vía Mercado Pago (hasta 3 cuotas) tiene un <b>3.5% de recargo</b>[cite: 181]. Descuentos por volumen: 3% desde 500kg y 5% desde 1000kg[cite: 176, 177, 178].</p>
                         </div>
                     </div>
                 </div>
             </section>
 
             <section id="view-about" class="view-section py-20 px-6 max-w-7xl mx-auto">
-                <div class="h-[60vh] bg-black rounded-[50px] relative overflow-hidden mb-20 shadow-2xl">
+                <div class="h-[60vh] bg-black rounded-[50px] relative overflow-hidden mb-20 shadow-2xl animate-fade-in">
                     <img src="https://images.unsplash.com/photo-1497935586351-b67a49e012bf?auto=format&fit=crop&q=80&w=1200" class="absolute inset-0 w-full h-full object-cover opacity-50 grayscale hover:grayscale-0 transition duration-1000">
                     <div class="absolute inset-0 flex flex-col items-center justify-center text-center px-4">
                         <h2 class="text-5xl md:text-8xl font-black text-white uppercase italic tracking-tighter text-shadow-lg leading-none mb-4">Nuestra<br>Historia</h2>
-                        <p class="text-green-400 font-black tracking-[0.4em] uppercase text-sm">Est. 2014</p>
+                        <p class="text-green-400 font-black tracking-[0.4em] uppercase text-sm">Est. 2014 [cite: 1]</p>
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-24 mb-24">
-                    <div class="prose prose-lg text-gray-600">
+                    <div class="prose prose-lg text-gray-600 animate-fade-in delay-100">
                         <h3 class="text-4xl font-black uppercase text-green-950 mb-8 tracking-tighter italic">Visión</h3>
-                        <p class="leading-relaxed">Hace más de una década que estamos comprometidos con establecer relaciones directas, de confianza y de largo plazo con socios caficultores en origen, en busca de lotes de café que cumplan con nuestra visión de valor: transparencia, calidad, innovación, comercio directo y sostenibilidad.</p>
+                        <p class="leading-relaxed">Hace más de una década que estamos comprometidos con establecer relaciones directas, de confianza y de largo plazo con socios caficultores en origen, en busca de lotes de café que cumplan con nuestra visión de valor: transparencia, calidad, innovación, comercio directo y sostenibilidad[cite: 6].</p>
+                        <p class="leading-relaxed">Hemos visitado personalmente a productores en Indonesia, Tailandia, Honduras, Panamá, Costa Rica, Brasil, Ecuador, Bolivia y Perú en busca de conocimiento, relaciones personales y café de gran valor[cite: 7].</p>
                     </div>
-                    <div class="prose prose-lg text-gray-600">
+                    <div class="prose prose-lg text-gray-600 animate-fade-in delay-200">
                         <h3 class="text-4xl font-black uppercase text-green-950 mb-8 tracking-tighter italic">Nosotros</h3>
-                        <p class="leading-relaxed">Nos especializamos en la adquisición, almacenaje y distribución de café verde, con cientos de toneladas intercambiadas de forma directa. La gran mayoría de nuestros cafés son de especialidad, comercio justo y certificados orgánico.</p>
+                        <p class="leading-relaxed">Nos especializamos en la adquisición, almacenaje y distribución de café verde, con cientos de toneladas intercambiadas de forma directa[cite: 10]. La gran mayoría de nuestros cafés son de especialidad, comercio justo y certificados orgánico[cite: 11].</p>
+                        <p class="leading-relaxed">Somos un equipo multidisciplinario[cite: 12]. Contamos con certificaciones SCA en disciplinas como Brewing, Barista, Sensory y Roasting[cite: 13]. Todos nuestros lotes son evaluados por un Q Grader certificado pre-embarque[cite: 14]. Realizamos un análisis físico meticuloso y una evaluación sensorial bajo estándares SCA para garantizar consistencia[cite: 16].</p>
                     </div>
                 </div>
             </section>
 
             <section id="view-contact" class="view-section py-20 px-6 max-w-7xl mx-auto">
-                <h2 class="text-5xl md:text-7xl font-black uppercase tracking-tighter mb-4 italic text-green-950">Contacto</h2>
-                <p class="text-xl text-gray-500 mb-16 font-light italic">Resolvamos tus dudas o agendemos una cata técnica.</p>
+                <h2 class="text-5xl md:text-7xl font-black uppercase tracking-tighter mb-4 italic text-green-950 animate-fade-in">Contacto</h2>
+                <p class="text-xl text-gray-500 mb-16 font-light italic animate-fade-in">Resolvamos tus dudas o agendemos una cata técnica.</p>
 
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-16">
-                    <div class="bg-green-950 text-white p-12 md:p-16 rounded-[50px] shadow-2xl relative overflow-hidden">
+                    <div class="bg-green-950 text-white p-12 md:p-16 rounded-[50px] shadow-2xl relative overflow-hidden animate-fade-in delay-100 hover-lift">
                         <div class="absolute -bottom-10 -right-10 w-64 h-64 bg-green-400/10 rounded-full blur-3xl"></div>
                         <h3 class="text-3xl font-black mb-10 uppercase italic tracking-tight">Estamos para Ayudarte</h3>
                         <div class="space-y-8 relative z-10">
@@ -213,23 +236,26 @@
                                 <h4 class="text-[10px] uppercase font-black tracking-[0.3em] text-green-400 mb-2">Email Directo</h4>
                                 <a href="mailto:contacto@supertasters.cl" class="text-lg font-black underline hover:text-green-300 transition">contacto@supertasters.cl</a>
                             </div>
+                            <div>
+                                <button onclick="navigateTo('condiciones')" class="text-[10px] uppercase font-black tracking-widest bg-white/10 hover:bg-white/20 border border-white/20 px-6 py-3 rounded-full transition mt-4">Revisar Condiciones Comerciales</button>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="bg-white p-12 md:p-16 rounded-[50px] border border-gray-100 shadow-xl">
+                    <div class="bg-white p-12 md:p-16 rounded-[50px] border border-gray-100 shadow-xl animate-fade-in delay-200 hover-lift">
                         <h3 class="text-3xl font-black mb-10 uppercase italic tracking-tight text-green-950">Escríbenos</h3>
                         <form onsubmit="event.preventDefault(); const n=document.getElementById('c-name').value, t=document.getElementById('c-tost').value, m=document.getElementById('c-msg').value; window.open(`https://wa.me/56975552708?text=Hola, soy ${n} de ${t}. ${m}`, '_blank');" class="space-y-6">
                             <div>
                                 <label class="block text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 mb-2">Nombre Completo</label>
-                                <input type="text" id="c-name" required class="w-full bg-gray-50 border border-gray-100 p-5 rounded-2xl outline-none focus:border-green-800 font-bold text-gray-800">
+                                <input type="text" id="c-name" required class="w-full bg-gray-50 border border-gray-100 p-5 rounded-2xl outline-none focus:border-green-800 font-bold text-gray-800 transition-all">
                             </div>
                             <div>
                                 <label class="block text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 mb-2">Tostaduría / Empresa</label>
-                                <input type="text" id="c-tost" class="w-full bg-gray-50 border border-gray-100 p-5 rounded-2xl outline-none focus:border-green-800 font-bold text-gray-800">
+                                <input type="text" id="c-tost" class="w-full bg-gray-50 border border-gray-100 p-5 rounded-2xl outline-none focus:border-green-800 font-bold text-gray-800 transition-all">
                             </div>
                             <div>
                                 <label class="block text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 mb-2">Mensaje</label>
-                                <textarea id="c-msg" rows="4" required class="w-full bg-gray-50 border border-gray-100 p-5 rounded-2xl outline-none focus:border-green-800 font-bold text-gray-800"></textarea>
+                                <textarea id="c-msg" rows="4" required class="w-full bg-gray-50 border border-gray-100 p-5 rounded-2xl outline-none focus:border-green-800 font-bold text-gray-800 transition-all"></textarea>
                             </div>
                             <button type="submit" class="w-full bg-green-950 text-white font-black py-6 rounded-2xl uppercase tracking-[0.2em] text-xs hover:scale-[1.02] transition-all shadow-xl">Enviar por WhatsApp</button>
                         </form>
@@ -241,7 +267,7 @@
         <footer class="bg-white border-t border-gray-100 pt-20 pb-10 mt-auto">
             <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-16 text-sm">
                 <div>
-                    <h2 class="text-xl font-black uppercase mb-4 tracking-tighter">Super Tasters</h2>
+                    <h2 class="text-xl font-black uppercase mb-4 tracking-tighter text-green-950">Super Tasters</h2>
                     <p class="text-gray-400 italic leading-relaxed">Santiago, Chile. Especialistas en adquisición, almacenaje y distribución de café de especialidad desde 2014.</p>
                 </div>
                 <div>
@@ -278,10 +304,10 @@
             if(!nav) return;
             if(window.scrollY > 50) {
                 nav.classList.remove('py-4', 'bg-white/95');
-                nav.classList.add('py-2', 'bg-white/70');
+                nav.classList.add('py-2', 'bg-white/70', 'shadow-md');
             } else {
                 nav.classList.add('py-4', 'bg-white/95');
-                nav.classList.remove('py-2', 'bg-white/70');
+                nav.classList.remove('py-2', 'bg-white/70', 'shadow-md');
             }
         });
 
@@ -354,7 +380,7 @@
                 return;
             }
             g.innerHTML = db.slice(0,3).map(p => `
-                <div onclick="verDet(${db.indexOf(p)})" class="cursor-pointer group flex flex-col h-full">
+                <div onclick="verDet(${db.indexOf(p)})" class="cursor-pointer group flex flex-col h-full hover-lift">
                     <div class="relative h-[400px] w-full overflow-hidden rounded-[40px] shadow-xl bg-gray-100">
                         <img src="${p.Imagen || 'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7'}" class="h-full w-full object-cover group-hover:scale-110 transition duration-[2s]">
                         <div class="absolute inset-0 bg-black/10 group-hover:bg-black/30 transition duration-1000"></div>
@@ -399,11 +425,11 @@
             if(!container) return;
             const similar = db.filter(x => x !== currentP && (x.Origen === currentP.Origen || x.Proceso === currentP.Proceso)).slice(0,3);
             if(similar.length === 0) {
-                container.innerHTML = '<p class="text-gray-400 text-sm font-bold uppercase tracking-widest col-span-3 text-center py-10">No hay lotes similares.</p>'; 
+                container.innerHTML = '<p class="text-gray-400 text-sm font-bold uppercase tracking-widest col-span-3 text-center py-10">No hay lotes similares en stock.</p>'; 
                 return;
             }
             container.innerHTML = similar.map(p => `
-                <div onclick="verDet(${db.indexOf(p)})" class="cursor-pointer group flex flex-col h-full">
+                <div onclick="verDet(${db.indexOf(p)})" class="cursor-pointer group flex flex-col h-full hover-lift animate-fade-in">
                     <div class="relative h-64 w-full overflow-hidden rounded-3xl shadow-xl bg-gray-100">
                         <img src="${p.Imagen || 'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7'}" class="h-full w-full object-cover group-hover:scale-110 transition duration-700">
                         <div class="absolute inset-0 bg-black/10 group-hover:bg-black/30 transition duration-500"></div>
@@ -413,6 +439,19 @@
                     <p class="text-[9px] text-gray-400 font-bold tracking-[0.2em] uppercase mt-1">${p.Origen || 'Origen General'}</p>
                 </div>
             `).join('');
+        }
+
+        // LIGHBOX LOGIC
+        function openLightbox(src) {
+            const lb = document.getElementById('lightbox');
+            document.getElementById('lightbox-img').src = src;
+            lb.classList.remove('hidden');
+            setTimeout(() => lb.classList.remove('opacity-0'), 10);
+        }
+        function closeLightbox() {
+            const lb = document.getElementById('lightbox');
+            lb.classList.add('opacity-0');
+            setTimeout(() => lb.classList.add('hidden'), 300);
         }
 
         function verDet(idx) {
@@ -426,16 +465,16 @@
             const marqueeStr = buildMarqueeString(p);
 
             document.getElementById('detalle-container').innerHTML = `
-                <div class="relative w-full h-[60vh] min-h-[500px] overflow-hidden bg-green-950">
-                    <img src="${p.Imagen || 'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7'}" class="absolute inset-0 w-full h-full object-cover opacity-60 mix-blend-overlay img-protegida" style="object-position: center 30%;">
+                <div class="relative w-full h-[60vh] min-h-[500px] overflow-hidden bg-green-950 animate-fade-in">
+                    <div class="absolute inset-0 w-full h-full bg-cover bg-center bg-fixed opacity-60 mix-blend-overlay img-protegida" style="background-image: url('${p.Imagen || 'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7'}');"></div>
                     <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
                     
-                    <button onclick="navigateTo('offerlist')" class="absolute top-10 left-6 z-30 text-[10px] font-black uppercase text-white/70 tracking-widest italic hover:text-white transition-all flex items-center gap-2">
+                    <button onclick="navigateTo('offerlist')" class="absolute top-10 left-6 md:left-12 z-30 text-[10px] font-black uppercase text-white/70 tracking-widest italic hover:text-white transition-all flex items-center gap-2">
                         ← Volver al Inventario
                     </button>
 
                     <div class="absolute bottom-0 left-0 w-full px-6 md:px-12 pb-12 flex flex-col md:flex-row justify-between items-start md:items-end gap-8 max-w-[1400px] mx-auto">
-                        <div class="flex-1">
+                        <div class="flex-1 animate-fade-in delay-200">
                             <p class="text-green-400 font-black tracking-[0.4em] uppercase text-[10px] mb-4 flex items-center gap-3">
                                 ${p.Origen || 'Origen'} <span class="w-1 h-1 bg-green-400 rounded-full"></span> ICO: ${p['Código ICO'] || 'N/A'}
                             </p>
@@ -453,7 +492,7 @@
                         </div>
                         
                         ${p.Puntaje ? `
-                        <div class="text-left md:text-right mt-4 md:mt-0">
+                        <div class="text-left md:text-right mt-4 md:mt-0 animate-fade-in delay-300">
                             <p class="text-gray-400 font-black tracking-[0.3em] uppercase text-[10px] mb-2">Score SCA</p>
                             <p class="text-7xl md:text-[9rem] font-black text-green-400 tracking-tighter leading-none drop-shadow-2xl italic">${p.Puntaje}</p>
                         </div>
@@ -467,7 +506,7 @@
                     <div class="grid grid-cols-1 lg:grid-cols-12 gap-20">
                         <div class="lg:col-span-7">
                             
-                            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-20">
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-20 animate-fade-in delay-100">
                                 <div class="flex flex-col items-center text-center">
                                     <div class="text-green-950 mb-4"><svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0zM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632z"></path></svg></div>
                                     <p class="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-1 italic">Productor</p>
@@ -490,22 +529,22 @@
                                 </div>
                             </div>
 
-                            <div class="mb-20">
-                                <h4 class="text-xs font-black uppercase tracking-[0.4em] text-green-950 mb-8 border-b-4 border-green-900/10 pb-4 italic">Trazabilidad en Origen</h4>
+                            <div class="mb-20 animate-fade-in delay-200">
+                                <h4 class="text-xs font-black uppercase tracking-[0.4em] text-green-950 mb-8 border-b-4 border-gray-100 pb-4 italic">Trazabilidad en Origen</h4>
                                 <p class="text-gray-600 text-lg leading-relaxed italic mb-12">${p.Reseña || 'Información técnica en proceso.'}</p>
                                 <div class="grid grid-cols-3 gap-6">
-                                    ${fotos.map(f => `<img src="${f}" class="h-44 w-full object-cover rounded-[30px] shadow-lg border border-gray-100 grayscale hover:grayscale-0 transition duration-1000 bg-gray-100">`).join('')}
+                                    ${fotos.map(f => `<div onclick="openLightbox('${f}')" class="cursor-pointer overflow-hidden rounded-[30px] shadow-lg border border-gray-100 h-44 w-full bg-gray-100"><img src="${f}" class="w-full h-full object-cover grayscale hover:grayscale-0 hover:scale-110 transition duration-700"></div>`).join('')}
                                 </div>
                             </div>
 
-                            <div class="mb-20">
-                                <h4 class="text-xs font-black uppercase tracking-[0.4em] text-green-950 mb-8 border-b-4 border-green-900/10 pb-4 italic">Analítica de Taza</h4>
+                            <div class="mb-20 animate-fade-in delay-300">
+                                <h4 class="text-xs font-black uppercase tracking-[0.4em] text-green-950 mb-8 border-b-4 border-gray-100 pb-4 italic">Analítica de Taza</h4>
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-16 items-center mt-8">
                                     <div class="h-[350px]"><canvas id="radarChart"></canvas></div>
                                     <div class="bg-gray-50 p-10 rounded-[40px] border shadow-inner">
                                         <table class="w-full text-[10px] uppercase tracking-widest font-black text-gray-500">
                                             <tbody class="divide-y divide-gray-200">
-                                                ${['Fragancia / Aroma', 'Sabor', 'Sabor Residual', 'Acidez', 'Cuerpo', 'Balance', 'Dulzor'].map(f => `
+                                                ${['Fragancia / Aroma', 'Sabor', 'Sabor Residual', 'Acidez', 'Cuerpo', 'Balance', 'Dulzor', 'Uniformidad', 'Taza Limpia', 'General'].map(f => `
                                                     <tr><td class="py-4 italic">${f}</td><td class="py-4 text-right text-green-800 text-sm">${p[f]||'8.00'}</td></tr>
                                                 `).join('')}
                                             </tbody>
@@ -514,25 +553,27 @@
                                 </div>
                             </div>
 
-                            <div id="box-pie" class="mb-20 hidden">
-                                <h4 class="text-xs font-black uppercase tracking-[0.4em] text-green-950 mb-8 border-b-4 border-green-900/10 pb-4 italic uppercase">Distribución de Malla</h4>
-                                <div class="h-80"><canvas id="pieChart"></canvas></div>
+                            <div id="box-pie" class="mb-20 hidden animate-fade-in delay-400">
+                                <div class="border-b-4 border-gray-100 pb-4 mb-10">
+                                    <h4 class="text-xs font-black uppercase tracking-[0.4em] text-green-950 italic">Distribución de Malla</h4>
+                                </div>
+                                <div class="h-80 flex justify-center"><canvas id="pieChart"></canvas></div>
                             </div>
                         </div>
 
-                        <div class="lg:col-span-5">
+                        <div class="lg:col-span-5 animate-fade-in delay-200">
                             <div class="sticky top-28">
                                 <h3 class="text-2xl font-black text-green-950 uppercase italic tracking-tighter mb-6">Comprar Lote</h3>
-                                <div class="bg-green-950 p-10 rounded-[50px] text-white shadow-2xl mb-12 relative overflow-hidden">
-                                    <div class="absolute top-0 right-0 w-40 h-40 bg-green-400/10 rounded-full blur-3xl pointer-events-none"></div>
+                                
+                                <div class="bg-white border border-gray-100 p-10 md:p-12 rounded-[40px] shadow-[0_20px_50px_rgba(0,0,0,0.05)] relative overflow-hidden mb-12">
                                     
                                     <div class="relative z-10 mb-8">
-                                        <button onclick="pedirMuestra()" class="w-full bg-white text-green-950 font-black py-4 rounded-[25px] uppercase tracking-widest text-[10px] hover:scale-105 transition-all italic shadow-xl">Solicitar Muestra 200gr ($5.000 + IVA)</button>
+                                        <button onclick="pedirMuestra()" class="w-full bg-white border border-gray-200 text-green-950 font-black py-4 rounded-[25px] uppercase tracking-widest text-[10px] hover:bg-gray-50 hover:shadow-sm transition-all italic">Solicitar Muestra 200gr ($5.000 + IVA)</button>
                                     </div>
 
                                     <div class="flex justify-between items-center mb-8 relative z-10">
-                                        <span class="text-[10px] font-black uppercase tracking-[0.2em] px-4 py-2 border border-white/20 rounded-full bg-white/5 italic">${p.Stock} SACOS DISP.</span>
-                                        <span class="text-lg font-black tracking-tighter italic text-green-400 border-b border-green-400/30">Precio Base: $${Number(p.Precio).toLocaleString('es-CL')}</span>
+                                        <span class="text-[10px] font-black uppercase tracking-[0.2em] px-4 py-2 border border-gray-200 rounded-full bg-gray-50 text-green-950 italic">${p.Stock} SACOS DISP.</span>
+                                        <span class="text-lg font-black tracking-tighter italic text-green-800 border-b border-green-800/30">Precio Neto Base: $${Number(p.Precio).toLocaleString('es-CL')}</span>
                                     </div>
 
                                     <div class="space-y-6 relative z-10">
@@ -540,37 +581,37 @@
                                             <button onclick="selFormat('1kg')" id="btn-1kg" class="py-4 rounded-3xl border-2 font-black text-[10px] transition-all tracking-[0.2em] uppercase">1 KG</button>
                                             <button onclick="selFormat('Saco')" id="btn-saco" class="py-4 rounded-3xl border-2 font-black text-[10px] transition-all tracking-[0.2em] uppercase">SACO (${currSW}kg)</button>
                                         </div>
-                                        <div class="flex justify-between items-center bg-white/5 p-6 rounded-[30px] border border-white/10">
-                                            <span class="text-[10px] font-black uppercase tracking-widest italic opacity-50">Cantidad</span>
+                                        <div class="flex justify-between items-center bg-gray-50 p-6 rounded-[30px] border border-gray-100">
+                                            <span class="text-[10px] font-black uppercase tracking-widest italic text-gray-500">Cantidad</span>
                                             <div class="flex items-center gap-6">
-                                                <button onclick="updQty(-1)" class="w-10 h-10 rounded-full bg-white/10 font-black text-xl hover:bg-white/20 transition-all">-</button>
-                                                <span id="det-qty" class="font-black text-2xl italic">1</span>
-                                                <button onclick="updQty(1)" class="w-10 h-10 rounded-full bg-white/10 font-black text-xl hover:bg-white/20 transition-all">+</button>
+                                                <button onclick="updQty(-1)" class="w-10 h-10 rounded-full bg-white border shadow-sm font-black text-2xl hover:bg-gray-50 transition-all text-green-950">-</button>
+                                                <span id="det-qty" class="font-black text-2xl italic text-green-950">1</span>
+                                                <button onclick="updQty(1)" class="w-10 h-10 rounded-full bg-white border shadow-sm font-black text-2xl hover:bg-gray-50 transition-all text-green-950">+</button>
                                             </div>
                                         </div>
                                         
-                                        <div class="pt-4 pb-2 border-b border-white/10">
+                                        <div class="pt-4 pb-2 border-b border-gray-100">
                                             <div class="flex justify-between items-end pb-2">
-                                                <span class="text-[10px] font-black uppercase tracking-[0.3em] text-green-400 italic">Neto Base</span>
-                                                <span class="text-xl font-black tracking-tighter leading-none text-white/80">$<span id="det-neto">0</span></span>
+                                                <span class="text-[10px] font-black uppercase tracking-[0.3em] text-gray-400 italic">Neto Base</span>
+                                                <span class="text-2xl font-black tracking-tighter leading-none text-green-950">$<span id="det-neto">0</span></span>
                                             </div>
-                                            <div class="flex justify-between items-end pb-4" id="row-recargo">
-                                                <span class="text-[10px] font-black uppercase tracking-[0.3em] text-orange-400 italic">Recargo Tarjeta (3.28%)</span>
-                                                <span class="text-lg font-black tracking-tighter leading-none text-orange-400">$<span id="det-recargo">0</span></span>
+                                            <div class="flex justify-between items-end pb-4 transition-opacity duration-300" id="row-recargo" style="opacity: 0.3;">
+                                                <span class="text-[10px] font-black uppercase tracking-[0.3em] text-orange-500 italic">Recargo Tarjeta (3.5%)</span>
+                                                <span class="text-lg font-black tracking-tighter leading-none text-orange-500">$<span id="det-recargo">0</span></span>
                                             </div>
                                             <div class="flex justify-between items-end pb-4">
-                                                <span class="text-[10px] font-black uppercase tracking-[0.3em] text-green-400 italic">IVA (19%)</span>
-                                                <span class="text-lg font-black tracking-tighter leading-none text-white/50">$<span id="det-iva">0</span></span>
+                                                <span class="text-[10px] font-black uppercase tracking-[0.3em] text-gray-400 italic">IVA (19%)</span>
+                                                <span class="text-lg font-black tracking-tighter leading-none text-gray-500">$<span id="det-iva">0</span></span>
                                             </div>
                                         </div>
                                         <div class="flex justify-between items-end py-2">
-                                            <span class="text-[11px] font-black uppercase tracking-[0.3em] text-white">Total a Pagar</span>
-                                            <span class="text-5xl font-black tracking-tighter leading-none">$<span id="det-total">0</span></span>
+                                            <span class="text-[11px] font-black uppercase tracking-[0.3em] text-green-950">Total a Pagar</span>
+                                            <span class="text-5xl font-black tracking-tighter leading-none text-green-950">$<span id="det-total">0</span></span>
                                         </div>
 
                                         <div class="grid grid-cols-1 gap-3 pt-4">
-                                            <button onclick="comprar('Fintoc')" class="w-full bg-transparent border border-white/20 text-white font-black py-4 rounded-[25px] uppercase tracking-widest text-[9px] hover:bg-white/10 transition duration-500 flex items-center justify-center gap-2">
-                                                Transferencia / Saldo MP (0% Recargo)
+                                            <button onclick="comprar('Fintoc')" class="w-full bg-green-950 text-white font-black py-4 rounded-[25px] uppercase tracking-widest text-[9px] hover:bg-green-800 transition duration-500 shadow-xl flex items-center justify-center gap-2">
+                                                Transferencia (0% Recargo)
                                             </button>
                                             <button onclick="comprar('MercadoPago_Tarjetas')" onmouseover="simulateSurcharge(true)" onmouseout="simulateSurcharge(false)" class="w-full bg-[#009ee3] text-white font-black py-4 rounded-[25px] uppercase tracking-widest text-[9px] hover:scale-[1.02] transition duration-500 shadow-xl flex items-center justify-center gap-2">
                                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
@@ -578,27 +619,30 @@
                                             </button>
                                         </div>
                                         <div class="text-center pt-2">
-                                            <button onclick="navigateTo('condiciones')" class="text-[8px] text-white/40 uppercase font-bold tracking-widest hover:text-white transition-all underline">Revisar Condiciones y Despacho</button>
+                                            <button onclick="navigateTo('condiciones')" class="text-[8px] text-gray-400 uppercase font-bold tracking-widest hover:text-green-950 transition-all underline">Revisar Condiciones y Despacho</button>
                                         </div>
                                     </div>
                                 </div>
 
-                                <div class="space-y-4 text-[9px] font-black uppercase tracking-[0.2em] px-4">
-                                    ${['Cosecha', 'Malla', 'Humedad', 'WA', 'Color', 'Defectos', 'Empaque'].map(f => `
-                                        <div class="flex justify-between border-b border-gray-100 pb-4">
-                                            <span class="text-gray-400 italic">${f}</span>
-                                            <span class="text-green-950">${p[f]||'-'}</span>
-                                        </div>
-                                    `).join('')}
+                                <div class="bg-gray-50 rounded-[40px] p-10 border border-gray-100">
+                                    <h4 class="text-xs font-black uppercase tracking-[0.4em] text-green-950 mb-6 border-b border-gray-200 pb-4 italic">Especificaciones Físicas</h4>
+                                    <div class="space-y-4 text-[9px] font-black uppercase tracking-[0.2em]">
+                                        ${['Cosecha', 'Malla', 'Humedad', 'WA', 'Color', 'Defectos', 'Empaque'].map(f => `
+                                            <div class="flex justify-between border-b border-gray-200 pb-3">
+                                                <span class="text-gray-400 italic">${f}</span>
+                                                <span class="text-green-950">${p[f]||'-'}</span>
+                                            </div>
+                                        `).join('')}
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="max-w-7xl mx-auto px-6 py-20 border-t border-gray-100 mt-20">
-                    <h3 class="text-3xl font-black uppercase tracking-tighter text-green-950 mb-12 italic">Lotes Similares</h3>
-                    <div id="similar-products" class="grid grid-cols-1 md:grid-cols-3 gap-12"></div>
+                    <div class="max-w-7xl mx-auto px-6 py-20 border-t border-gray-100 mt-20 animate-fade-in delay-400">
+                        <h3 class="text-3xl font-black uppercase tracking-tighter text-green-950 mb-12 italic">Lotes Similares</h3>
+                        <div id="similar-products" class="grid grid-cols-1 md:grid-cols-3 gap-12"></div>
+                    </div>
                 </div>
             `;
             
@@ -618,7 +662,8 @@
 
         function selFormat(f) {
             currF = f;
-            const act = "bg-white text-green-950 border-white shadow-xl scale-105", inact = "border-white/20 text-white/40 scale-100 opacity-60";
+            const act = "bg-green-950 text-white border-green-950 shadow-xl scale-105", 
+                  inact = "bg-white border-gray-200 text-gray-400 scale-100";
             document.getElementById('btn-1kg').className = `py-4 rounded-3xl border-2 font-black text-[10px] transition-all tracking-[0.2em] uppercase ${f==='1kg'?act:inact}`;
             document.getElementById('btn-saco').className = `py-4 rounded-3xl border-2 font-black text-[10px] transition-all tracking-[0.2em] uppercase ${f==='Saco'?act:inact}`;
             updPrice();
@@ -629,7 +674,7 @@
         function updPrice() {
             const p = Number(currP.Precio), f = currF === 'Saco' ? currSW : 1;
             const netoBase = p * f * currQ;
-            let recargo = isSurchargePreview ? netoBase * 0.0328 : 0;
+            let recargo = isSurchargePreview ? netoBase * 0.035 : 0; // 3.5% Recargo Tarjeta según PDF [cite: 181]
             const netoFinal = netoBase + recargo;
             const iva = Math.round(netoFinal * 0.19);
             const total = netoFinal + iva;
@@ -646,7 +691,7 @@
                 type: 'radar',
                 data: {
                     labels: ['Aroma', 'Sabor', 'Residual', 'Acidez', 'Cuerpo', 'Balance'],
-                    datasets: [{ data: [parseFloat(p['Fragancia / Aroma'])||8, parseFloat(p.Sabor)||8, parseFloat(p['Sabor Residual'])||8, parseFloat(p.Acidez)||8, parseFloat(p.Cuerpo)||8, parseFloat(p.Balance)||8], backgroundColor: 'rgba(20, 83, 45, 0.1)', borderColor: '#052214', borderWidth: 4, pointRadius: 0 }]
+                    datasets: [{ data: [parseFloat(p['Fragancia / Aroma'])||8, parseFloat(p.Sabor)||8, parseFloat(p['Sabor Residual'])||8, parseFloat(p.Acidez)||8, parseFloat(p.Cuerpo)||8, parseFloat(p.Balance)||8], backgroundColor: 'rgba(20, 83, 45, 0.1)', borderColor: '#052214', borderWidth: 3, pointRadius: 0 }]
                 },
                 options: { responsive: true, maintainAspectRatio: false, scales: { r: { min: 6, max: 10, ticks: { display: false }, pointLabels: { font: { size: 12, weight: '900', family: 'Inter' }, color: '#052214' } } }, plugins: { legend: { display: false }, datalabels: { display: false } } }
             });
@@ -664,7 +709,7 @@
                 options: { 
                     responsive: true, maintainAspectRatio: false, 
                     plugins: { 
-                        legend: { position: 'bottom', labels: { font: { weight: '900', size: 11 }, padding: 20 } },
+                        legend: { position: 'bottom', labels: { font: { weight: '900', size: 10 }, padding: 20 } },
                         datalabels: {
                             color: '#fff', font: { weight: 'bold', size: 12 },
                             formatter: (value, ctx) => {
@@ -687,15 +732,15 @@
             let recargo = 0;
 
             if (metodo === 'MercadoPago_Tarjetas') {
-                recargo = netoBase * 0.0328;
-                recargoText = `\n*Recargo Tarjetas (3.28%):* $${Math.round(recargo).toLocaleString('es-CL')}`;
+                recargo = netoBase * 0.035; // 3.5% Tarjetas [cite: 181]
+                recargoText = `\n*Recargo Tarjetas (3.5%):* $${Math.round(recargo).toLocaleString('es-CL')}`;
             }
 
             const netoFinal = netoBase + recargo;
             const iva = Math.round(netoFinal * 0.19);
             const total = netoFinal + iva;
             
-            const metodoStr = metodo === 'Fintoc' ? 'Transferencia (Fintoc / Saldo MP)' : 'Tarjetas (Mercado Pago)';
+            const metodoStr = metodo === 'Fintoc' ? 'Transferencia (0% Recargo)' : 'Tarjetas (Mercado Pago)';
             
             const msg = `Hola Super Tasters ☕, solicito procesar mi pedido B2B:\n\n*${currP.Nombre}*\nOrigen: ${currP.Origen}\nFormato: ${currF} (${currF==='Saco'?currSW+'kg':'1kg'})\nCantidad: ${currQ}\n\n*Neto Base:* $${netoBase.toLocaleString('es-CL')}${recargoText}\n*IVA (19%):* $${iva.toLocaleString('es-CL')}\n*TOTAL:* $${Math.round(total).toLocaleString('es-CL')}\n\n*Método de Pago:* ${metodoStr}\n\nQuedo atento(a) al link de pago seguro y envío de la factura.`;
             window.open(`https://wa.me/56975552708?text=${encodeURIComponent(msg)}`, '_blank');
@@ -757,6 +802,10 @@
                             <tr><th>Cuerpo</th><td>${currP.Cuerpo||'-'}</td></tr>
                             <tr><th>Balance</th><td>${currP.Balance||'-'}</td></tr>
                             <tr><th>Residual</th><td>${currP['Sabor Residual']||'-'}</td></tr>
+                            <tr><th>Dulzor</th><td>${currP['Dulzor']||'-'}</td></tr>
+                            <tr><th>Uniformidad</th><td>${currP['Uniformidad']||'-'}</td></tr>
+                            <tr><th>Taza Limpia</th><td>${currP['Taza Limpia']||'-'}</td></tr>
+                            <tr><th>General</th><td>${currP['General']||'-'}</td></tr>
                         </table>
                         <br>
                         <div class="notes">
