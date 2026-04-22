@@ -1,33 +1,233 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Super Tasters | Curadores de Café Verde</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800;900&display=swap');
+        body { font-family: 'Inter', sans-serif; overflow-x: hidden; background-color: #f9fafb; color: #1f2937; margin: 0; }
+        .marquee-container { overflow: hidden; white-space: nowrap; width: 100%; background: #064e3b; color: #ecfdf5; padding: 1rem 0; border-top: 1px solid #047857; border-bottom: 1px solid #047857; }
+        .marquee-content { display: inline-block; animation: marquee 20s linear infinite; font-weight: 900; letter-spacing: 0.1em; text-transform: uppercase; font-size: 0.875rem; }
+        @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+        .view-section { display: none; width: 100%; }
+        .view-active { display: block !important; }
+        .video-overlay { background: rgba(0, 0, 0, 0.3); }
+        .text-shadow-lg { text-shadow: 0 4px 12px rgba(0,0,0,0.5); }
+        nav { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
+        .search-closed { transform: translateY(-100%); opacity: 0; pointer-events: none; }
+        .cart-closed { transform: translateX(100%); }
+        .img-protegida { pointer-events: none; user-select: none; -webkit-user-drag: none; }
+        .watermark-overlay::after {
+            content: "SUPER TASTERS"; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-30deg);
+            font-size: 2rem; font-weight: 900; color: rgba(255,255,255,0.1); white-space: nowrap; pointer-events: none; z-index: 10;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="global-loading" class="fixed inset-0 bg-white z-[100] flex flex-col items-center justify-center transition-opacity duration-500">
+        <svg class="animate-spin h-12 w-12 text-green-800 mb-4" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+        <p class="font-bold text-gray-400 uppercase tracking-widest text-xs">Cargando Orígenes...</p>
+    </div>
+
+    <nav class="fixed top-0 w-full z-[80] border-b border-gray-100 shadow-sm">
+        <div class="max-w-7xl mx-auto px-6 py-3 flex justify-between items-center">
+            <div class="flex items-center gap-4">
+                <button onclick="toggleMenu()" class="p-2 text-green-900"><svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg></button>
+                <div class="cursor-pointer leading-tight" onclick="navigateTo('home')">
+                    <h1 class="text-xl md:text-2xl font-black tracking-tighter text-green-900 uppercase">Super Tasters</h1>
+                    <p class="text-[9px] font-bold uppercase tracking-[0.2em] text-gray-400">Curadores de Café Verde</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-3">
+                <button onclick="toggleSearch()" class="p-2 text-green-900"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg></button>
+                <button onclick="toggleCarrito()" class="relative p-2 text-green-900">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
+                    <span id="cart-badge" class="absolute top-1 right-1 bg-red-500 text-white text-[9px] font-black w-4 h-4 flex items-center justify-center rounded-full hidden">0</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div id="side-menu" class="fixed inset-y-0 left-0 z-[110] w-full md:w-80 bg-green-950 text-white transition-transform duration-300 -translate-x-full shadow-2xl flex flex-col">
+        <div class="p-6 flex justify-between items-center border-b border-white/10 uppercase font-black text-xs tracking-widest">Menú Principal <button onclick="toggleMenu()"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12"></path></svg></button></div>
+        <div class="p-8 flex flex-col gap-6 text-xl font-bold">
+            <button onclick="navigateTo('home'); toggleMenu()">Inicio</button>
+            <button onclick="navigateTo('offerlist'); toggleMenu()">Offer List</button>
+            <button onclick="navigateTo('about'); toggleMenu()">Nosotros</button>
+            <button onclick="navigateTo('partners'); toggleMenu()">Socios</button>
+            <button onclick="navigateTo('contact'); toggleMenu()">Contacto</button>
+            <div id="logout-btn" class="hidden border-t border-white/10 pt-6 mt-4"><button onclick="cerrarSesion(); toggleMenu()" class="text-sm text-red-400">Cerrar Sesión</button></div>
+        </div>
+    </div>
+
+    <div class="pt-16">
 <section class="max-w-7xl mx-auto px-6 py-24 border-b border-gray-100">
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-16">
-        
+
+        <section id="view-home" class="view-section view-active">
+            <div class="relative h-[80vh] flex items-center justify-center bg-black overflow-hidden">
+                <video autoplay loop muted playsinline class="absolute inset-0 w-full h-full object-cover opacity-70"><source src="video.mp4" type="video/mp4"></video>
+                <div class="absolute inset-0 video-overlay"></div>
+                <div class="relative z-20 text-center px-6 max-w-4xl">
+                    <h2 class="text-6xl md:text-8xl font-black text-white tracking-tighter mb-6 text-shadow-lg leading-[0.9]">ROAST BETTER<br>COFFEE.</h2>
+                    <p class="text-lg md:text-xl text-green-50 font-light italic mb-10 text-shadow-lg">Especialidad en verde para tostadores de alto rendimiento.</p>
+                    <button onclick="navigateTo('offerlist')" class="bg-white text-green-950 px-10 py-4 rounded-full font-black uppercase tracking-widest hover:scale-105 transition shadow-2xl">Entrar al Catálogo B2B</button>
+                </div>
+            </div>
+
+            <div class="marquee-container">
+                <div class="marquee-content">
+                    • DIRECT TRADE COFFEE • ROAST BETTER COFFEE • SOSTENIBILIDAD EN ORIGEN • Q GRADER CERTIFIED • ANALÍTICA SENSORIAL • DIRECT TRADE COFFEE • ROAST BETTER COFFEE • SOSTENIBILIDAD EN ORIGEN • Q GRADER CERTIFIED • ANALÍTICA SENSORIAL • 
+                </div>
         <div class="space-y-6">
             <div class="text-green-800">
                 <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04a11.02 11.02 0 00-2.388 12.113a11.019 11.019 0 0018.59 0 11.02 11.02 0 00-2.388-12.113z"></path></svg>
-            </div>
+</div>
             <h3 class="text-xs font-black uppercase tracking-[0.3em] text-gray-400">Nuestro Ethos</h3>
             <p class="text-2xl font-black tracking-tighter text-green-950 leading-tight">Más de una década de autoridad técnica en origen.</p>
             <p class="text-gray-500 text-sm leading-relaxed">Desde 2014, nuestro equipo multidisciplinario con certificaciones <b>SCA y Q Grader</b> ha recorrido Indonesia, Brasil y toda América. No somos intermediarios; somos socios que garantizan la integridad de cada grano mediante una trayectoria impecable.</p>
         </div>
 
+            <div class="max-w-7xl mx-auto px-6 py-24">
+                <div class="flex justify-between items-end mb-12">
+                    <div>
+                        <h3 class="text-4xl font-black tracking-tighter uppercase text-green-900">Nuevas Cosechas</h3>
+                        <p class="text-gray-400 font-medium">Recién llegados a bodega</p>
+                    </div>
+                    <button onclick="navigateTo('offerlist')" class="hidden md:block font-bold text-sm text-green-700 border-b-2 border-green-700">Ver todo el inventario →</button>
+                </div>
+                <div id="home-featured-grid" class="grid grid-cols-1 md:grid-cols-3 gap-10">
+                    </div>
+            </div>
+        </section>
+
+        <section id="view-auth" class="view-section py-20 px-6">
+            <div class="max-w-xl mx-auto bg-white rounded-[40px] shadow-2xl p-12 text-center border border-gray-100">
+                <h2 class="text-3xl font-black mb-4 uppercase tracking-tighter">Acceso Protegido</h2>
+                <p class="text-gray-500 mb-10 text-sm leading-relaxed">Nuestros precios e informes técnicos son exclusivos para tostadurías. Ingresa tu código o solicita uno.</p>
+                <input type="password" id="pass-field" placeholder="Ingresa el código B2B" class="w-full bg-gray-50 border-2 border-gray-100 p-4 rounded-2xl outline-none focus:border-green-800 transition text-center mb-4">
+                <button onclick="intentarAcceso()" class="w-full bg-green-900 text-white font-black py-4 rounded-2xl shadow-xl hover:bg-green-800 transition">Desbloquear Offer List</button>
+                <button onclick="switchAuth('reg')" class="mt-6 text-xs font-bold text-gray-400 uppercase tracking-widest hover:text-green-800 transition">¿No tienes cuenta? Solicitar acceso</button>
+                <p id="err-auth" class="text-red-500 font-bold text-xs mt-4 hidden">Código incorrecto.</p>
         <div class="space-y-6">
             <div class="text-green-800">
                 <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
-            </div>
+</div>
+        </section>
             <h3 class="text-xs font-black uppercase tracking-[0.3em] text-gray-400">Nuestro Pathos</h3>
             <p class="text-2xl font-black tracking-tighter text-green-950 leading-tight">Relaciones humanas que nutren tu taza.</p>
             <p class="text-gray-500 text-sm leading-relaxed">Entendemos la pasión del tostador porque compartimos el amor por la tierra. Construimos relaciones de confianza de largo plazo con caficultores, promoviendo un <b>comercio directo y justo</b> que dignifica el esfuerzo en el campo y emociona en la barra.</p>
         </div>
 
+        <section id="view-offerlist" class="view-section py-12 px-6">
+            <div class="max-w-7xl mx-auto">
+                <h2 class="text-4xl font-black tracking-tighter uppercase mb-2">Offer List</h2>
+                <input type="text" id="filter-input" onkeyup="filtrarTabla()" placeholder="Buscar por origen o nombre..." class="w-full md:w-80 bg-white border p-3 rounded-xl mb-10 shadow-sm outline-none">
+                <div class="bg-white rounded-3xl shadow-xl border overflow-x-auto">
+                    <table class="w-full text-left text-sm min-w-[800px]">
+                        <thead>
+                            <tr class="bg-gray-50 text-[10px] font-black uppercase tracking-widest text-gray-400 border-b">
+                                <th onclick="ordenar('Nombre')" class="p-5">Café ↕</th>
+                                <th onclick="ordenar('Origen')" class="p-5">Origen ↕</th>
+                                <th class="p-5 text-center">Proceso</th>
+                                <th class="p-5 text-center">SCA</th>
+                                <th class="p-5 text-center">Stock</th>
+                                <th class="p-5 text-right">Precio/Kg</th>
+                                <th class="p-5"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabla-body" class="divide-y divide-gray-50 font-bold text-gray-700"></tbody>
+                    </table>
+                </div>
         <div class="space-y-6">
             <div class="text-green-800">
                 <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
-            </div>
+</div>
+        </section>
+
+        <section id="view-detalle" class="view-section py-12 px-6 bg-white min-h-screen">
+            <div id="detalle-container" class="max-w-7xl mx-auto"></div>
+        </section>
+
             <h3 class="text-xs font-black uppercase tracking-[0.3em] text-gray-400">Nuestro Logos</h3>
             <p class="text-2xl font-black tracking-tighter text-green-950 leading-tight">Análisis físico y sensorial de precisión.</p>
             <p class="text-gray-500 text-sm leading-relaxed">La calidad no es subjetiva. Aplicamos un <b>análisis físico meticuloso y protocolos SCA</b> rigurosos. Cientos de toneladas intercambiadas con trazabilidad radical respaldan la eficiencia de nuestra logística y la consistencia de nuestros microlotes.</p>
         </div>
-    </div>
+</div>
+
+    <script>
+        const API = 'https://script.google.com/macros/s/AKfycbzLrChkaUqiWMyDgYpzfHHjmwPcZJ2afiiXQEFbFZ_-2iE-6pV1m4CnVlIAUlKCVc1g/exec';
+        const P_KEY = 'tostador2026';
+        let db = [], rChart = null, pChart = null;
+
+        async function init() {
+            try {
+                const r = await fetch(API); db = await r.json();
+                document.getElementById('global-loading').classList.add('hidden');
+                renderHome();
+            } catch(e) { console.error(e); }
+        }
+
+        function navigateTo(v) {
+            if((v === 'offerlist' || v === 'detalle') && localStorage.getItem('st_auth') !== 'true') {
+                v = 'auth';
+            }
+            document.querySelectorAll('.view-section').forEach(s => s.classList.remove('view-active'));
+            document.getElementById('view-' + v).classList.add('view-active');
+            window.scrollTo(0, 0);
+            if(v === 'offerlist') renderList(db);
+        }
+
+        function renderHome() {
+            const grid = document.getElementById('home-featured-grid');
+            grid.innerHTML = db.slice(0,3).map((p, i) => `
+                <div onclick="verDet(${db.indexOf(p)})" class="cursor-pointer group">
+                    <div class="h-80 relative overflow-hidden rounded-[32px] mb-6 shadow-lg">
+                        <img src="${p.Imagen || ''}" class="w-full h-full object-cover transition duration-700 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition"></div>
+                        <div class="absolute top-6 left-6 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest text-green-900">${p.Categoria}</div>
+                    </div>
+                    <h4 class="text-2xl font-black text-gray-900 tracking-tighter">${p.Nombre}</h4>
+                    <p class="text-gray-400 font-bold uppercase text-[10px] tracking-widest mt-1">${p.Origen}</p>
+                </div>
+            `).join('');
+        }
+
+        function renderList(data) {
+            const b = document.getElementById('tabla-body');
+            b.innerHTML = data.map(p => `
+                <tr onclick="verDet(${db.indexOf(p)})" class="hover:bg-green-50 transition cursor-pointer">
+                    <td class="p-5 font-black text-gray-900">${p.Nombre}</td>
+                    <td class="p-5 text-gray-500">${p.Origen}</td>
+                    <td class="p-5 text-center"><span class="bg-gray-100 px-2 py-1 rounded text-[10px] uppercase font-black">${p.Proceso}</span></td>
+                    <td class="p-5 text-center font-black text-green-700">${p.Puntaje}</td>
+                    <td class="p-5 text-center text-[10px] uppercase">${p.Stock}</td>
+                    <td class="p-5 text-right font-black">$${Number(p.Precio).toLocaleString('es-CL')}</td>
+                    <td class="p-5 text-right">→</td>
+                </tr>
+            `).join('');
+        }
+
+        function verDet(idx) {
+            if(localStorage.getItem('st_auth') !== 'true') { navigateTo('auth'); return; }
+            const p = db[idx];
+            navigateTo('detalle');
+            
+            // Construcción dinámica de la ficha para evitar errores de contenedores vacíos
+            document.getElementById('detalle-container').innerHTML = `
+                <button onclick="navigateTo('offerlist')" class="mb-10 text-gray-400 font-black uppercase text-xs">← Volver</button>
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-16">
+                    <div class="lg:col-span-8">
+                        <img src="${p.Imagen}" class="w-full h-[500px] object-cover rounded-[40px] shadow-2xl mb-12">
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
+                            <div class="bg-gray-50 p-4 rounded-2xl"><p class="text-[9px] font-black text-gray-400 uppercase mb-1">Productor</p><p class="font-black text-sm">${p.Productor||'-'}</p></div>
+                            <div class="bg-gray-50 p-4 rounded-2xl"><p class="text-[9px] font-black text-gray-400 uppercase mb-1">Altitud</p><p class="font-black text-sm">${p.Altitud||'-'}</p></div>
+                            <div class="bg-gray-50 p-4 rounded-2xl"><p class="text-[9px] font-black text-gray-400 uppercase mb-1">Variedad</p><p class="font-black text-sm">${p.Variedad||'-'}</p></div>
+                            <div class="bg-gray-50 p-4 rounded-2xl"><p class="text-[9px] font-black text-gray-400 uppercase mb-1">Proceso</p><p class="font-black text-sm">${p.Proceso||'-'}</p></div>
 </section>
 
 <section class="bg-green-950 text-white py-24">
@@ -41,23 +241,69 @@
                         <div>
                             <h4 class="font-bold text-xl mb-2">Sustentabilidad Radical</h4>
                             <p class="text-green-100/60 text-sm">Certificados orgánicos y de comercio justo en la gran mayoría de nuestros lotes.</p>
-                        </div>
-                    </div>
+</div>
+                        <h4 class="text-xs font-black uppercase tracking-widest text-green-800 mb-4">Perfil Sensorial SCA</h4>
+                        <div class="h-80 w-full mb-10"><canvas id="radarChart"></canvas></div>
+                        <div class="prose max-w-none"><h4 class="text-xs font-black uppercase">Reseña</h4><p>${p.Reseña || 'Información técnica en validación.'}</p></div>
+</div>
+                    <div class="lg:col-span-4">
+                        <h2 class="text-5xl font-black tracking-tighter mb-4">${p.Nombre}</h2>
+                        <p class="text-xl text-green-700 font-bold mb-8">${p.Origen}</p>
+                        <div class="bg-green-900 p-8 rounded-[40px] text-white shadow-2xl mb-10">
+                            <div class="flex justify-between items-end mb-6"><span class="text-xs font-bold text-green-300">PRECIO KG</span><span class="text-4xl font-black">$${Number(p.Precio).toLocaleString('es-CL')}</span></div>
+                            <button onclick="addCart('${p.Nombre}', ${p.Precio})" class="w-full bg-white text-green-900 font-black py-4 rounded-2xl">Añadir al Carrito</button>
                     <div class="flex gap-6">
                         <span class="text-green-400 font-black text-2xl">02</span>
                         <div>
                             <h4 class="font-bold text-xl mb-2">Innovación en Proceso</h4>
                             <p class="text-green-100/60 text-sm">Búsqueda constante de varietales exóticos y métodos de beneficio de vanguardia.</p>
-                        </div>
+</div>
+                        <div class="space-y-3 text-xs">
+                            <div class="flex justify-between border-b pb-2"><b>COSECHA</b><span>${p.Cosecha||'-'}</span></div>
+                            <div class="flex justify-between border-b pb-2"><b>HUMEDAD</b><span>${p.Humedad||'-'}</span></div>
+                            <div class="flex justify-between border-b pb-2"><b>WA</b><span>${p.WA||'-'}</span></div>
+                            <div class="flex justify-between border-b pb-2"><b>DEFECTOS</b><span>${p.Defectos||'-'}</span></div>
                     </div>
                     <div class="flex gap-6">
                         <span class="text-green-400 font-black text-2xl">03</span>
                         <div>
                             <h4 class="font-bold text-xl mb-2">Transparencia Total</h4>
                             <p class="text-green-100/60 text-sm">Desglose de precios, puntajes y condiciones de almacenamiento para tu tranquilidad.</p>
-                        </div>
-                    </div>
-                </div>
+</div>
+</div>
+</div>
+            `;
+            // Dibujar Radar después de inyectar el HTML
+            setTimeout(() => drawRadar(p), 100);
+        }
+
+        function drawRadar(p) {
+            const ctx = document.getElementById('radarChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['Aroma', 'Sabor', 'Residual', 'Acidez', 'Cuerpo', 'Balance'],
+                    datasets: [{ data: [p['Fragancia / Aroma']||8, p.Sabor||8, p['Sabor Residual']||8, p.Acidez||8, p.Cuerpo||8, p.Balance||8], backgroundColor: 'rgba(20, 83, 45, 0.1)', borderColor: '#14532d', borderWidth: 2 }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, scales: { r: { min: 6, max: 10, ticks: { display: false } } }, plugins: { legend: { display: false } } }
+            });
+        }
+
+        function intentarAcceso() {
+            if(document.getElementById('pass-field').value === P_KEY) {
+                localStorage.setItem('st_auth', 'true');
+                navigateTo('offerlist');
+            } else { document.getElementById('err-auth').classList.remove('hidden'); }
+        }
+
+        function toggleMenu() { document.getElementById('side-menu').classList.toggle('-translate-x-full'); }
+        function toggleCarrito() { alert("Carrito en mantenimiento. Próxima actualización disponible pronto."); }
+        function toggleSearch() { document.getElementById('view-home').classList.add('view-active'); window.scrollTo(0, 1000); }
+
+        init();
+    </script>
+</body>
+</html>
             </div>
             <div class="relative">
                 <img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&q=80&w=800" class="rounded-[40px] shadow-2xl grayscale hover:grayscale-0 transition duration-1000">
