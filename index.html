@@ -8,28 +8,17 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800;900&display=swap');
-        body { font-family: 'Inter', sans-serif; overflow-x: hidden; background-color: #f9fafb; color: #1f2937; margin: 0; padding: 0; }
-        
-        /* Animación Marquee */
+        body { font-family: 'Inter', sans-serif; overflow-x: hidden; background-color: #f9fafb; color: #1f2937; margin: 0; }
         .marquee-container { overflow: hidden; white-space: nowrap; width: 100%; background: #064e3b; color: #ecfdf5; padding: 1rem 0; border-top: 1px solid #047857; border-bottom: 1px solid #047857; }
         .marquee-content { display: inline-block; animation: marquee 20s linear infinite; font-weight: 900; letter-spacing: 0.1em; text-transform: uppercase; font-size: 0.875rem; }
         @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
-
-        /* Control de Vistas */
         .view-section { display: none; width: 100%; }
         .view-active { display: block !important; }
-        
         .video-overlay { background: rgba(0, 0, 0, 0.3); }
         .text-shadow-lg { text-shadow: 0 4px 12px rgba(0,0,0,0.5); }
-        
-        /* Nav Estilo */
         nav { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
-        
-        /* Animaciones Menú */
-        .menu-transition { transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
         .search-closed { transform: translateY(-100%); opacity: 0; pointer-events: none; }
         .cart-closed { transform: translateX(100%); }
-
         .img-protegida { pointer-events: none; user-select: none; -webkit-user-drag: none; }
         .watermark-overlay::after {
             content: "SUPER TASTERS"; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-30deg);
@@ -39,22 +28,23 @@
 </head>
 <body>
 
-    <nav class="fixed top-0 w-full z-[100] border-b border-gray-100 shadow-sm">
+    <div id="global-loading" class="fixed inset-0 bg-white z-[100] flex flex-col items-center justify-center transition-opacity duration-500">
+        <svg class="animate-spin h-12 w-12 text-green-800 mb-4" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+        <p class="font-bold text-gray-400 uppercase tracking-widest text-xs">Cargando Orígenes...</p>
+    </div>
+
+    <nav class="fixed top-0 w-full z-[80] border-b border-gray-100 shadow-sm">
         <div class="max-w-7xl mx-auto px-6 py-3 flex justify-between items-center">
             <div class="flex items-center gap-4">
-                <button onclick="toggleMenu()" class="p-2 hover:bg-gray-100 rounded-full transition text-green-900">
-                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
-                </button>
+                <button onclick="toggleMenu()" class="p-2 text-green-900"><svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg></button>
                 <div class="cursor-pointer leading-tight" onclick="navigateTo('home')">
                     <h1 class="text-xl md:text-2xl font-black tracking-tighter text-green-900 uppercase">Super Tasters</h1>
                     <p class="text-[9px] font-bold uppercase tracking-[0.2em] text-gray-400">Curadores de Café Verde</p>
                 </div>
             </div>
             <div class="flex items-center gap-3">
-                <button onclick="toggleSearch()" class="p-2 text-green-900 hover:bg-gray-100 rounded-full transition">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                </button>
-                <button onclick="toggleCarrito()" class="relative p-2 text-green-900 hover:bg-gray-100 rounded-full transition">
+                <button onclick="toggleSearch()" class="p-2 text-green-900"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg></button>
+                <button onclick="toggleCarrito()" class="relative p-2 text-green-900">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
                     <span id="cart-badge" class="absolute top-1 right-1 bg-red-500 text-white text-[9px] font-black w-4 h-4 flex items-center justify-center rounded-full hidden">0</span>
                 </button>
@@ -62,41 +52,28 @@
         </div>
     </nav>
 
-    <div id="side-menu" class="fixed inset-y-0 left-0 z-[110] w-full md:w-80 bg-green-950 text-white menu-transition -translate-x-full shadow-2xl flex flex-col">
-        <div class="p-6 flex justify-between items-center border-b border-white/10">
-            <span class="font-black tracking-tighter uppercase">Navegación</span>
-            <button onclick="toggleMenu()" class="text-white/50 hover:text-white"><svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12"></path></svg></button>
-        </div>
+    <div id="side-menu" class="fixed inset-y-0 left-0 z-[110] w-full md:w-80 bg-green-950 text-white transition-transform duration-300 -translate-x-full shadow-2xl flex flex-col">
+        <div class="p-6 flex justify-between items-center border-b border-white/10 uppercase font-black text-xs tracking-widest">Menú Principal <button onclick="toggleMenu()"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12"></path></svg></button></div>
         <div class="p-8 flex flex-col gap-6 text-xl font-bold">
-            <button onclick="navigateTo('home'); toggleMenu()" class="text-left hover:text-green-400 transition">Inicio</button>
-            <button onclick="navigateTo('offerlist'); toggleMenu()" class="text-left hover:text-green-400 transition flex items-center gap-2">Offer List <span id="lock-indicator" class="text-xs opacity-50 font-normal">(Protegido)</span></button>
-            <button onclick="navigateTo('about'); toggleMenu()" class="text-left hover:text-green-400 transition">Nosotros</button>
-            <button onclick="navigateTo('partners'); toggleMenu()" class="text-left hover:text-green-400 transition">Socios</button>
-            <button onclick="navigateTo('contact'); toggleMenu()" class="text-left hover:text-green-400 transition">Contacto</button>
-            <div id="logout-section" class="hidden border-t border-white/10 pt-6 mt-4">
-                <button onclick="cerrarSesion(); toggleMenu()" class="text-sm text-red-400 font-bold uppercase tracking-widest">Cerrar Sesión</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="search-modal" class="fixed top-0 left-0 w-full bg-white z-[105] shadow-2xl p-6 transition-all duration-300 search-closed">
-        <div class="max-w-4xl mx-auto relative pt-12">
-            <input type="text" id="global-search" onkeyup="predictiveSearch(this.value)" placeholder="Buscar origen, proceso o nota..." class="w-full text-2xl md:text-5xl font-black border-none outline-none text-gray-900 placeholder-gray-200">
-            <button onclick="toggleSearch()" class="absolute right-0 top-14 text-gray-400"><svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12"></path></svg></button>
-            <div id="search-results" class="mt-6 max-h-96 overflow-y-auto space-y-2 hidden"></div>
+            <button onclick="navigateTo('home'); toggleMenu()">Inicio</button>
+            <button onclick="navigateTo('offerlist'); toggleMenu()">Offer List</button>
+            <button onclick="navigateTo('about'); toggleMenu()">Nosotros</button>
+            <button onclick="navigateTo('partners'); toggleMenu()">Socios</button>
+            <button onclick="navigateTo('contact'); toggleMenu()">Contacto</button>
+            <div id="logout-btn" class="hidden border-t border-white/10 pt-6 mt-4"><button onclick="cerrarSesion(); toggleMenu()" class="text-sm text-red-400">Cerrar Sesión</button></div>
         </div>
     </div>
 
     <div class="pt-16">
         
         <section id="view-home" class="view-section view-active">
-            <div class="relative h-[85vh] flex items-center justify-center bg-black overflow-hidden">
+            <div class="relative h-[80vh] flex items-center justify-center bg-black overflow-hidden">
                 <video autoplay loop muted playsinline class="absolute inset-0 w-full h-full object-cover opacity-70"><source src="video.mp4" type="video/mp4"></video>
                 <div class="absolute inset-0 video-overlay"></div>
                 <div class="relative z-20 text-center px-6 max-w-4xl">
-                    <h2 class="text-5xl md:text-8xl font-black text-white tracking-tighter mb-6 text-shadow-lg leading-[0.9]">ROAST BETTER<br>COFFEE.</h2>
-                    <p class="text-lg md:text-xl text-green-50 font-light italic mb-10 text-shadow-lg">Curaduría técnica de café verde para tostadurías de especialidad.</p>
-                    <button onclick="navigateTo('offerlist')" class="bg-white text-green-950 px-10 py-4 rounded-full font-black uppercase tracking-widest hover:scale-105 transition shadow-2xl">Explorar Catálogo B2B</button>
+                    <h2 class="text-6xl md:text-8xl font-black text-white tracking-tighter mb-6 text-shadow-lg leading-[0.9]">ROAST BETTER<br>COFFEE.</h2>
+                    <p class="text-lg md:text-xl text-green-50 font-light italic mb-10 text-shadow-lg">Especialidad en verde para tostadores de alto rendimiento.</p>
+                    <button onclick="navigateTo('offerlist')" class="bg-white text-green-950 px-10 py-4 rounded-full font-black uppercase tracking-widest hover:scale-105 transition shadow-2xl">Entrar al Catálogo B2B</button>
                 </div>
             </div>
 
@@ -106,179 +83,55 @@
                 </div>
             </div>
 
-            <div class="max-w-7xl mx-auto px-6 py-24 grid grid-cols-1 md:grid-cols-2 gap-20 items-center">
-                <div class="rounded-3xl overflow-hidden shadow-2xl h-[500px]">
-                    <img src="https://images.unsplash.com/photo-1611162618479-ee4dcb1ba44d?auto=format&fit=crop&q=80&w=800" class="w-full h-full object-cover">
+            <div class="max-w-7xl mx-auto px-6 py-24">
+                <div class="flex justify-between items-end mb-12">
+                    <div>
+                        <h3 class="text-4xl font-black tracking-tighter uppercase text-green-900">Nuevas Cosechas</h3>
+                        <p class="text-gray-400 font-medium">Recién llegados a bodega</p>
+                    </div>
+                    <button onclick="navigateTo('offerlist')" class="hidden md:block font-bold text-sm text-green-700 border-b-2 border-green-700">Ver todo el inventario →</button>
                 </div>
-                <div>
-                    <h3 class="text-4xl font-black tracking-tighter mb-6 text-green-900">Trazabilidad radical.</h3>
-                    <p class="text-gray-500 text-lg leading-relaxed mb-8">Nuestra labor es encontrar los lotes más excepcionales en origen y transparentar cada paso del proceso. Desde el análisis físico de la malla hasta el desglose sensorial SCA, entregamos las herramientas técnicas para que tu tueste brille.</p>
-                    <button onclick="navigateTo('about')" class="font-black text-green-800 border-b-4 border-green-800 pb-1 uppercase tracking-widest text-sm">Nuestra historia</button>
-                </div>
+                <div id="home-featured-grid" class="grid grid-cols-1 md:grid-cols-3 gap-10">
+                    </div>
             </div>
         </section>
 
         <section id="view-auth" class="view-section py-20 px-6">
-            <div class="max-w-4xl mx-auto bg-white rounded-[40px] shadow-2xl overflow-hidden flex flex-col md:flex-row border border-gray-100">
-                <div class="md:w-1/2 bg-green-900 p-12 text-white flex flex-col justify-center relative">
-                    <div class="relative z-10">
-                        <h2 class="text-4xl font-black mb-4 leading-tight uppercase tracking-tighter">Acceso de Tostadores</h2>
-                        <p class="text-green-100">El inventario detallado y precios por kilo están protegidos. Solicita tu código para entrar al ecosistema B2B.</p>
-                    </div>
-                </div>
-                <div class="md:w-1/2 p-12">
-                    <div class="flex gap-6 mb-10">
-                        <button onclick="switchAuth('login')" id="btn-tab-login" class="text-xl font-black border-b-4 border-green-800 pb-2">Acceso</button>
-                        <button onclick="switchAuth('reg')" id="btn-tab-reg" class="text-xl font-bold text-gray-300 border-b-4 border-transparent pb-2 transition">Registro</button>
-                    </div>
-                    <div id="auth-login" class="space-y-6">
-                        <input type="password" id="pass-field" placeholder="Ingresa el código" class="w-full bg-gray-50 border-2 border-gray-100 p-4 rounded-2xl outline-none focus:border-green-800 transition text-lg">
-                        <button onclick="intentarAcceso()" class="w-full bg-green-900 text-white font-black py-4 rounded-2xl shadow-xl hover:bg-green-800 transition">Desbloquear Offer List</button>
-                        <p id="err-auth" class="text-red-500 font-bold text-xs text-center hidden">Código inválido.</p>
-                    </div>
-                    <div id="auth-reg" class="hidden space-y-4 text-center">
-                        <p class="text-gray-500 mb-6">Envía tus datos y te contactaremos por WhatsApp con tu acceso.</p>
-                        <input type="text" id="reg-n" placeholder="Tu Nombre" class="w-full bg-gray-50 p-4 rounded-xl border border-gray-100">
-                        <input type="text" id="reg-t" placeholder="Nombre Tostaduría" class="w-full bg-gray-50 p-4 rounded-xl border border-gray-100">
-                        <button onclick="enviarRegistro()" class="w-full bg-black text-white font-black py-4 rounded-xl">Solicitar Acceso</button>
-                    </div>
-                </div>
+            <div class="max-w-xl mx-auto bg-white rounded-[40px] shadow-2xl p-12 text-center border border-gray-100">
+                <h2 class="text-3xl font-black mb-4 uppercase tracking-tighter">Acceso Protegido</h2>
+                <p class="text-gray-500 mb-10 text-sm leading-relaxed">Nuestros precios e informes técnicos son exclusivos para tostadurías. Ingresa tu código o solicita uno.</p>
+                <input type="password" id="pass-field" placeholder="Ingresa el código B2B" class="w-full bg-gray-50 border-2 border-gray-100 p-4 rounded-2xl outline-none focus:border-green-800 transition text-center mb-4">
+                <button onclick="intentarAcceso()" class="w-full bg-green-900 text-white font-black py-4 rounded-2xl shadow-xl hover:bg-green-800 transition">Desbloquear Offer List</button>
+                <button onclick="switchAuth('reg')" class="mt-6 text-xs font-bold text-gray-400 uppercase tracking-widest hover:text-green-800 transition">¿No tienes cuenta? Solicitar acceso</button>
+                <p id="err-auth" class="text-red-500 font-bold text-xs mt-4 hidden">Código incorrecto.</p>
             </div>
         </section>
 
         <section id="view-offerlist" class="view-section py-12 px-6">
             <div class="max-w-7xl mx-auto">
-                <div class="flex flex-col md:flex-row justify-between items-end mb-10 gap-4">
-                    <div>
-                        <h2 class="text-4xl font-black tracking-tighter uppercase">Offer List</h2>
-                        <p class="text-gray-400 font-medium">Disponibilidad en tiempo real</p>
-                    </div>
-                    <input type="text" id="filter-input" onkeyup="filtrarTabla()" placeholder="Filtrar por nombre o proceso..." class="bg-white border border-gray-200 p-3 rounded-xl outline-none focus:border-green-800 w-full md:w-80 shadow-sm">
-                </div>
-
-                <div class="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden overflow-x-auto">
-                    <table class="w-full text-left text-sm border-collapse min-w-[800px]">
+                <h2 class="text-4xl font-black tracking-tighter uppercase mb-2">Offer List</h2>
+                <input type="text" id="filter-input" onkeyup="filtrarTabla()" placeholder="Buscar por origen o nombre..." class="w-full md:w-80 bg-white border p-3 rounded-xl mb-10 shadow-sm outline-none">
+                <div class="bg-white rounded-3xl shadow-xl border overflow-x-auto">
+                    <table class="w-full text-left text-sm min-w-[800px]">
                         <thead>
-                            <tr class="bg-gray-50 text-gray-500 font-bold uppercase tracking-widest text-[10px] border-b border-gray-100">
+                            <tr class="bg-gray-50 text-[10px] font-black uppercase tracking-widest text-gray-400 border-b">
                                 <th onclick="ordenar('Nombre')" class="p-5">Café ↕</th>
                                 <th onclick="ordenar('Origen')" class="p-5">Origen ↕</th>
-                                <th onclick="ordenar('Proceso')" class="p-5 text-center">Proceso ↕</th>
-                                <th onclick="ordenar('Puntaje')" class="p-5 text-center">SCA ↕</th>
+                                <th class="p-5 text-center">Proceso</th>
+                                <th class="p-5 text-center">SCA</th>
                                 <th class="p-5 text-center">Stock</th>
                                 <th class="p-5 text-right">Precio/Kg</th>
                                 <th class="p-5"></th>
                             </tr>
                         </thead>
-                        <tbody id="tabla-body" class="divide-y divide-gray-50 font-semibold text-gray-700">
-                            </tbody>
+                        <tbody id="tabla-body" class="divide-y divide-gray-50 font-bold text-gray-700"></tbody>
                     </table>
                 </div>
             </div>
         </section>
 
-        <section id="view-detalle" class="view-section py-12 px-6 bg-white">
-            <div class="max-w-7xl mx-auto">
-                <button onclick="navigateTo('offerlist')" class="mb-10 text-gray-400 hover:text-black font-black flex items-center gap-2 uppercase tracking-widest text-xs transition">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg> Volver a la lista
-                </button>
-
-                <div class="grid grid-cols-1 lg:grid-cols-12 gap-16">
-                    <div class="lg:col-span-8">
-                        <div class="relative shadow-2xl rounded-[40px] overflow-hidden watermark-overlay mb-10">
-                            <img id="det-img" src="" class="w-full h-[500px] object-cover img-protegida">
-                        </div>
-
-                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-16">
-                            <div class="bg-gray-50 p-5 rounded-3xl border border-gray-100">
-                                <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Productor</p>
-                                <p id="det-productor" class="font-black text-gray-900 truncate"></p>
-                            </div>
-                            <div class="bg-gray-50 p-5 rounded-3xl border border-gray-100">
-                                <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Altitud</p>
-                                <p id="det-altitud" class="font-black text-gray-900 truncate"></p>
-                            </div>
-                            <div class="bg-gray-50 p-5 rounded-3xl border border-gray-100">
-                                <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Variedad</p>
-                                <p id="det-variedad" class="font-black text-gray-900 truncate"></p>
-                            </div>
-                            <div class="bg-gray-50 p-5 rounded-3xl border border-gray-100">
-                                <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Proceso</p>
-                                <p id="det-proceso" class="font-black text-gray-900 truncate"></p>
-                            </div>
-                        </div>
-
-                        <div class="mb-16">
-                            <h4 class="text-xs font-black uppercase tracking-[0.3em] text-green-900 mb-6 border-b-2 border-green-900/10 pb-2">Historia del Lote</h4>
-                            <p id="det-resena" class="text-gray-600 text-lg leading-relaxed font-medium"></p>
-                        </div>
-
-                        <div class="mb-16">
-                            <h4 class="text-xs font-black uppercase tracking-[0.3em] text-green-900 mb-8 border-b-2 border-green-900/10 pb-2">Perfil de Catación SCA</h4>
-                            <div id="det-pildoras" class="flex flex-wrap gap-2 mb-10"></div>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-                                <div class="h-80"><canvas id="canvasRadar"></canvas></div>
-                                <div class="bg-gray-50 p-6 rounded-3xl border border-gray-100">
-                                    <table class="w-full text-xs text-gray-600">
-                                        <tbody id="det-tabla-sca" class="divide-y divide-gray-200"></tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div id="box-pie" class="mb-16 hidden">
-                            <h4 class="text-xs font-black uppercase tracking-[0.3em] text-green-900 mb-8 border-b-2 border-green-900/10 pb-2">Distribución de Malla</h4>
-                            <div class="h-64"><canvas id="canvasPie"></canvas></div>
-                        </div>
-                    </div>
-
-                    <div class="lg:col-span-4">
-                        <div class="sticky top-24 space-y-10">
-                            <div>
-                                <h2 id="det-nombre" class="text-5xl font-black text-gray-900 tracking-tighter leading-[0.9] mb-4"></h2>
-                                <p id="det-origen" class="text-xl text-green-700 font-bold mb-4"></p>
-                                <div id="det-certs" class="flex flex-wrap gap-2"></div>
-                            </div>
-
-                            <div class="bg-green-900 p-8 rounded-[40px] text-white shadow-2xl">
-                                <div class="flex justify-between items-center mb-6">
-                                    <span id="det-stock" class="text-[10px] font-black uppercase px-3 py-1 bg-white/10 rounded-full border border-white/20"></span>
-                                    <span id="det-puntaje" class="text-2xl font-black tracking-tighter"></span>
-                                </div>
-                                <div class="space-y-4">
-                                    <div class="grid grid-cols-2 gap-2">
-                                        <button onclick="selFormat('1kg')" id="btn-1kg" class="py-3 rounded-2xl border-2 font-black text-xs transition">1kg</button>
-                                        <button onclick="selFormat('Saco')" id="btn-saco" class="py-3 rounded-2xl border-2 font-black text-xs transition">Saco</button>
-                                    </div>
-                                    <div class="flex justify-between items-center border-y border-white/10 py-4">
-                                        <span class="font-bold text-sm">Cantidad:</span>
-                                        <div class="flex items-center gap-4">
-                                            <button onclick="updateQty(-1)" class="w-8 h-8 rounded-full bg-white/10 font-black">-</button>
-                                            <span id="qty-val" class="font-black text-lg">1</span>
-                                            <button onclick="updateQty(1)" class="w-8 h-8 rounded-full bg-white/10 font-black">+</button>
-                                        </div>
-                                    </div>
-                                    <div class="flex justify-between items-end pb-2">
-                                        <span class="text-xs font-bold text-green-300 uppercase tracking-widest">Subtotal</span>
-                                        <span class="text-3xl font-black">$<span id="det-subtotal">0</span></span>
-                                    </div>
-                                    <button onclick="addCart('Lote')" class="w-full bg-white text-green-900 font-black py-5 rounded-3xl shadow-xl hover:scale-[1.02] transition">Agregar al Carrito</button>
-                                    <button onclick="addCart('Muestra')" class="w-full text-green-200 font-bold text-xs py-2">Pedir Muestra 250gr ($5.000)</button>
-                                </div>
-                            </div>
-
-                            <div class="pt-6">
-                                <h4 class="text-xs font-black text-gray-400 uppercase tracking-[0.2em] mb-4">Especificaciones Físicas</h4>
-                                <div id="det-ficha-extra" class="space-y-3"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="view-about" class="view-section py-20 px-6 max-w-4xl mx-auto">
-            <h2 class="text-5xl font-black uppercase tracking-tighter mb-10">Nosotros</h2>
-            <p class="text-xl leading-relaxed text-gray-600 mb-6">Super Tasters nace de la obsesión por el detalle sensorial y la equidad en el origen del café.</p>
+        <section id="view-detalle" class="view-section py-12 px-6 bg-white min-h-screen">
+            <div id="detalle-container" class="max-w-7xl mx-auto"></div>
         </section>
 
     </div>
@@ -286,108 +139,100 @@
     <script>
         const API = 'https://script.google.com/macros/s/AKfycbzLrChkaUqiWMyDgYpzfHHjmwPcZJ2afiiXQEFbFZ_-2iE-6pV1m4CnVlIAUlKCVc1g/exec';
         const P_KEY = 'tostador2026';
-        let db = [], rChart = null, pChart = null, cart = JSON.parse(localStorage.getItem('st_cart')) || [];
-        let currP = null, currF = 'Saco', currQ = 1, currSW = 30;
+        let db = [], rChart = null, pChart = null;
 
-        // --- NAVEGACIÓN ---
+        async function init() {
+            try {
+                const r = await fetch(API); db = await r.json();
+                document.getElementById('global-loading').classList.add('hidden');
+                renderHome();
+            } catch(e) { console.error(e); }
+        }
+
         function navigateTo(v) {
-            if((v === 'offerlist' || v === 'detalle') && localStorage.getItem('st_auth') !== 'true') v = 'auth';
+            if((v === 'offerlist' || v === 'detalle') && localStorage.getItem('st_auth') !== 'true') {
+                v = 'auth';
+            }
             document.querySelectorAll('.view-section').forEach(s => s.classList.remove('view-active'));
             document.getElementById('view-' + v).classList.add('view-active');
             window.scrollTo(0, 0);
             if(v === 'offerlist') renderList(db);
         }
 
-        function toggleMenu() { document.getElementById('side-menu').classList.toggle('-translate-x-full'); }
-        function toggleCarrito() { document.getElementById('cart-panel').classList.toggle('cart-closed'); document.getElementById('cart-overlay').classList.toggle('hidden'); }
-        function toggleSearch() { document.getElementById('search-modal').classList.toggle('search-closed'); }
-
-        // --- AUTH ---
-        function switchAuth(t) {
-            document.getElementById('auth-login').classList.toggle('hidden', t === 'reg');
-            document.getElementById('auth-reg').classList.toggle('hidden', t === 'login');
-            document.getElementById('btn-tab-login').className = t==='login'?'text-xl font-black border-b-4 border-green-800 pb-2':'text-xl font-bold text-gray-300 border-b-4 border-transparent pb-2 transition';
-            document.getElementById('btn-tab-reg').className = t==='reg'?'text-xl font-black border-b-4 border-green-800 pb-2':'text-xl font-bold text-gray-300 border-b-4 border-transparent pb-2 transition';
-        }
-        function intentarAcceso() {
-            if(document.getElementById('pass-field').value === P_KEY) { localStorage.setItem('st_auth', 'true'); navigateTo('offerlist'); }
-            else { document.getElementById('err-auth').classList.remove('hidden'); }
-        }
-        function cerrarSesion() { localStorage.removeItem('st_auth'); navigateTo('home'); }
-
-        // --- DATA ---
-        async function init() {
-            try {
-                const r = await fetch(API); db = await r.json();
-                document.getElementById('global-loading').classList.add('opacity-0');
-                setTimeout(() => document.getElementById('global-loading').classList.add('hidden'), 500);
-            } catch(e) { document.getElementById('loading-text').innerText = "Error. Recarga."; }
+        function renderHome() {
+            const grid = document.getElementById('home-featured-grid');
+            grid.innerHTML = db.slice(0,3).map((p, i) => `
+                <div onclick="verDet(${db.indexOf(p)})" class="cursor-pointer group">
+                    <div class="h-80 relative overflow-hidden rounded-[32px] mb-6 shadow-lg">
+                        <img src="${p.Imagen || ''}" class="w-full h-full object-cover transition duration-700 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition"></div>
+                        <div class="absolute top-6 left-6 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest text-green-900">${p.Categoria}</div>
+                    </div>
+                    <h4 class="text-2xl font-black text-gray-900 tracking-tighter">${p.Nombre}</h4>
+                    <p class="text-gray-400 font-bold uppercase text-[10px] tracking-widest mt-1">${p.Origen}</p>
+                </div>
+            `).join('');
         }
 
         function renderList(data) {
             const b = document.getElementById('tabla-body');
-            b.innerHTML = data.map((p, i) => `
+            b.innerHTML = data.map(p => `
                 <tr onclick="verDet(${db.indexOf(p)})" class="hover:bg-green-50 transition cursor-pointer">
                     <td class="p-5 font-black text-gray-900">${p.Nombre}</td>
-                    <td class="p-5 text-gray-500">${p.Origen || '-'}</td>
-                    <td class="p-5 text-center"><span class="bg-gray-100 px-3 py-1 rounded-lg text-[10px] uppercase font-bold">${p.Proceso || '-'}</span></td>
-                    <td class="p-5 text-center font-black text-green-800">${p.Puntaje || '-'}</td>
-                    <td class="p-5 text-center"><span class="text-[10px] uppercase font-bold px-2 py-1 rounded-md ${p.Stock==='Agotado'?'bg-red-50 text-red-600':'bg-green-50 text-green-700'}">${p.Stock}</span></td>
+                    <td class="p-5 text-gray-500">${p.Origen}</td>
+                    <td class="p-5 text-center"><span class="bg-gray-100 px-2 py-1 rounded text-[10px] uppercase font-black">${p.Proceso}</span></td>
+                    <td class="p-5 text-center font-black text-green-700">${p.Puntaje}</td>
+                    <td class="p-5 text-center text-[10px] uppercase">${p.Stock}</td>
                     <td class="p-5 text-right font-black">$${Number(p.Precio).toLocaleString('es-CL')}</td>
-                    <td class="p-5 text-right text-green-800 font-black">→</td>
+                    <td class="p-5 text-right">→</td>
                 </tr>
             `).join('');
         }
 
         function verDet(idx) {
-            currP = db[idx]; currQ = 1; currF = 'Saco';
-            currSW = currP['Peso Saco'] ? parseFloat(currP['Peso Saco']) : 30;
+            if(localStorage.getItem('st_auth') !== 'true') { navigateTo('auth'); return; }
+            const p = db[idx];
             navigateTo('detalle');
             
-            document.getElementById('det-img').src = currP.Imagen || '';
-            document.getElementById('det-nombre').innerText = currP.Nombre;
-            document.getElementById('det-origen').innerText = currP.Origen;
-            document.getElementById('det-productor').innerText = currP.Productor || '-';
-            document.getElementById('det-altitud').innerText = currP.Altitud || '-';
-            document.getElementById('det-variedad').innerText = currP.Variedad || '-';
-            document.getElementById('det-proceso').innerText = currP.Proceso || '-';
-            document.getElementById('det-resena').innerText = currP.Reseña || "Información en proceso de carga por nuestro equipo de curaduría técnica.";
-            document.getElementById('det-puntaje').innerText = currP.Puntaje ? `SCA ${currP.Puntaje}` : '-';
-            document.getElementById('det-stock').innerText = `${currP.Stock} DISP.`;
-            
-            const scaFields = ['Fragancia / Aroma', 'Sabor', 'Sabor Residual', 'Acidez', 'Cuerpo', 'Balance', 'Dulzor'];
-            document.getElementById('det-tabla-sca').innerHTML = scaFields.map(f => `<tr><td class="py-2 font-bold">${f}</td><td class="py-2 text-right font-black text-green-700">${currP[f]||'8.00'}</td></tr>`).join('');
-            
-            const notas = currP['Notas de Cata'] || '';
-            document.getElementById('det-pildoras').innerHTML = notas.split(',').map(n => `<span class="bg-white border-2 border-gray-100 px-4 py-2 rounded-full font-bold text-xs">☕ ${n.trim()}</span>`).join('');
-            
-            const extraFields = ['Cosecha', 'Malla', 'Humedad', 'WA', 'Color', 'Olor en Verde', 'Defectos', 'Empaque'];
-            document.getElementById('det-ficha-extra').innerHTML = extraFields.map(f => currP[f] ? `<div class="flex justify-between text-xs border-b border-gray-100 pb-2"><span class="font-bold text-gray-400 uppercase">${f}</span><span class="font-bold">${currP[f]}</span></div>` : '').join('');
-
-            selFormat('Saco');
-            dibujarGraficos(currP);
+            // Construcción dinámica de la ficha para evitar errores de contenedores vacíos
+            document.getElementById('detalle-container').innerHTML = `
+                <button onclick="navigateTo('offerlist')" class="mb-10 text-gray-400 font-black uppercase text-xs">← Volver</button>
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-16">
+                    <div class="lg:col-span-8">
+                        <img src="${p.Imagen}" class="w-full h-[500px] object-cover rounded-[40px] shadow-2xl mb-12">
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
+                            <div class="bg-gray-50 p-4 rounded-2xl"><p class="text-[9px] font-black text-gray-400 uppercase mb-1">Productor</p><p class="font-black text-sm">${p.Productor||'-'}</p></div>
+                            <div class="bg-gray-50 p-4 rounded-2xl"><p class="text-[9px] font-black text-gray-400 uppercase mb-1">Altitud</p><p class="font-black text-sm">${p.Altitud||'-'}</p></div>
+                            <div class="bg-gray-50 p-4 rounded-2xl"><p class="text-[9px] font-black text-gray-400 uppercase mb-1">Variedad</p><p class="font-black text-sm">${p.Variedad||'-'}</p></div>
+                            <div class="bg-gray-50 p-4 rounded-2xl"><p class="text-[9px] font-black text-gray-400 uppercase mb-1">Proceso</p><p class="font-black text-sm">${p.Proceso||'-'}</p></div>
+                        </div>
+                        <h4 class="text-xs font-black uppercase tracking-widest text-green-800 mb-4">Perfil Sensorial SCA</h4>
+                        <div class="h-80 w-full mb-10"><canvas id="radarChart"></canvas></div>
+                        <div class="prose max-w-none"><h4 class="text-xs font-black uppercase">Reseña</h4><p>${p.Reseña || 'Información técnica en validación.'}</p></div>
+                    </div>
+                    <div class="lg:col-span-4">
+                        <h2 class="text-5xl font-black tracking-tighter mb-4">${p.Nombre}</h2>
+                        <p class="text-xl text-green-700 font-bold mb-8">${p.Origen}</p>
+                        <div class="bg-green-900 p-8 rounded-[40px] text-white shadow-2xl mb-10">
+                            <div class="flex justify-between items-end mb-6"><span class="text-xs font-bold text-green-300">PRECIO KG</span><span class="text-4xl font-black">$${Number(p.Precio).toLocaleString('es-CL')}</span></div>
+                            <button onclick="addCart('${p.Nombre}', ${p.Precio})" class="w-full bg-white text-green-900 font-black py-4 rounded-2xl">Añadir al Carrito</button>
+                        </div>
+                        <div class="space-y-3 text-xs">
+                            <div class="flex justify-between border-b pb-2"><b>COSECHA</b><span>${p.Cosecha||'-'}</span></div>
+                            <div class="flex justify-between border-b pb-2"><b>HUMEDAD</b><span>${p.Humedad||'-'}</span></div>
+                            <div class="flex justify-between border-b pb-2"><b>WA</b><span>${p.WA||'-'}</span></div>
+                            <div class="flex justify-between border-b pb-2"><b>DEFECTOS</b><span>${p.Defectos||'-'}</span></div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            // Dibujar Radar después de inyectar el HTML
+            setTimeout(() => drawRadar(p), 100);
         }
 
-        function selFormat(f) {
-            currF = f;
-            const act = "border-green-600 bg-green-50 text-green-950 shadow-sm", inact = "border-gray-200 bg-white text-gray-400";
-            document.getElementById('btn-1kg').className = `py-3 rounded-2xl border-2 font-black text-xs transition ${f==='1kg'?act:inact}`;
-            document.getElementById('btn-saco').className = `py-3 rounded-2xl border-2 font-black text-xs transition ${f==='Saco'?act:inact}`;
-            document.getElementById('btn-saco').innerText = `Saco (${currSW}kg)`;
-            updatePrice();
-        }
-
-        function updateQty(v) { currQ = Math.max(1, currQ + v); document.getElementById('qty-val').innerText = currQ; updatePrice(); }
-        
-        function updatePrice() {
-            const p = Number(currP.Precio), fac = currF==='Saco'?currSW:1;
-            document.getElementById('det-subtotal').innerText = (p * fac * currQ).toLocaleString('es-CL');
-        }
-
-        function dibujarGraficos(p) {
-            const ctxR = document.getElementById('canvasRadar').getContext('2d');
-            if(rChart) rChart.destroy();
-            rChart = new Chart(ctxR, {
+        function drawRadar(p) {
+            const ctx = document.getElementById('radarChart').getContext('2d');
+            new Chart(ctx, {
                 type: 'radar',
                 data: {
                     labels: ['Aroma', 'Sabor', 'Residual', 'Acidez', 'Cuerpo', 'Balance'],
@@ -395,20 +240,18 @@
                 },
                 options: { responsive: true, maintainAspectRatio: false, scales: { r: { min: 6, max: 10, ticks: { display: false } } }, plugins: { legend: { display: false } } }
             });
-
-            const boxPie = document.getElementById('box-pie'), ctxP = document.getElementById('canvasPie').getContext('2d');
-            if(p['Malla 17'] || p['Malla 16']) {
-                boxPie.classList.remove('hidden'); if(pChart) pChart.destroy();
-                pChart = new Chart(ctxP, {
-                    type: 'pie',
-                    data: {
-                        labels: ['M17', 'M16', 'M15', 'Otras'],
-                        datasets: [{ data: [parseFloat(p['Malla 17'])||0, parseFloat(p['Malla 16'])||0, parseFloat(p['Malla 15'])||0, 10], backgroundColor: ['#14532d','#059669','#34d399','#a7f3d0'] }]
-                    },
-                    options: { responsive: true, maintainAspectRatio: false }
-                });
-            } else { boxPie.classList.add('hidden'); }
         }
+
+        function intentarAcceso() {
+            if(document.getElementById('pass-field').value === P_KEY) {
+                localStorage.setItem('st_auth', 'true');
+                navigateTo('offerlist');
+            } else { document.getElementById('err-auth').classList.remove('hidden'); }
+        }
+
+        function toggleMenu() { document.getElementById('side-menu').classList.toggle('-translate-x-full'); }
+        function toggleCarrito() { alert("Carrito en mantenimiento. Próxima actualización disponible pronto."); }
+        function toggleSearch() { document.getElementById('view-home').classList.add('view-active'); window.scrollTo(0, 1000); }
 
         init();
     </script>
