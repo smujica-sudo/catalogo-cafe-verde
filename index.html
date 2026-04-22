@@ -24,7 +24,6 @@
         .text-outline { -webkit-text-stroke: 1px rgba(255,255,255,0.4); color: transparent; }
         .img-protegida { pointer-events: none; user-select: none; -webkit-user-drag: none; }
         
-        /* Animaciones sutiles */
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         .animate-fade-in { animation: fadeInUp 0.8s ease-out forwards; opacity: 0; }
         .delay-100 { animation-delay: 100ms; }
@@ -134,7 +133,7 @@
                         <h2 class="text-6xl font-black tracking-tighter uppercase mb-2 italic">Offer List</h2>
                         <p class="text-gray-400 font-bold uppercase tracking-widest text-xs italic">Inventario en tiempo real · Ordena haciendo clic en la cabecera</p>
                     </div>
-                    <input type="text" id="offerlist-filter" onkeyup="filterTable(this.value)" placeholder="Filtrar catálogo..." class="w-full md:w-80 bg-white border border-gray-100 p-5 rounded-3xl shadow-sm outline-none focus:border-green-800 transition">
+                    <input type="text" id="offerlist-filter" onkeyup="filterTable(this.value)" placeholder="Filtrar catálogo..." class="w-full md:w-80 bg-white border border-gray-100 p-5 rounded-3xl shadow-sm outline-none focus:border-green-800 transition md:hidden">
                 </div>
                 <div class="overflow-x-auto bg-white rounded-[40px] border border-gray-100 shadow-2xl animate-fade-in delay-100">
                     <table class="w-full text-left min-w-[1200px] text-sm">
@@ -302,6 +301,7 @@
         const API = 'https://script.google.com/macros/s/AKfycbzLrChkaUqiWMyDgYpzfHHjmwPcZJ2afiiXQEFbFZ_-2iE-6pV1m4CnVlIAUlKCVc1g/exec';
         const P_KEY = 'tostador2026';
         let db = [], currentListData = [], currSW = 30, currQ = 1, currF = 'Saco', currP = null;
+        let chartInstances = {}; // Track charts to grab base64 later
 
         // SCROLL NAVBAR EFFECT
         window.addEventListener('scroll', () => {
@@ -534,7 +534,7 @@
                     <div class="absolute inset-0 w-full h-full bg-cover bg-center bg-fixed opacity-60 mix-blend-overlay img-protegida" style="background-image: url('${p.Imagen || 'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7'}');"></div>
                     <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
                     
-                    <button onclick="navigateTo('offerlist')" class="absolute top-20 md:top-24 left-6 md:left-12 z-30 text-[10px] font-black uppercase text-white/70 tracking-widest italic hover:text-white transition-all flex items-center gap-2">
+                    <button onclick="navigateTo('offerlist')" class="absolute top-28 left-6 md:left-12 z-30 bg-black/40 backdrop-blur-md px-5 py-2.5 rounded-full text-[9px] font-black uppercase text-white/90 tracking-widest italic hover:bg-black/60 transition-all flex items-center gap-2 border border-white/10 shadow-lg">
                         ← Volver al Inventario
                     </button>
 
@@ -675,7 +675,7 @@
 
                                         <div class="grid grid-cols-1 gap-3 pt-4">
                                             <button onclick="comprar('Fintoc')" class="w-full bg-green-950 text-white font-black py-4 rounded-[25px] uppercase tracking-widest text-[9px] hover:bg-green-800 transition duration-500 shadow-xl flex items-center justify-center gap-2">
-                                                Transferencia / Saldo MP (0% Recargo)
+                                                Transferencia (0% Recargo)
                                             </button>
                                             <button onclick="comprar('MercadoPago_Tarjetas')" onmouseover="simulateSurcharge(true)" onmouseout="simulateSurcharge(false)" class="w-full bg-[#009ee3] text-white font-black py-4 rounded-[25px] uppercase tracking-widest text-[9px] hover:scale-[1.02] transition duration-500 shadow-xl flex items-center justify-center gap-2">
                                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
@@ -751,31 +751,36 @@
         }
 
         function drawRadar(p) {
-            new Chart(document.getElementById('radarChart').getContext('2d'), {
+            if(chartInstances['radar']) chartInstances['radar'].destroy();
+            const ctx = document.getElementById('radarChart').getContext('2d');
+            chartInstances['radar'] = new Chart(ctx, {
                 type: 'radar',
                 data: {
                     labels: ['Aroma', 'Sabor', 'Residual', 'Acidez', 'Cuerpo', 'Balance'],
                     datasets: [{ data: [parseFloat(p['Fragancia / Aroma'])||8, parseFloat(p.Sabor)||8, parseFloat(p['Sabor Residual'])||8, parseFloat(p.Acidez)||8, parseFloat(p.Cuerpo)||8, parseFloat(p.Balance)||8], backgroundColor: 'rgba(20, 83, 45, 0.1)', borderColor: '#052214', borderWidth: 3, pointRadius: 0 }]
                 },
-                options: { responsive: true, maintainAspectRatio: false, scales: { r: { min: 6, max: 10, ticks: { display: false }, pointLabels: { font: { size: 10, weight: '900', family: 'Inter' }, color: '#052214' } } }, plugins: { legend: { display: false }, datalabels: { display: false } } }
+                options: { animation: false, responsive: true, maintainAspectRatio: false, scales: { r: { min: 6, max: 10, ticks: { display: false }, pointLabels: { font: { size: 10, weight: '900', family: 'Inter' }, color: '#052214' } } }, plugins: { legend: { display: false }, datalabels: { display: false } } }
             });
         }
 
         function drawPie(p) {
             if(!p['Malla 17'] && !p['Malla 16']) return;
             document.getElementById('box-pie').classList.remove('hidden');
-            new Chart(document.getElementById('pieChart').getContext('2d'), {
+            if(chartInstances['pie']) chartInstances['pie'].destroy();
+            const ctx = document.getElementById('pieChart').getContext('2d');
+            chartInstances['pie'] = new Chart(ctx, {
                 type: 'pie',
                 data: {
                     labels: ['M17+', 'M16', 'M15', 'Otras'],
                     datasets: [{ data: [parseFloat(p['Malla 17'])||0, parseFloat(p['Malla 16'])||0, parseFloat(p['Malla 15'])||0, parseFloat(p['Fuera Malla'])||10], backgroundColor: ['#052214','#065f46','#10b981','#d1fae5'], borderWidth: 0 }]
                 },
                 options: { 
+                    animation: false,
                     responsive: true, maintainAspectRatio: false, 
                     plugins: { 
                         legend: { position: 'bottom', labels: { font: { weight: '900', size: 10 }, padding: 15 } },
                         datalabels: {
-                            color: '#fff', font: { weight: 'bold', size: 11 },
+                            color: '#fff', font: { weight: 'bold', size: 12 },
                             formatter: (value, ctx) => {
                                 let sum = 0;
                                 let dataArr = ctx.chart.data.datasets[0].data;
@@ -819,16 +824,32 @@
         }
 
         function imprimirFicha() {
+            // Get base64 images from charts before opening print window
+            const radarCanvas = document.getElementById('radarChart');
+            const radarImg = radarCanvas ? radarCanvas.toDataURL('image/png') : '';
+            
+            const boxPie = document.getElementById('box-pie');
+            let pieImgHTML = '';
+            if (boxPie && !boxPie.classList.contains('hidden')) {
+                const pieCanvas = document.getElementById('pieChart');
+                if (pieCanvas) {
+                    const pieImg = pieCanvas.toDataURL('image/png');
+                    pieImgHTML = `
+                    <h3 style="font-size: 10pt; text-transform: uppercase; letter-spacing: 2px; color: #052214; margin-top: 30px; border-bottom: 1px solid #e5e7eb; padding-bottom: 5px;">Distribución de Malla</h3>
+                    <div style="text-align: center; margin-top: 15px;"><img src="${pieImg}" style="max-width: 250px; height: auto;"></div>`;
+                }
+            }
+
             const printWin = window.open('', '_blank');
             printWin.document.write(`
                 <html><head><title>Ficha Técnica - ${currP.Nombre}</title>
                 <style>
-                    body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; color: #1f2937; margin: 40px; }
+                    body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; color: #1f2937; margin: 40px; line-height: 1.4; }
                     h1 { color: #052214; font-size: 28pt; margin-bottom: 5px; text-transform: uppercase; font-style: italic; letter-spacing: -1px; }
                     h2 { color: #065f46; font-size: 12pt; margin-top: 0; text-transform: uppercase; letter-spacing: 2px; }
                     .header { border-bottom: 4px solid #34d399; padding-bottom: 20px; margin-bottom: 30px; }
-                    .grid { display: table; width: 100%; margin-bottom: 30px; }
-                    .col { display: table-cell; width: 50%; vertical-align: top; padding-right: 20px; }
+                    .grid { display: table; width: 100%; margin-bottom: 30px; table-layout: fixed; }
+                    .col { display: table-cell; width: 50%; vertical-align: top; padding-right: 30px; }
                     table { width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 10pt; }
                     th, td { border-bottom: 1px solid #e5e7eb; padding: 10px 4px; text-align: left; }
                     th { color: #9ca3af; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; width: 40%; }
@@ -844,7 +865,7 @@
                 </div>
                 <div class="grid">
                     <div class="col">
-                        <h3 style="font-size: 10pt; text-transform: uppercase; letter-spacing: 2px; color: #052214;">Especificaciones en Origen</h3>
+                        <h3 style="font-size: 10pt; text-transform: uppercase; letter-spacing: 2px; color: #052214; border-bottom: 1px solid #e5e7eb; padding-bottom: 5px;">Especificaciones en Origen</h3>
                         <table>
                             <tr><th>Productor</th><td>${currP.Productor||'-'}</td></tr>
                             <tr><th>Finca</th><td>${currP.Finca||'-'}</td></tr>
@@ -856,9 +877,17 @@
                             <tr><th>Malla</th><td>${currP['Malla']||'-'}</td></tr>
                             <tr><th>Empaque</th><td>${currP.Empaque||'-'}</td></tr>
                         </table>
+                        
+                        ${pieImgHTML}
+                        
                     </div>
                     <div class="col">
-                        <h3 style="font-size: 10pt; text-transform: uppercase; letter-spacing: 2px; color: #052214;">Evaluación Sensorial</h3>
+                        <h3 style="font-size: 10pt; text-transform: uppercase; letter-spacing: 2px; color: #052214; border-bottom: 1px solid #e5e7eb; padding-bottom: 5px;">Evaluación Sensorial</h3>
+                        
+                        <div style="text-align: center; margin: 15px 0;">
+                            <img src="${radarImg}" style="max-width: 250px; height: auto;">
+                        </div>
+
                         <table>
                             <tr><th>Aroma</th><td>${currP['Fragancia / Aroma']||'-'}</td></tr>
                             <tr><th>Sabor</th><td>${currP.Sabor||'-'}</td></tr>
@@ -874,12 +903,12 @@
                     </div>
                 </div>
                 
-                <h3 style="font-size: 10pt; text-transform: uppercase; letter-spacing: 2px; color: #052214; border-bottom: 1px solid #e5e7eb; padding-bottom: 10px;">Trazabilidad y Reseña</h3>
-                <p style="font-size: 11pt; line-height: 1.6; color: #4b5563;">${currP.Reseña||'Información técnica en proceso de carga.'}</p>
+                <h3 style="font-size: 10pt; text-transform: uppercase; letter-spacing: 2px; color: #052214; border-bottom: 1px solid #e5e7eb; padding-bottom: 5px;">Trazabilidad y Reseña</h3>
+                <p style="font-size: 10pt; color: #4b5563; text-align: justify;">${currP.Reseña||'Información técnica en proceso de carga.'}</p>
                 
                 <div class="notes">
-                    <h3 style="margin-top:0; font-size: 10pt; text-transform: uppercase; letter-spacing: 1px; color: #065f46;">Notas de Cata</h3>
-                    <p>${currP['Notas de Cata']||'N/A'}</p>
+                    <h3 style="margin-top:0; font-size: 10pt; text-transform: uppercase; letter-spacing: 1px; color: #065f46;">Notas de Cata Principales</h3>
+                    <p style="margin-bottom:0; font-size: 10pt; color: #1f2937;">${currP['Notas de Cata']||'N/A'}</p>
                 </div>
                 
                 <div class="footer">Generado por Super Tasters B2B - Curaduría de Café Verde (Est. 2014)</div>
