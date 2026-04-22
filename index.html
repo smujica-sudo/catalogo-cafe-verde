@@ -25,17 +25,13 @@
         .img-protegida { pointer-events: none; user-select: none; -webkit-user-drag: none; }
         
         /* Animaciones sutiles */
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         .animate-fade-in { animation: fadeInUp 0.8s ease-out forwards; opacity: 0; }
         .delay-100 { animation-delay: 100ms; }
         .delay-200 { animation-delay: 200ms; }
         .delay-300 { animation-delay: 300ms; }
         .delay-400 { animation-delay: 400ms; }
         
-        /* Efecto Hover para filas y tarjetas */
         .hover-lift { transition: transform 0.3s ease, box-shadow 0.3s ease; }
         .hover-lift:hover { transform: translateY(-5px); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); }
     </style>
@@ -105,17 +101,17 @@
                     <div class="space-y-4 animate-fade-in delay-100">
                         <h3 class="text-[10px] font-black uppercase tracking-[0.4em] text-green-700 italic">Ethos</h3>
                         <p class="text-2xl font-black text-green-950 tracking-tighter leading-none italic">Autoridad Técnica.</p>
-                        <p class="text-gray-500 text-sm leading-relaxed">Equipo certificado SCA y Q Graders[cite: 13, 14]. No somos intermediarios; somos socios que garantizan la integridad de cada grano mediante una trayectoria impecable.</p>
+                        <p class="text-gray-500 text-sm leading-relaxed">Equipo certificado SCA y Q Graders. No somos intermediarios; somos socios que garantizan la integridad de cada grano mediante una trayectoria impecable.</p>
                     </div>
                     <div class="space-y-4 animate-fade-in delay-200">
                         <h3 class="text-[10px] font-black uppercase tracking-[0.4em] text-green-700 italic">Pathos</h3>
                         <p class="text-2xl font-black text-green-950 tracking-tighter leading-none italic">Relaciones en Origen.</p>
-                        <p class="text-gray-500 text-sm leading-relaxed">Visitamos personalmente a productores en Indonesia, Brasil, Bolivia, Perú y Centroamérica[cite: 7]. El café es un vehículo de confianza humana y sostenibilidad en el campo.</p>
+                        <p class="text-gray-500 text-sm leading-relaxed">Visitamos personalmente a productores en Indonesia, Brasil, Bolivia, Perú y Centroamérica. El café es un vehículo de confianza humana y sostenibilidad en el campo.</p>
                     </div>
                     <div class="space-y-4 animate-fade-in delay-300">
                         <h3 class="text-[10px] font-black uppercase tracking-[0.4em] text-green-700 italic">Logos</h3>
                         <p class="text-2xl font-black text-green-950 tracking-tighter leading-none italic">Análisis de Datos.</p>
-                        <p class="text-gray-500 text-sm leading-relaxed">Análisis físicos meticulosos y evaluaciones sensoriales bajo estándares SCA[cite: 16]. Transparencia lógica y eficiencia logística en cada lote.</p>
+                        <p class="text-gray-500 text-sm leading-relaxed">Análisis físicos meticulosos y evaluaciones sensoriales bajo estándares SCA. Transparencia lógica y eficiencia logística en cada lote.</p>
                     </div>
                 </div>
 
@@ -136,14 +132,23 @@
                 <div class="flex flex-col md:flex-row justify-between items-end mb-12 gap-6 animate-fade-in">
                     <div>
                         <h2 class="text-6xl font-black tracking-tighter uppercase mb-2 italic">Offer List</h2>
-                        <p class="text-gray-400 font-bold uppercase tracking-widest text-xs italic">Inventario en tiempo real · Venta por Saco y KG</p>
+                        <p class="text-gray-400 font-bold uppercase tracking-widest text-xs italic">Inventario en tiempo real · Ordena haciendo clic en la cabecera</p>
                     </div>
-                    <input type="text" onkeyup="navPredictiveSearch(this.value)" placeholder="Filtrar catálogo..." class="w-full md:w-80 bg-white border border-gray-100 p-5 rounded-3xl shadow-sm outline-none focus:border-green-800 transition md:hidden">
+                    <input type="text" id="offerlist-filter" onkeyup="filterTable(this.value)" placeholder="Filtrar catálogo..." class="w-full md:w-80 bg-white border border-gray-100 p-5 rounded-3xl shadow-sm outline-none focus:border-green-800 transition">
                 </div>
                 <div class="overflow-x-auto bg-white rounded-[40px] border border-gray-100 shadow-2xl animate-fade-in delay-100">
-                    <table class="w-full text-left min-w-[900px] text-sm">
-                        <thead class="bg-gray-50 text-[9px] font-black uppercase text-gray-400 border-b tracking-[0.2em]">
-                            <tr><th class="p-10">Lote / Varietal</th><th class="p-10">Origen</th><th class="p-10 text-center">SCA</th><th class="p-10 text-right">Precio Neto/KG</th><th class="p-10"></th></tr>
+                    <table class="w-full text-left min-w-[1200px] text-sm">
+                        <thead class="bg-gray-50 text-[9px] font-black uppercase text-gray-400 border-b tracking-[0.2em] cursor-pointer">
+                            <tr>
+                                <th class="p-6 hover:text-green-800 transition" onclick="sortTable('Nombre')">Lote / Varietal ↕</th>
+                                <th class="p-6 hover:text-green-800 transition" onclick="sortTable('Origen')">Origen ↕</th>
+                                <th class="p-6 text-center hover:text-green-800 transition" onclick="sortTable('Proceso')">Proceso ↕</th>
+                                <th class="p-6 hover:text-green-800 transition" onclick="sortTable('Notas de Cata')">Notas de Sabor ↕</th>
+                                <th class="p-6 text-center hover:text-green-800 transition" onclick="sortTable('Cosecha')">Cosecha ↕</th>
+                                <th class="p-6 text-center hover:text-green-800 transition" onclick="sortTable('Puntaje')">SCA ↕</th>
+                                <th class="p-6 text-center hover:text-green-800 transition" onclick="sortTable('Stock')">Sacos ↕</th>
+                                <th class="p-6 text-right hover:text-green-800 transition" onclick="sortTable('Precio')">Neto/KG ↕</th>
+                            </tr>
                         </thead>
                         <tbody id="tabla-body" class="divide-y divide-gray-50 font-bold text-gray-800"></tbody>
                     </table>
@@ -156,23 +161,23 @@
 
             <section id="view-condiciones" class="view-section py-20 px-6 max-w-7xl mx-auto">
                 <h2 class="text-5xl md:text-7xl font-black uppercase tracking-tighter mb-4 italic text-green-950 animate-fade-in">Condiciones Comerciales</h2>
-                <p class="text-xl text-gray-500 mb-16 font-light italic animate-fade-in">Transparencia y claridad en cada etapa de nuestra operación[cite: 45].</p>
+                <p class="text-xl text-gray-500 mb-16 font-light italic animate-fade-in">Transparencia y claridad en cada etapa de nuestra operación.</p>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
                     <div class="bg-white p-10 rounded-[40px] border border-gray-100 shadow-xl hover-lift animate-fade-in delay-100">
                         <div class="w-14 h-14 bg-green-50 text-green-800 flex items-center justify-center rounded-full mb-6"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" stroke-width="2"></path></svg></div>
                         <h3 class="text-2xl font-black uppercase italic tracking-tighter mb-4 text-green-950">Despachos & Envíos</h3>
                         <div class="space-y-4 text-sm text-gray-600 leading-relaxed">
-                            <p><b>Despachos en Santiago:</b> Se realizan los días Martes y Viernes entre las 14:00 y 18:00 hrs. El costo fijo es de $10.000 + IVA para envíos de hasta 60 kilos[cite: 157, 160].</p>
-                            <p><b>Zona de Cobertura (SCL):</b> Providencia, Las Condes, Vitacura, Ñuñoa, La Reina, Macul, Quilicura, Huechuraba y Santiago Centro[cite: 155].</p>
-                            <p><b>Regiones y Mayor Volumen:</b> Todo envío superior a 60kg o con destino a regiones, se envía Por Pagar vía courier de elección del cliente, o se cotiza un flete especial según volumen[cite: 158, 162].</p>
+                            <p><b>Despachos en Santiago:</b> Se realizan los días Martes y Viernes entre las 14:00 y 18:00 hrs. El costo fijo es de $10.000 + IVA para envíos de hasta 60 kilos.</p>
+                            <p><b>Zona de Cobertura (SCL):</b> Providencia, Las Condes, Vitacura, Ñuñoa, La Reina, Macul, Quilicura, Huechuraba y Santiago Centro.</p>
+                            <p><b>Regiones y Mayor Volumen:</b> Todo envío superior a 60kg o con destino a regiones, se envía Por Pagar vía courier de elección del cliente, o se cotiza un flete especial según volumen.</p>
                         </div>
                     </div>
                     <div class="bg-white p-10 rounded-[40px] border border-gray-100 shadow-xl hover-lift animate-fade-in delay-200">
                         <div class="w-14 h-14 bg-blue-50 text-blue-800 flex items-center justify-center rounded-full mb-6"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" stroke-width="2"></path></svg></div>
                         <h3 class="text-2xl font-black uppercase italic tracking-tighter mb-4 text-green-950">Muestras de Café</h3>
                         <div class="space-y-4 text-sm text-gray-600 leading-relaxed">
-                            <p>Sabemos que perfilar es vital. Ofrecemos hasta 3 muestras sin costo (sólo pagas el envío). Muestras adicionales tienen un valor de <b>$3.500 x 250gr c/u</b>[cite: 141, 142]. Excluye Geishas y Microlotes especiales[cite: 144].</p>
+                            <p>Sabemos que perfilar es vital. Ofrecemos hasta 3 muestras sin costo (sólo pagas el envío). Muestras adicionales tienen un valor de <b>$3.500 x 250gr c/u</b>. Excluye Geishas y Microlotes especiales.</p>
                             <p>Para microlotes exclusivos de catálogo B2B, ofrecemos muestras estandarizadas de <b>200 gramos</b> por un valor de <b>$5.000 netos</b>.</p>
                         </div>
                     </div>
@@ -180,17 +185,17 @@
                         <div class="w-14 h-14 bg-amber-50 text-amber-800 flex items-center justify-center rounded-full mb-6"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0zM12 8v4l3 2" stroke-width="2"></path></svg></div>
                         <h3 class="text-2xl font-black uppercase italic tracking-tighter mb-4 text-green-950">Sesiones de Cata</h3>
                         <div class="space-y-4 text-sm text-gray-600 leading-relaxed">
-                            <p>Si te gustaría probar más opciones y conocer los perfiles en profundidad, coordinamos sesiones de cata técnica exclusivas[cite: 146].</p>
-                            <p>Las cataciones personalizadas pueden realizarse en tu taller o en el nuestro (sólo disponible dentro de Santiago)[cite: 147]. Para agendar tu cita, contáctanos a <b>contacto@supertasters.cl</b>.</p>
+                            <p>Si te gustaría probar más opciones y conocer los perfiles en profundidad, coordinamos sesiones de cata técnica exclusivas.</p>
+                            <p>Las cataciones personalizadas pueden realizarse en tu taller o en el nuestro (sólo disponible dentro de Santiago). Para agendar tu cita, contáctanos a <b>contacto@supertasters.cl</b>.</p>
                         </div>
                     </div>
                     <div class="bg-white p-10 rounded-[40px] border border-gray-100 shadow-xl hover-lift animate-fade-in delay-400">
                         <div class="w-14 h-14 bg-purple-50 text-purple-800 flex items-center justify-center rounded-full mb-6"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-width="2"></path></svg></div>
                         <h3 class="text-2xl font-black uppercase italic tracking-tighter mb-4 text-green-950">Pagos & Facturación</h3>
                         <div class="space-y-4 text-sm text-gray-600 leading-relaxed">
-                            <p>Los pedidos se procesan previo pago al contado[cite: 179]. Emitimos la documentación tributaria correspondiente (Factura) a tu razón social[cite: 188].</p>
-                            <p>Los precios publicados en el catálogo son <b>Base Netos (Sin IVA)</b>[cite: 189].</p>
-                            <p><b>Recargos:</b> Transferencias vía Fintoc o desde cuenta Mercado Pago tienen <b>0% de recargo</b>[cite: 181]. El pago con Tarjetas vía Mercado Pago (hasta 3 cuotas) tiene un <b>3.5% de recargo</b>[cite: 181]. Descuentos por volumen: 3% desde 500kg y 5% desde 1000kg[cite: 176, 177, 178].</p>
+                            <p>Los pedidos se procesan previo pago al contado. Emitimos la documentación tributaria correspondiente (Factura) a tu razón social.</p>
+                            <p>Los precios publicados en el catálogo son <b>Base Netos (Sin IVA)</b>.</p>
+                            <p><b>Recargos:</b> Transferencias vía Fintoc o desde cuenta Mercado Pago tienen <b>0% de recargo</b>. El pago con Tarjetas vía Mercado Pago (hasta 3 cuotas) tiene un <b>3.28% de recargo</b>. Descuentos por volumen: 3% desde 500kg y 5% desde 1000kg.</p>
                         </div>
                     </div>
                 </div>
@@ -201,20 +206,20 @@
                     <img src="https://images.unsplash.com/photo-1497935586351-b67a49e012bf?auto=format&fit=crop&q=80&w=1200" class="absolute inset-0 w-full h-full object-cover opacity-50 grayscale hover:grayscale-0 transition duration-1000">
                     <div class="absolute inset-0 flex flex-col items-center justify-center text-center px-4">
                         <h2 class="text-5xl md:text-8xl font-black text-white uppercase italic tracking-tighter text-shadow-lg leading-none mb-4">Nuestra<br>Historia</h2>
-                        <p class="text-green-400 font-black tracking-[0.4em] uppercase text-sm">Est. 2014 [cite: 1]</p>
+                        <p class="text-green-400 font-black tracking-[0.4em] uppercase text-sm">Est. 2014</p>
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-24 mb-24">
                     <div class="prose prose-lg text-gray-600 animate-fade-in delay-100">
                         <h3 class="text-4xl font-black uppercase text-green-950 mb-8 tracking-tighter italic">Visión</h3>
-                        <p class="leading-relaxed">Hace más de una década que estamos comprometidos con establecer relaciones directas, de confianza y de largo plazo con socios caficultores en origen, en busca de lotes de café que cumplan con nuestra visión de valor: transparencia, calidad, innovación, comercio directo y sostenibilidad[cite: 6].</p>
-                        <p class="leading-relaxed">Hemos visitado personalmente a productores en Indonesia, Tailandia, Honduras, Panamá, Costa Rica, Brasil, Ecuador, Bolivia y Perú en busca de conocimiento, relaciones personales y café de gran valor[cite: 7].</p>
+                        <p class="leading-relaxed">Hace más de una década que estamos comprometidos con establecer relaciones directas, de confianza y de largo plazo con socios caficultores en origen, en busca de lotes de café que cumplan con nuestra visión de valor: transparencia, calidad, innovación, comercio directo y sostenibilidad.</p>
+                        <p class="leading-relaxed">Hemos visitado personalmente a productores en Indonesia, Tailandia, Honduras, Panamá, Costa Rica, Brasil, Ecuador, Bolivia y Perú en busca de conocimiento, relaciones personales y café de gran valor.</p>
                     </div>
                     <div class="prose prose-lg text-gray-600 animate-fade-in delay-200">
                         <h3 class="text-4xl font-black uppercase text-green-950 mb-8 tracking-tighter italic">Nosotros</h3>
-                        <p class="leading-relaxed">Nos especializamos en la adquisición, almacenaje y distribución de café verde, con cientos de toneladas intercambiadas de forma directa[cite: 10]. La gran mayoría de nuestros cafés son de especialidad, comercio justo y certificados orgánico[cite: 11].</p>
-                        <p class="leading-relaxed">Somos un equipo multidisciplinario[cite: 12]. Contamos con certificaciones SCA en disciplinas como Brewing, Barista, Sensory y Roasting[cite: 13]. Todos nuestros lotes son evaluados por un Q Grader certificado pre-embarque[cite: 14]. Realizamos un análisis físico meticuloso y una evaluación sensorial bajo estándares SCA para garantizar consistencia[cite: 16].</p>
+                        <p class="leading-relaxed">Nos especializamos en la adquisición, almacenaje y distribución de café verde, con cientos de toneladas intercambiadas de forma directa. La gran mayoría de nuestros cafés son de especialidad, comercio justo y certificados orgánico.</p>
+                        <p class="leading-relaxed">Somos un equipo multidisciplinario. Contamos con certificaciones SCA en disciplinas como Brewing, Barista, Sensory y Roasting. Todos nuestros lotes son evaluados por un Q Grader certificado pre-embarque. Realizamos un análisis físico meticuloso y una evaluación sensorial bajo estándares SCA para garantizar consistencia.</p>
                     </div>
                 </div>
             </section>
@@ -296,7 +301,7 @@
 
         const API = 'https://script.google.com/macros/s/AKfycbzLrChkaUqiWMyDgYpzfHHjmwPcZJ2afiiXQEFbFZ_-2iE-6pV1m4CnVlIAUlKCVc1g/exec';
         const P_KEY = 'tostador2026';
-        let db = [], currSW = 30, currQ = 1, currF = 'Saco', currP = null;
+        let db = [], currentListData = [], currSW = 30, currQ = 1, currF = 'Saco', currP = null;
 
         // SCROLL NAVBAR EFFECT
         window.addEventListener('scroll', () => {
@@ -322,7 +327,9 @@
 
         async function init() {
             try {
-                const r = await fetch(API); db = await r.json();
+                const r = await fetch(API); 
+                db = await r.json(); 
+                currentListData = [...db];
                 renderHome();
             } catch(e) { console.error(e); }
         }
@@ -332,7 +339,11 @@
             document.querySelectorAll('.view-section').forEach(s => s.classList.remove('view-active'));
             document.getElementById('view-' + v).classList.add('view-active');
             window.scrollTo(0, 0);
-            if(v === 'offerlist') renderList(db);
+            if(v === 'offerlist') {
+                currentListData = [...db];
+                document.getElementById('offerlist-filter').value = '';
+                renderList(currentListData);
+            }
         }
 
         function navPredictiveSearch(q) {
@@ -393,15 +404,69 @@
             `).join('');
         }
 
+        // LOGICA TABLA OFFER LIST
+        function filterTable(q) {
+            if(!q) {
+                currentListData = [...db];
+            } else {
+                const lQ = q.toLowerCase();
+                currentListData = db.filter(p => 
+                    (p.Nombre||'').toLowerCase().includes(lQ) || 
+                    (p.Origen||'').toLowerCase().includes(lQ) || 
+                    (p.Proceso||'').toLowerCase().includes(lQ) || 
+                    (p['Notas de Cata']||'').toLowerCase().includes(lQ) ||
+                    (p.Variedad||'').toLowerCase().includes(lQ)
+                );
+            }
+            renderList(currentListData);
+        }
+
+        let sortCol = '';
+        let sortAsc = true;
+        function sortTable(col) {
+            if (sortCol === col) {
+                sortAsc = !sortAsc;
+            } else {
+                sortCol = col;
+                sortAsc = true;
+            }
+            
+            currentListData.sort((a, b) => {
+                let valA = a[col] || '';
+                let valB = b[col] || '';
+                
+                if (['Puntaje', 'Precio', 'Stock', 'Cosecha'].includes(col)) {
+                    valA = parseFloat(valA) || 0;
+                    valB = parseFloat(valB) || 0;
+                } else {
+                    valA = valA.toString().toLowerCase();
+                    valB = valB.toString().toLowerCase();
+                }
+
+                if (valA < valB) return sortAsc ? -1 : 1;
+                if (valA > valB) return sortAsc ? 1 : -1;
+                return 0;
+            });
+            
+            renderList(currentListData);
+        }
+
         function renderList(data) {
             const b = document.getElementById('tabla-body');
+            if(data.length === 0) {
+                b.innerHTML = '<tr><td colspan="8" class="p-10 text-center text-gray-400 font-bold text-xs uppercase tracking-widest">No hay resultados</td></tr>';
+                return;
+            }
             b.innerHTML = data.map(p => `
                 <tr onclick="verDet(${db.indexOf(p)})" class="hover:bg-green-50 transition cursor-pointer group border-b border-gray-50 last:border-none">
-                    <td class="p-10 font-black text-xl uppercase italic leading-none text-green-950">${p.Nombre}</td>
-                    <td class="p-10 text-gray-400 uppercase text-[10px] tracking-widest">${p.Origen || '-'}</td>
-                    <td class="p-10 text-center font-black text-2xl text-green-800 tracking-tighter">${p.Puntaje || '-'}</td>
-                    <td class="p-10 text-right font-black text-xl text-green-950">$${Number(p.Precio).toLocaleString('es-CL')}</td>
-                    <td class="p-10 text-right text-gray-200 group-hover:text-green-900 transition text-3xl italic">→</td>
+                    <td class="p-6 font-black text-lg uppercase italic leading-none text-green-950">${p.Nombre}</td>
+                    <td class="p-6 text-gray-400 uppercase text-[10px] tracking-widest">${p.Origen || '-'}</td>
+                    <td class="p-6 text-center"><span class="bg-gray-100 px-4 py-1.5 rounded-full text-[9px] uppercase font-black text-gray-500">${p.Proceso || '-'}</span></td>
+                    <td class="p-6 text-[10px] text-gray-500 italic max-w-[200px] truncate" title="${p['Notas de Cata']||'-'}">${p['Notas de Cata'] || '-'}</td>
+                    <td class="p-6 text-center text-[10px] uppercase font-bold text-gray-400">${p.Cosecha || '-'}</td>
+                    <td class="p-6 text-center font-black text-xl text-green-800 tracking-tighter">${p.Puntaje || '-'}</td>
+                    <td class="p-6 text-center text-[10px] font-black uppercase text-green-950">${p.Stock || '0'}</td>
+                    <td class="p-6 text-right font-black text-lg text-green-950">$${Number(p.Precio).toLocaleString('es-CL')}</td>
                 </tr>
             `).join('');
         }
@@ -469,7 +534,7 @@
                     <div class="absolute inset-0 w-full h-full bg-cover bg-center bg-fixed opacity-60 mix-blend-overlay img-protegida" style="background-image: url('${p.Imagen || 'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7'}');"></div>
                     <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
                     
-                    <button onclick="navigateTo('offerlist')" class="absolute top-10 left-6 md:left-12 z-30 text-[10px] font-black uppercase text-white/70 tracking-widest italic hover:text-white transition-all flex items-center gap-2">
+                    <button onclick="navigateTo('offerlist')" class="absolute top-20 md:top-24 left-6 md:left-12 z-30 text-[10px] font-black uppercase text-white/70 tracking-widest italic hover:text-white transition-all flex items-center gap-2">
                         ← Volver al Inventario
                     </button>
 
@@ -537,27 +602,26 @@
                                 </div>
                             </div>
 
-                            <div class="mb-20 animate-fade-in delay-300">
-                                <h4 class="text-xs font-black uppercase tracking-[0.4em] text-green-950 mb-8 border-b-4 border-gray-100 pb-4 italic">Analítica de Taza</h4>
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-16 items-center mt-8">
-                                    <div class="h-[350px]"><canvas id="radarChart"></canvas></div>
-                                    <div class="bg-gray-50 p-10 rounded-[40px] border shadow-inner">
-                                        <table class="w-full text-[10px] uppercase tracking-widest font-black text-gray-500">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 mb-20 animate-fade-in delay-300">
+                                <div>
+                                    <h4 class="text-xs font-black uppercase tracking-[0.4em] text-green-950 mb-8 border-b-4 border-gray-100 pb-4 italic">Analítica de Taza</h4>
+                                    <div class="h-[300px] mb-8"><canvas id="radarChart"></canvas></div>
+                                    <div class="bg-gray-50 p-6 rounded-[30px] border shadow-inner">
+                                        <table class="w-full text-[9px] uppercase tracking-widest font-black text-gray-500">
                                             <tbody class="divide-y divide-gray-200">
                                                 ${['Fragancia / Aroma', 'Sabor', 'Sabor Residual', 'Acidez', 'Cuerpo', 'Balance', 'Dulzor', 'Uniformidad', 'Taza Limpia', 'General'].map(f => `
-                                                    <tr><td class="py-4 italic">${f}</td><td class="py-4 text-right text-green-800 text-sm">${p[f]||'8.00'}</td></tr>
+                                                    <tr><td class="py-3 italic">${f}</td><td class="py-3 text-right text-green-800 text-sm">${p[f]||'8.00'}</td></tr>
                                                 `).join('')}
                                             </tbody>
                                         </table>
                                     </div>
                                 </div>
-                            </div>
-
-                            <div id="box-pie" class="mb-20 hidden animate-fade-in delay-400">
-                                <div class="border-b-4 border-gray-100 pb-4 mb-10">
-                                    <h4 class="text-xs font-black uppercase tracking-[0.4em] text-green-950 italic">Distribución de Malla</h4>
+                                <div id="box-pie" class="hidden">
+                                    <h4 class="text-xs font-black uppercase tracking-[0.4em] text-green-950 mb-8 border-b-4 border-gray-100 pb-4 italic">Distribución de Malla</h4>
+                                    <div class="bg-white p-6 rounded-[30px] border border-gray-100 shadow-[0_20px_50px_rgba(0,0,0,0.05)] flex items-center justify-center">
+                                        <div class="h-[300px] w-full"><canvas id="pieChart"></canvas></div>
+                                    </div>
                                 </div>
-                                <div class="h-80 flex justify-center"><canvas id="pieChart"></canvas></div>
                             </div>
                         </div>
 
@@ -596,7 +660,7 @@
                                                 <span class="text-2xl font-black tracking-tighter leading-none text-green-950">$<span id="det-neto">0</span></span>
                                             </div>
                                             <div class="flex justify-between items-end pb-4 transition-opacity duration-300" id="row-recargo" style="opacity: 0.3;">
-                                                <span class="text-[10px] font-black uppercase tracking-[0.3em] text-orange-500 italic">Recargo Tarjeta (3.5%)</span>
+                                                <span class="text-[10px] font-black uppercase tracking-[0.3em] text-orange-500 italic">Recargo Tarjeta (3.28%)</span>
                                                 <span class="text-lg font-black tracking-tighter leading-none text-orange-500">$<span id="det-recargo">0</span></span>
                                             </div>
                                             <div class="flex justify-between items-end pb-4">
@@ -611,7 +675,7 @@
 
                                         <div class="grid grid-cols-1 gap-3 pt-4">
                                             <button onclick="comprar('Fintoc')" class="w-full bg-green-950 text-white font-black py-4 rounded-[25px] uppercase tracking-widest text-[9px] hover:bg-green-800 transition duration-500 shadow-xl flex items-center justify-center gap-2">
-                                                Transferencia (0% Recargo)
+                                                Transferencia / Saldo MP (0% Recargo)
                                             </button>
                                             <button onclick="comprar('MercadoPago_Tarjetas')" onmouseover="simulateSurcharge(true)" onmouseout="simulateSurcharge(false)" class="w-full bg-[#009ee3] text-white font-black py-4 rounded-[25px] uppercase tracking-widest text-[9px] hover:scale-[1.02] transition duration-500 shadow-xl flex items-center justify-center gap-2">
                                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
@@ -674,7 +738,7 @@
         function updPrice() {
             const p = Number(currP.Precio), f = currF === 'Saco' ? currSW : 1;
             const netoBase = p * f * currQ;
-            let recargo = isSurchargePreview ? netoBase * 0.035 : 0; // 3.5% Recargo Tarjeta según PDF [cite: 181]
+            let recargo = isSurchargePreview ? netoBase * 0.0328 : 0; // 3.28% Recargo Tarjeta
             const netoFinal = netoBase + recargo;
             const iva = Math.round(netoFinal * 0.19);
             const total = netoFinal + iva;
@@ -693,7 +757,7 @@
                     labels: ['Aroma', 'Sabor', 'Residual', 'Acidez', 'Cuerpo', 'Balance'],
                     datasets: [{ data: [parseFloat(p['Fragancia / Aroma'])||8, parseFloat(p.Sabor)||8, parseFloat(p['Sabor Residual'])||8, parseFloat(p.Acidez)||8, parseFloat(p.Cuerpo)||8, parseFloat(p.Balance)||8], backgroundColor: 'rgba(20, 83, 45, 0.1)', borderColor: '#052214', borderWidth: 3, pointRadius: 0 }]
                 },
-                options: { responsive: true, maintainAspectRatio: false, scales: { r: { min: 6, max: 10, ticks: { display: false }, pointLabels: { font: { size: 12, weight: '900', family: 'Inter' }, color: '#052214' } } }, plugins: { legend: { display: false }, datalabels: { display: false } } }
+                options: { responsive: true, maintainAspectRatio: false, scales: { r: { min: 6, max: 10, ticks: { display: false }, pointLabels: { font: { size: 10, weight: '900', family: 'Inter' }, color: '#052214' } } }, plugins: { legend: { display: false }, datalabels: { display: false } } }
             });
         }
 
@@ -704,14 +768,14 @@
                 type: 'pie',
                 data: {
                     labels: ['M17+', 'M16', 'M15', 'Otras'],
-                    datasets: [{ data: [parseFloat(p['Malla 17'])||0, parseFloat(p['Malla 16'])||0, parseFloat(p['Malla 15'])||0, 10], backgroundColor: ['#052214','#065f46','#10b981','#d1fae5'], borderWidth: 0 }]
+                    datasets: [{ data: [parseFloat(p['Malla 17'])||0, parseFloat(p['Malla 16'])||0, parseFloat(p['Malla 15'])||0, parseFloat(p['Fuera Malla'])||10], backgroundColor: ['#052214','#065f46','#10b981','#d1fae5'], borderWidth: 0 }]
                 },
                 options: { 
                     responsive: true, maintainAspectRatio: false, 
                     plugins: { 
-                        legend: { position: 'bottom', labels: { font: { weight: '900', size: 10 }, padding: 20 } },
+                        legend: { position: 'bottom', labels: { font: { weight: '900', size: 10 }, padding: 15 } },
                         datalabels: {
-                            color: '#fff', font: { weight: 'bold', size: 12 },
+                            color: '#fff', font: { weight: 'bold', size: 11 },
                             formatter: (value, ctx) => {
                                 let sum = 0;
                                 let dataArr = ctx.chart.data.datasets[0].data;
@@ -732,8 +796,8 @@
             let recargo = 0;
 
             if (metodo === 'MercadoPago_Tarjetas') {
-                recargo = netoBase * 0.035; // 3.5% Tarjetas [cite: 181]
-                recargoText = `\n*Recargo Tarjetas (3.5%):* $${Math.round(recargo).toLocaleString('es-CL')}`;
+                recargo = netoBase * 0.0328; // 3.28% Tarjetas
+                recargoText = `\n*Recargo Tarjetas (3.28%):* $${Math.round(recargo).toLocaleString('es-CL')}`;
             }
 
             const netoFinal = netoBase + recargo;
@@ -769,8 +833,8 @@
                     th, td { border-bottom: 1px solid #e5e7eb; padding: 10px 4px; text-align: left; }
                     th { color: #9ca3af; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; width: 40%; }
                     td { font-weight: bold; color: #052214; }
-                    .notes { background: #f0fdf4; padding: 20px; border-left: 4px solid #34d399; font-style: italic; }
-                    .footer { margin-top: 50px; font-size: 8pt; color: #9ca3af; text-align: center; text-transform: uppercase; letter-spacing: 2px; }
+                    .notes { background: #f0fdf4; padding: 20px; border-left: 4px solid #34d399; font-style: italic; margin-top: 20px; }
+                    .footer { margin-top: 50px; font-size: 8pt; color: #9ca3af; text-align: center; text-transform: uppercase; letter-spacing: 2px; border-top: 1px solid #e5e7eb; padding-top: 20px; }
                 </style>
                 </head><body>
                 <div class="header">
@@ -807,15 +871,16 @@
                             <tr><th>Taza Limpia</th><td>${currP['Taza Limpia']||'-'}</td></tr>
                             <tr><th>General</th><td>${currP['General']||'-'}</td></tr>
                         </table>
-                        <br>
-                        <div class="notes">
-                            <h3 style="margin-top:0; font-size: 10pt; text-transform: uppercase; letter-spacing: 1px; color: #065f46;">Notas de Cata</h3>
-                            <p>${currP['Notas de Cata']||'N/A'}</p>
-                        </div>
                     </div>
                 </div>
+                
                 <h3 style="font-size: 10pt; text-transform: uppercase; letter-spacing: 2px; color: #052214; border-bottom: 1px solid #e5e7eb; padding-bottom: 10px;">Trazabilidad y Reseña</h3>
                 <p style="font-size: 11pt; line-height: 1.6; color: #4b5563;">${currP.Reseña||'Información técnica en proceso de carga.'}</p>
+                
+                <div class="notes">
+                    <h3 style="margin-top:0; font-size: 10pt; text-transform: uppercase; letter-spacing: 1px; color: #065f46;">Notas de Cata</h3>
+                    <p>${currP['Notas de Cata']||'N/A'}</p>
+                </div>
                 
                 <div class="footer">Generado por Super Tasters B2B - Curaduría de Café Verde (Est. 2014)</div>
                 </body></html>
